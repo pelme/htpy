@@ -1,0 +1,48 @@
+[project]
+name = "htpy"
+description = "Generate HTML from Python"
+requires-python = "~=3.10"
+dynamic = ["version"]
+dependencies = [
+]
+
+optional-dependencies.tst =[
+  "black==23.10.0",
+  "flit==3.9.0",
+  "mypy==1.6.1",
+  #"pre-commit==3.5.0",
+  "pytest==7.4.2",
+  "ruff==0.1.0",
+]
+
+
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "htpy"
+
+[tool.black]
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 120
+select = [
+    "F",        # Pyflakes
+    "E",        # pycodestyle error
+    "W",        # pycodestyle warning
+    "I",        # isort
+    "B",        # flake8-bugbear
+    "C4",       # flake8-comprehensions
+    "TCH",      # flake8-type-checking
+    "RUF100",   # yesqa equivalence
+    "UP",       # pyupgrade
+    "TID",      # flake8-tidy-imports
+]
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = "parents"
+
+[tool.mypy]
+strict = true
