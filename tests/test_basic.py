@@ -1,5 +1,6 @@
 from htpy import div, ul, li
 
+
 def test_basic():
     assert str(div("hello")) == "<div>hello</div>"
 

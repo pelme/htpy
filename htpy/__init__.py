@@ -1,20 +1,15 @@
 __version__ = "0.0.1"
 
-from html import escape
 
-
-def as_html(x) -> str:
-    if isinstance(x, Element):
-        return str(x)
-    else:
-        return escape(str(x))
+from .attrs import generate_attrs
+from .utils import to_html
 
 
 def as_iter(x):
     if isinstance(x, Element):
         yield from x
     else:
-        yield escape(str(x))
+        yield to_html(x)
 
 
 class Element:
@@ -31,7 +26,7 @@ class Element:
         return Element(self.name, self.attributes, children)
 
     def __iter__(self):
-        attrs = " ".join(f'{k}="{escape(v)}"' for k, v in self.attributes.items())
+        attrs = " ".join(f'{k}="{v}"' for k, v in generate_attrs(self.attributes))
 
         yield f'<{self.name}{" " + attrs if attrs else ""}>'
 
