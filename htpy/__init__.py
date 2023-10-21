@@ -2,7 +2,11 @@ __version__ = "0.0.1"
 
 
 from .attrs import generate_attrs
-from .utils import to_html
+from .safestring import _SafeString, to_html
+
+
+def mark_safe(value):
+    return _SafeString(value)
 
 
 def as_iter(x):

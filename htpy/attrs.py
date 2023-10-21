@@ -1,4 +1,4 @@
-from .utils import to_html
+from .safestring import to_html
 
 
 # Inspired by https://www.npmjs.com/package/classnames

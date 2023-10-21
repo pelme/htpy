@@ -1,4 +1,4 @@
-from htpy import div, ul, li
+from htpy import div, li, ul
 
 
 def test_basic():
