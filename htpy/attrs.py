@@ -1,5 +1,4 @@
-from .safestring import to_html,mark_safe
-
+from .safestring import mark_safe, to_html
 
 BOOL_VALUE = object()
 

@@ -1,9 +1,8 @@
 __version__ = "0.0.1"
 
 
-from .attrs import fixup_attribute_name, generate_attrs, BOOL_VALUE
-from .safestring import  to_html, mark_safe
-
+from .attrs import BOOL_VALUE, fixup_attribute_name, generate_attrs
+from .safestring import mark_safe, to_html  # noqa: F401
 
 
 def as_iter(x):

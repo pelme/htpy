@@ -1,4 +1,4 @@
-from htpy import div, button
+from htpy import button, div
 
 
 def test_class_str():
@@ -29,7 +29,7 @@ def test_underscore_replacement():
 
 def test_escape_attribute_name():
     result = div({"<disturbing attr>": "value"})
-    assert str(result) ==  """<div &lt;disturbing attr&gt;="value"></div>"""
+    assert str(result) == """<div &lt;disturbing attr&gt;="value"></div>"""
 
 
 def test_boolean_attribute_true():
