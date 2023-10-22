@@ -1,7 +1,7 @@
 from html import escape
 
 
-class _SafeString:
+class mark_safe:
     def __init__(self, value):
         self._value = value
 

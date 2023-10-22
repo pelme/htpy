@@ -1,12 +1,9 @@
 __version__ = "0.0.1"
 
 
-from .attrs import fixup_attribute_name, generate_attrs
-from .safestring import _SafeString, to_html
+from .attrs import fixup_attribute_name, generate_attrs, BOOL_VALUE
+from .safestring import  to_html, mark_safe
 
-
-def mark_safe(value):
-    return _SafeString(value)
 
 
 def as_iter(x):
@@ -28,17 +25,28 @@ class Element:
 
     def __call__(self, *args, **kwargs):
         children = [child for child in args if not isinstance(child, dict)]
-        attrs = {fixup_attribute_name(k): v for k, v in kwargs.items()}
+        attrs = {
+            **self.attributes,
+            **{fixup_attribute_name(k): v for k, v in kwargs.items()},
+        }
+        for args_attrs in args:
+            if isinstance(args_attrs, dict):
+                attrs.update(
+                    {fixup_attribute_name(k): v for k, v in args_attrs.items()}
+                )
 
         return Element(
             name=self.name,
             is_void_element=self.is_void_element,
-            attributes={**self.attributes, **attrs},
+            attributes=attrs,
             children=children,
         )
 
     def __iter__(self):
-        attrs = " ".join(f'{k}="{v}"' for k, v in generate_attrs(self.attributes))
+        attrs = " ".join(
+            (f'{to_html(k)}="{v}"') if v is not BOOL_VALUE else k
+            for k, v in generate_attrs(self.attributes)
+        )
 
         yield f'<{self.name}{" " + attrs if attrs else ""}>'
 
@@ -56,6 +64,7 @@ li = Element("li")
 html = Element("html")
 head = Element("head")
 body = Element("body")
+button = Element("button")
 script = Element("script")
 link = Element("link", is_void_element=True)
 input = Element("input", is_void_element=True)
