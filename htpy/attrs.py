@@ -12,9 +12,22 @@ def class_names(value):
     return to_html(value)
 
 
+_names = {
+    "class_": "class",
+    "for_": "for",
+}
+
+
+def fixup_attribute_name(name):
+    name = _names.get(name, name)
+    return name.strip("_").replace("_", "-")
+
+
 def generate_attrs(raw_attrs):
-    for raw_key, raw_value in raw_attrs.items():
-        if raw_key == "class_":
-            yield ("class", class_names(raw_value))
+    for k, v in raw_attrs.items():
+        if k == "class":
+            v = class_names(v)
         else:
-            yield (raw_key, to_html(raw_value))
+            v = to_html(v)
+
+        yield (k, v)

@@ -1,7 +1,7 @@
 __version__ = "0.0.1"
 
 
-from .attrs import generate_attrs
+from .attrs import fixup_attribute_name, generate_attrs
 from .safestring import _SafeString, to_html
 
 
@@ -17,42 +17,45 @@ def as_iter(x):
 
 
 class Element:
-    def __init__(self, name, attributes, children):
+    def __init__(self, name, is_void_element=False, attributes=None, children=None):
         self.name = name
-        self.attributes = attributes
-        self.children = children
+        self.is_void_element = is_void_element
+        self.attributes = attributes or {}
+        self.children = children or []
 
     def __str__(self):
         return "".join(str(x) for x in self)
 
-    def __call__(self, *children):
-        assert not self.children
-        return Element(self.name, self.attributes, children)
+    def __call__(self, *args, **kwargs):
+        children = [child for child in args if not isinstance(child, dict)]
+        attrs = {fixup_attribute_name(k): v for k, v in kwargs.items()}
+
+        return Element(
+            name=self.name,
+            is_void_element=self.is_void_element,
+            attributes={**self.attributes, **attrs},
+            children=children,
+        )
 
     def __iter__(self):
         attrs = " ".join(f'{k}="{v}"' for k, v in generate_attrs(self.attributes))
 
         yield f'<{self.name}{" " + attrs if attrs else ""}>'
 
-        for child in self.children:
-            yield from as_iter(child)
+        if not self.is_void_element:
+            for child in self.children:
+                yield from as_iter(child)
 
-        yield f"</{self.name}>"
-
-
-class ElementType:
-    def __init__(self, name: str) -> None:
-        self.name = name
-
-    def __call__(self, *children, **attrs):
-        return Element(self.name, attrs, children)
+            yield f"</{self.name}>"
 
 
-div = ElementType("div")
-p = ElementType("p")
-ul = ElementType("ul")
-li = ElementType("li")
-html = ElementType("html")
-head = ElementType("head")
-body = ElementType("body")
-script = ElementType("script")
+div = Element("div")
+p = Element("p")
+ul = Element("ul")
+li = Element("li")
+html = Element("html")
+head = Element("head")
+body = Element("body")
+script = Element("script")
+link = Element("link", is_void_element=True)
+input = Element("input", is_void_element=True)
