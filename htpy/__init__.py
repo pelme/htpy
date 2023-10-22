@@ -1,5 +1,7 @@
 __version__ = "0.0.1"
 
+import types
+from itertools import chain
 
 from .attrs import BOOL_VALUE, fixup_attribute_name, generate_attrs
 from .safestring import mark_safe, to_html  # noqa: F401
@@ -10,6 +12,13 @@ def as_iter(x):
         yield from x
     else:
         yield to_html(x)
+
+
+def make_list(x):
+    if isinstance(x, list | types.GeneratorType):
+        return x
+
+    return [x]
 
 
 class Element:
@@ -23,7 +32,9 @@ class Element:
         return "".join(str(x) for x in self)
 
     def __call__(self, *args, **kwargs):
-        children = [child for child in args if not isinstance(child, dict)]
+        children_lists = [
+            make_list(child) for child in args if not isinstance(child, dict)
+        ]
         attrs = {
             **self.attributes,
             **{fixup_attribute_name(k): v for k, v in kwargs.items()},
@@ -38,7 +49,7 @@ class Element:
             name=self.name,
             is_void_element=self.is_void_element,
             attributes=attrs,
-            children=children,
+            children=list(chain.from_iterable(children_lists)),
         )
 
     def __iter__(self):
