@@ -4,7 +4,7 @@ import types
 from itertools import chain
 
 from .attrs import generate_attrs, kwarg_attribute_name
-from .safestring import mark_safe, to_html  # noqa: F401
+from .safestring import SafeString, mark_safe, to_html  # noqa: F401
 
 
 def _iter_children(x):
@@ -133,4 +133,7 @@ wbr = VoidElement("wbr", {}, [])
 
 
 def __getattr__(name):
-    return Element(name, {}, [])
+    return Element(name.replace("_", "-"), {}, [])
+
+
+__all__ = []

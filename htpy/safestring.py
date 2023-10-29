@@ -1,12 +1,19 @@
 from html import escape
 
 
-class mark_safe:
+class SafeString:
     def __init__(self, value):
         self._value = value
 
     def __html__(self):
         return self._value
+
+
+def mark_safe(obj):
+    if hasattr(obj, "__html__"):
+        return obj
+
+    return SafeString(obj)
 
 
 def to_html(obj, *, quote):

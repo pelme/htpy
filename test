@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+echo ---- pytest ----
+pytest -q
+echo
+echo ---- mypy ----
+mypy --strict tests
+echo
+echo ---- stubtest ----
+stubtest htpy
+echo
+echo ---- black ----
+black --check .
+echo
+echo ---- ruff ----
+ruff .
+echo
+
+echo ==== SUCCESS ====
