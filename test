@@ -1,12 +1,12 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 echo ---- pytest ----
-pytest -q
+pytest
 echo
 echo ---- mypy ----
-mypy --strict tests
+mypy tests
 echo
 echo ---- stubtest ----
 stubtest htpy

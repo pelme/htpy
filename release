@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -euo pipefail
+
+
+rm -rf dist
+flit build
+twine upload --repository=htpy dist/*
