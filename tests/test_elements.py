@@ -1,4 +1,6 @@
-from htpy import input, li, ul, html, head, body
+import pytest
+
+from htpy import html, img, input, li, ul
 
 
 def test_void_element():
@@ -19,5 +21,9 @@ def test_generator_children():
 
 def test_html_tag_with_doctype():
     result = html(foo="bar")("hello")
-
     assert str(result) == '<!doctype html><html foo="bar">hello</html>'
+
+
+def test_void_element_children():
+    with pytest.raises(ValueError, match="img elements cannot have children"):
+        img("hey")

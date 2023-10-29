@@ -9,8 +9,8 @@ class mark_safe:
         return self._value
 
 
-def to_html(x):
-    if hasattr(x, "__html__"):
-        return x.__html__()
+def to_html(obj, *, quote):
+    if hasattr(obj, "__html__"):
+        return obj.__html__()
 
-    return escape(str(x))
+    return escape(str(obj), quote=quote)

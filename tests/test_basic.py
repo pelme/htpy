@@ -24,7 +24,7 @@ def test_nested():
 
 
 def test_escape_content():
-    assert str(div("<hello>")) == "<div>&lt;hello&gt;</div>"
+    assert str(div('<hello">')) == '<div>&lt;hello"&gt;</div>'
 
 
 def test_escape_attribute():

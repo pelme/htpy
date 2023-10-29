@@ -3,18 +3,18 @@ __version__ = "0.0.1"
 import types
 from itertools import chain
 
-from .attrs import BOOL_VALUE, fixup_attribute_name, generate_attrs
+from .attrs import generate_attrs, kwarg_attribute_name
 from .safestring import mark_safe, to_html  # noqa: F401
 
 
-def as_iter(x):
+def _iter_children(x):
     if isinstance(x, Element):
         yield from x
     else:
-        yield to_html(x)
+        yield to_html(x, quote=False)
 
 
-def make_list(x):
+def _make_list(x):
     if isinstance(x, list | types.GeneratorType):
         return x
 
@@ -22,90 +22,115 @@ def make_list(x):
 
 
 class Element:
-    def __init__(self, name, is_void_element=False, attrs=None, children=None):
-        self.name = name
-        self.is_void_element = is_void_element
-        self.attrs = attrs or {}
-        self.children = children or []
+    def __init__(self, name, attrs, children):
+        self._name = name
+        self._attrs = attrs
+        self._children = children
 
     def __str__(self):
         return "".join(str(x) for x in self)
 
     def __call__(self, *args, **kwargs):
-        children_lists = [
-            make_list(child) for child in args if not isinstance(child, dict)
-        ]
-        attrs = {
-            **self.attrs,
-            **{fixup_attribute_name(k): v for k, v in kwargs.items()},
-        }
-        for args_attrs in args:
-            if isinstance(args_attrs, dict):
-                attrs.update(
-                    {fixup_attribute_name(k): v for k, v in args_attrs.items()}
+        # element({"foo": "bar"}) -- dict attributes
+        if len(args) == 1 and isinstance(args[0], dict):
+            if kwargs:
+                raise TypeError(
+                    "Pass attributes either by a single dictionary or key word arguments - not both."
                 )
+            return self._evolve(attrs={**self._attrs, **args[0]})
 
-        return self._evolve(attrs, list(chain.from_iterable(children_lists))
-        )
+        # element("foo", "bar") -- children
+        elif args:
+            if kwargs:
+                raise TypeError(
+                    "Pass attributes or children, not both. "
+                    "Hint: Add a new set of parenthesis to pass both attributes and children: "
+                    f'{self._name}(attr="value")("children")'
+                )
+            return self._evolve(
+                children=list(chain.from_iterable(_make_list(child) for child in args)),
+            )
+        # element(foo="bar") -- kwargs attributes
+        elif kwargs:
+            return self._evolve(
+                attrs={
+                    **self._attrs,
+                    **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
+                },
+            )
 
-    def _evolve(self, attrs, children):
+        # element()
+        return self
+
+    def _evolve(self, attrs=None, children=None, **kwargs):
         return self.__class__(
-            name=self.name,
-            is_void_element=self.is_void_element,
-            attrs=attrs,
-            children=children,
+            name=self._name,
+            attrs=attrs or dict(self._attrs),
+            children=children or list(self._children),
+            **kwargs,
         )
+
+    def _attrs_string(self):
+        result = " ".join(
+            k if v is True else f'{k}="{v}"' for k, v in generate_attrs(self._attrs)
+        )
+
+        if not result:
+            return ""
+
+        return " " + result
 
     def __iter__(self):
-        attrs = " ".join(
-            (f'{to_html(k)}="{v}"') if v is not BOOL_VALUE else k
-            for k, v in generate_attrs(self.attrs)
-        )
+        yield f"<{self._name}{self._attrs_string()}>"
 
-        yield f'<{self.name}{" " + attrs if attrs else ""}>'
+        for child in self._children:
+            yield from _iter_children(child)
 
-        if not self.is_void_element:
-            for child in self.children:
-                yield from as_iter(child)
-
-            yield f"</{self.name}>"
+        yield f"</{self._name}>"
 
 
 class ElementWithDoctype(Element):
     def __init__(self, *args, doctype, **kwargs):
         super().__init__(*args, **kwargs)
-        self.doctype = doctype
+        self._doctype = doctype
 
-    def _evolve(self, attrs, children):
-       return self.__class__(
-            name=self.name,
-            is_void_element=self.is_void_element,
-            doctype=self.doctype,
-            attrs=attrs,
-            children=children,
-        )
+    def _evolve(self, **kwargs):
+        return super()._evolve(doctype=self._doctype, **kwargs)
 
     def __iter__(self):
-        yield self.doctype
+        yield self._doctype
         yield from super().__iter__()
 
 
-html = ElementWithDoctype("html", doctype='<!doctype html>')
-area = Element("are", is_void_element=True)
-base = Element("base", is_void_element=True)
-br = Element("br", is_void_element=True)
-col = Element("col", is_void_element=True)
-embed = Element("embed", is_void_element=True)
-hr = Element("hr", is_void_element=True)
-img = Element("img", is_void_element=True)
-input = Element("input", is_void_element=True)
-link = Element("link", is_void_element=True)
-meta = Element("meta", is_void_element=True)
-param = Element("param", is_void_element=True)
-source = Element("source", is_void_element=True)
-track = Element("track", is_void_element=True)
-wbr = Element("wbr", is_void_element=True)
+class VoidElement(Element):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self._children:
+            raise ValueError(f"{self._name} elements cannot have children")
+
+    def __iter__(self):
+        yield f"<{self._name}{self._attrs_string()}>"
+
+
+# https://developer.mozilla.org/en-US/docs/Glossary/Doctype
+html = ElementWithDoctype("html", {}, [], doctype="<!doctype html>")
+
+# https://developer.mozilla.org/en-US/docs/Glossary/Void_element
+area = VoidElement("area", {}, [])
+base = VoidElement("base", {}, [])
+br = VoidElement("br", {}, [])
+col = VoidElement("col", {}, [])
+embed = VoidElement("embed", {}, [])
+hr = VoidElement("hr", {}, [])
+img = VoidElement("img", {}, [])
+input = VoidElement("input", {}, [])
+link = VoidElement("link", {}, [])
+meta = VoidElement("meta", {}, [])
+param = VoidElement("param", {}, [])
+source = VoidElement("source", {}, [])
+track = VoidElement("track", {}, [])
+wbr = VoidElement("wbr", {}, [])
 
 
 def __getattr__(name):
-    return Element(name)
+    return Element(name, {}, [])

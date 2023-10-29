@@ -1,40 +1,36 @@
 from .safestring import mark_safe, to_html
 
-BOOL_VALUE = object()
-
 
 # Inspired by https://www.npmjs.com/package/classnames
 def class_names(value):
     if isinstance(value, list | tuple | set):
-        return mark_safe(" ".join(to_html(x) for x in value if x))
+        return mark_safe(" ".join(to_html(x, quote=True) for x in value if x))
 
     if isinstance(value, dict):
-        return mark_safe(" ".join(to_html(k) for k, v in value.items() if v))
+        return mark_safe(
+            " ".join(to_html(k, quote=True) for k, v in value.items() if v)
+        )
 
-    return mark_safe(to_html(value))
-
-
-_names = {
-    "class_": "class",
-    "for_": "for",
-}
+    return mark_safe(to_html(value, quote=True))
 
 
-def fixup_attribute_name(name):
-    name = _names.get(name, name)
-    return name.strip("_").replace("_", "-")
+def kwarg_attribute_name(name):
+    # Make _hyperscript (https://hyperscript.org/) work smoothly
+    if name == "_":
+        return "_"
+
+    return name.removesuffix("_").replace("_", "-")
 
 
 def generate_attrs(raw_attrs):
-    for k, v in raw_attrs.items():
-        if k == "class":
-            v = class_names(v)
-        if k in ("disabled",):
-            if v is False:
-                continue
-            if v is True:
-                v = BOOL_VALUE
-        else:
-            v = to_html(v)
+    for key, value in raw_attrs.items():
+        if key == "class":
+            value = class_names(value)
 
-        yield (k, v)
+        if value is False:
+            continue
+
+        elif value is not True:
+            value = to_html(value, quote=True)
+
+        yield to_html(key, quote=True), value
