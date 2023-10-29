@@ -22,10 +22,10 @@ def make_list(x):
 
 
 class Element:
-    def __init__(self, name, is_void_element=False, attributes=None, children=None):
+    def __init__(self, name, is_void_element=False, attrs=None, children=None):
         self.name = name
         self.is_void_element = is_void_element
-        self.attributes = attributes or {}
+        self.attrs = attrs or {}
         self.children = children or []
 
     def __str__(self):
@@ -36,7 +36,7 @@ class Element:
             make_list(child) for child in args if not isinstance(child, dict)
         ]
         attrs = {
-            **self.attributes,
+            **self.attrs,
             **{fixup_attribute_name(k): v for k, v in kwargs.items()},
         }
         for args_attrs in args:
@@ -45,17 +45,21 @@ class Element:
                     {fixup_attribute_name(k): v for k, v in args_attrs.items()}
                 )
 
-        return Element(
+        return self._evolve(attrs, list(chain.from_iterable(children_lists))
+        )
+
+    def _evolve(self, attrs, children):
+        return self.__class__(
             name=self.name,
             is_void_element=self.is_void_element,
-            attributes=attrs,
-            children=list(chain.from_iterable(children_lists)),
+            attrs=attrs,
+            children=children,
         )
 
     def __iter__(self):
         attrs = " ".join(
             (f'{to_html(k)}="{v}"') if v is not BOOL_VALUE else k
-            for k, v in generate_attrs(self.attributes)
+            for k, v in generate_attrs(self.attrs)
         )
 
         yield f'<{self.name}{" " + attrs if attrs else ""}>'
@@ -67,14 +71,41 @@ class Element:
             yield f"</{self.name}>"
 
 
-div = Element("div")
-p = Element("p")
-ul = Element("ul")
-li = Element("li")
-html = Element("html")
-head = Element("head")
-body = Element("body")
-button = Element("button")
-script = Element("script")
-link = Element("link", is_void_element=True)
+class ElementWithDoctype(Element):
+    def __init__(self, *args, doctype, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.doctype = doctype
+
+    def _evolve(self, attrs, children):
+       return self.__class__(
+            name=self.name,
+            is_void_element=self.is_void_element,
+            doctype=self.doctype,
+            attrs=attrs,
+            children=children,
+        )
+
+    def __iter__(self):
+        yield self.doctype
+        yield from super().__iter__()
+
+
+html = ElementWithDoctype("html", doctype='<!doctype html>')
+area = Element("are", is_void_element=True)
+base = Element("base", is_void_element=True)
+br = Element("br", is_void_element=True)
+col = Element("col", is_void_element=True)
+embed = Element("embed", is_void_element=True)
+hr = Element("hr", is_void_element=True)
+img = Element("img", is_void_element=True)
 input = Element("input", is_void_element=True)
+link = Element("link", is_void_element=True)
+meta = Element("meta", is_void_element=True)
+param = Element("param", is_void_element=True)
+source = Element("source", is_void_element=True)
+track = Element("track", is_void_element=True)
+wbr = Element("wbr", is_void_element=True)
+
+
+def __getattr__(name):
+    return Element(name)
