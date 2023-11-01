@@ -1,4 +1,4 @@
-__version__ = "23.0"
+__version__ = "23.11.0"
 
 import types
 from itertools import chain
@@ -82,6 +82,7 @@ class Element:
 
     def __html__(self):
         return str(self)
+
 
 class ElementWithDoctype(Element):
     def __init__(self, *args, doctype, **kwargs):

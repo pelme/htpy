@@ -54,5 +54,5 @@ def test_iter_nested() -> None:
     ]
 
 
-def test_html_safestring_interface():
+def test_html_safestring_interface() -> None:
     assert div(id="a").__html__() == '<div id="a"></div>'

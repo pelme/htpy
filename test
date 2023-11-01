@@ -5,11 +5,11 @@ set -euo pipefail
 echo ---- pytest ----
 pytest
 echo
-echo ---- mypy ----
-mypy tests
-echo
 echo ---- stubtest ----
 stubtest htpy
+echo
+echo ---- mypy ----
+mypy tests
 echo
 echo ---- black ----
 black --check .
