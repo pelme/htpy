@@ -17,9 +17,8 @@ def test_class_dict() -> None:
 
 
 def test_dict_attributes() -> None:
-    result = div({"@click": 'hi = "hello"'})("hello")
-
-    assert str(result) == """<div @click="hi = &quot;hello&quot;">hello</div>"""
+    result = div({"@click": 'hi = "hello"'})
+    assert str(result) == """<div @click="hi = &quot;hello&quot;"></div>"""
 
 
 def test_underscore() -> None:
@@ -44,7 +43,7 @@ def test_dict_attribute_true() -> None:
 
 
 def test_underscore_replacement() -> None:
-    result = button(hx_post="/foo")("click me!")
+    result = button(hx_post="/foo")["click me!"]
     assert str(result) == """<button hx-post="/foo">click me!</button>"""
 
 
@@ -54,10 +53,10 @@ def test_escape_attribute_name() -> None:
 
 
 def test_boolean_attribute_true() -> None:
-    result = button(disabled=True)("I am disabled")
-    assert str(result) == "<button disabled>I am disabled</button>"
+    result = button(disabled=True)
+    assert str(result) == "<button disabled></button>"
 
 
 def test_boolean_attribute_false() -> None:
-    result = button(disabled=False)("I am not disabled")
-    assert str(result) == "<button>I am not disabled</button>"
+    result = button(disabled=False)
+    assert str(result) == "<button></button>"

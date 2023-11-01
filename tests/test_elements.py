@@ -19,24 +19,28 @@ def test_void_element() -> None:
 
 
 def test_list_children() -> None:
-    result = ul([li("a"), li("b")])
+    result = ul[[li["a"], li["b"]]]
+    assert str(result) == "<ul><li>a</li><li>b</li></ul>"
+
+
+def test_tuple_children() -> None:
+    result = ul[(li["a"], li["b"])]
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
 def test_generator_children() -> None:
-    result = ul(li(x) for x in ["a", "b"])
-    assert str(result) == "<ul><li>a</li><li>b</li></ul>"
+    result = ul[(li[x] for x in ["a", "b"])]
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
 def test_html_tag_with_doctype() -> None:
-    result = html(foo="bar")("hello")
+    result = html(foo="bar")["hello"]
     assert str(result) == '<!doctype html><html foo="bar">hello</html>'
 
 
 def test_void_element_children() -> None:
     with pytest.raises(ValueError, match="img elements cannot have children"):
-        img("hey")
+        img["hey"]
 
 
 def test_call_without_args() -> None:

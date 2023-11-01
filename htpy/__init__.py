@@ -15,7 +15,7 @@ def _iter_children(x):
 
 
 def _make_list(x):
-    if isinstance(x, list | types.GeneratorType):
+    if isinstance(x, tuple | list | types.GeneratorType):
         return x
 
     return [x]
@@ -30,37 +30,29 @@ class Element:
     def __str__(self):
         return "".join(str(x) for x in self)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, attrs=None, **kwargs):
         # element({"foo": "bar"}) -- dict attributes
-        if len(args) == 1 and isinstance(args[0], dict):
+        if attrs is not None:
             if kwargs:
                 raise TypeError(
                     "Pass attributes either by a single dictionary or key word arguments - not both."
                 )
-            return self._evolve(attrs={**self._attrs, **args[0]})
+            return self._evolve(attrs={**self._attrs, **attrs})
 
-        # element("foo", "bar") -- children
-        elif args:
-            if kwargs:
-                raise TypeError(
-                    "Pass attributes or children, not both. "
-                    "Hint: Add a new set of parenthesis to pass both attributes and children: "
-                    f'{self._name}(attr="value")("children")'
-                )
-            return self._evolve(
-                children=list(chain.from_iterable(_make_list(child) for child in args)),
-            )
-        # element(foo="bar") -- kwargs attributes
-        elif kwargs:
-            return self._evolve(
-                attrs={
-                    **self._attrs,
-                    **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
-                },
-            )
+        return self._evolve(
+            attrs={
+                **self._attrs,
+                **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
+            },
+        )
 
-        # element()
-        return self
+    def __getitem__(self, children):
+        if not isinstance(children, tuple):
+            children = (children,)
+
+        return self._evolve(
+            children=list(chain.from_iterable(_make_list(child) for child in children)),
+        )
 
     def _evolve(self, attrs=None, children=None, **kwargs):
         return self.__class__(
@@ -88,6 +80,8 @@ class Element:
 
         yield f"</{self._name}>"
 
+    def __html__(self):
+        return str(self)
 
 class ElementWithDoctype(Element):
     def __init__(self, *args, doctype, **kwargs):

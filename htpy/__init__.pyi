@@ -4,13 +4,10 @@ from typing import Any, overload
 class Element:
     def __init__(self, name: str, attrs: dict[Any, Any], children: list[Any]): ...
     @overload
-    def __call__(self) -> Element: ...
+    def __call__(self, attrs: dict[Any, Any] | None = None) -> Element: ...
     @overload
-    def __call__(self, attrs: dict[Any, Any]) -> Element: ...
-    @overload
-    def __call__(self, **attrs: Any) -> Element: ...
-    @overload
-    def __call__(self, *children: Any) -> Element: ...
+    def __call__(self, **kwargs: Any) -> Element: ...
+    def __getitem__(self, children: Any) -> Element: ...
     def __iter__(self) -> Iterator[str]: ...
 
 class VoidElement(Element):
@@ -44,7 +41,6 @@ meta: VoidElement
 source: VoidElement
 track: VoidElement
 wbr: VoidElement
-abc: Element
 
 # Non-deprecated HTML elements, extracted from
 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element
@@ -52,6 +48,7 @@ abc: Element
 # Array.from($0.querySelectorAll('li')).filter(x=>!x.querySelector('.icon-deprecated')).map(x => x.querySelector('code').textContent) # noqa: E501
 a: Element
 abbr: Element
+abc: Element
 address: Element
 article: Element
 aside: Element
