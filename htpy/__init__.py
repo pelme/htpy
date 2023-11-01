@@ -1,4 +1,4 @@
-__version__ = "23.11.1"
+__version__ = "23.11.2"
 import functools
 import types
 from itertools import chain
