@@ -8,7 +8,7 @@ def test_escaping() -> None:
     assert result == "<div>&lt;foo&gt;&lt;/foo&gt;</div>"
 
 
-def test_safe_string() -> None:
+def test_mark_safe() -> None:
     safe_string = mark_safe("<foo></foo>")
     assert_type(safe_string, SafeString)
 

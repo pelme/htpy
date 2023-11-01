@@ -5,17 +5,22 @@ import pytest
 from htpy import Element, div, html, img, input, li, my_custom_element, ul
 
 
-def test_element() -> None:
-    element = div()
-    assert_type(element, Element)
-
-
 def test_void_element() -> None:
     element = input(name="foo")
     assert_type(element, Element)
 
     result = str(element)
     assert str(result) == '<input name="foo">'
+
+
+def test_children() -> None:
+    assert str(div[img]) == "<div><img></div>"
+
+
+def test_multiple_children() -> None:
+    result = ul[li, li]
+
+    assert str(result) == "<ul><li></li><li></li></ul>"
 
 
 def test_list_children() -> None:
@@ -52,3 +57,15 @@ def test_custom_element() -> None:
     el = my_custom_element()
     assert_type(el, Element)
     assert str(el) == "<my-custom-element></my-custom-element>"
+
+
+def test_ignore_none() -> None:
+    assert str(div[None]) == "<div></div>"
+
+
+def test_ignore_false() -> None:
+    assert str(div[False]) == "<div></div>"
+
+
+def test_do_not_ignore_zero() -> None:
+    assert str(div[0]) == "<div>0</div>"

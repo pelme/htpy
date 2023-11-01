@@ -1,17 +1,18 @@
 __version__ = "23.11.1"
-
+import functools
 import types
 from itertools import chain
 
-from .attrs import generate_attrs, kwarg_attribute_name
-from .safestring import SafeString, mark_safe, to_html  # noqa: F401
+from ._attrs import generate_attrs, kwarg_attribute_name
+from ._safestring import SafeString, mark_safe, to_html  # noqa: F401
 
 
 def _iter_children(x):
     if isinstance(x, Element):
         yield from x
     else:
-        yield to_html(x, quote=False)
+        if x is not False and x is not None:
+            yield to_html(x, quote=False)
 
 
 def _make_list(x):
@@ -83,6 +84,9 @@ class Element:
     def __html__(self):
         return str(self)
 
+    def __repr__(self):
+        return f"<htpy element '{self}'>"
+
 
 class ElementWithDoctype(Element):
     def __init__(self, *args, doctype, **kwargs):
@@ -127,6 +131,7 @@ track = VoidElement("track", {}, [])
 wbr = VoidElement("wbr", {}, [])
 
 
+@functools.lru_cache(maxsize=300)
 def __getattr__(name):
     return Element(name.replace("_", "-"), {}, [])
 

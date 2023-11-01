@@ -9,7 +9,7 @@ echo ---- stubtest ----
 stubtest htpy
 echo
 echo ---- mypy ----
-mypy tests
+mypy
 echo
 echo ---- black ----
 black --check .

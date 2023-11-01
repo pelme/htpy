@@ -1,6 +1,10 @@
 from htpy import button, div
 
 
+def test_attribute() -> None:
+    assert str(div(id="hello")["hi"]) == '<div id="hello">hi</div>'
+
+
 def test_class_str() -> None:
     result = div(class_=">foo bar")
     assert str(result) == '<div class="&gt;foo bar"></div>'

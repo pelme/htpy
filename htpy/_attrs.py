@@ -1,4 +1,4 @@
-from .safestring import mark_safe, to_html
+from ._safestring import mark_safe, to_html
 
 
 # Inspired by https://www.npmjs.com/package/classnames

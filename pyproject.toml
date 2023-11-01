@@ -59,3 +59,4 @@ ban-relative-imports = "parents"
 
 [tool.mypy]
 strict = true
+packages = "tests"
