@@ -38,13 +38,10 @@ class Element:
                 raise TypeError(
                     "Pass attributes either by a single dictionary or key word arguments - not both."
                 )
-            return self._evolve(attrs={**self._attrs, **attrs})
+            return self._evolve(attrs=attrs)
 
         return self._evolve(
-            attrs={
-                **self._attrs,
-                **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
-            },
+            attrs={kwarg_attribute_name(k): v for k, v in kwargs.items()},
         )
 
     def __getitem__(self, children):
