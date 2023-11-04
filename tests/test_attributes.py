@@ -64,3 +64,9 @@ def test_boolean_attribute_true() -> None:
 def test_boolean_attribute_false() -> None:
     result = button(disabled=False)
     assert str(result) == "<button></button>"
+
+
+def test_id_class() -> None:
+    result = div("#myid.cls1.cls2")
+
+    assert str(result) == """<div id="myid" class="cls1 cls2"></div>"""

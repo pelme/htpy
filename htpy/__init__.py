@@ -3,7 +3,7 @@ import functools
 import types
 from itertools import chain
 
-from ._attrs import generate_attrs, kwarg_attribute_name
+from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_name
 from ._safestring import SafeString, mark_safe, to_html  # noqa: F401
 
 
@@ -38,6 +38,8 @@ class Element:
                 raise TypeError(
                     "Pass attributes either by a single dictionary or key word arguments - not both."
                 )
+            if isinstance(attrs, str):
+                return self._evolve(attrs=id_classnames_from_css_str(attrs))
             return self._evolve(attrs=attrs)
 
         return self._evolve(

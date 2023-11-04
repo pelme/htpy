@@ -14,6 +14,23 @@ def class_names(value):
     return mark_safe(to_html(value, quote=True))
 
 
+def id_classnames_from_css_str(x):
+    parts = x.split(".")
+    ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
+    classes = [part for part in parts if not part.startswith("#")]
+
+    assert len(ids) in (0, 1)
+
+    result = {}
+    if ids:
+        result["id"] = ids[0]
+
+    if classes:
+        result["class"] = " ".join(classes)
+
+    return result
+
+
 def kwarg_attribute_name(name):
     # Make _hyperscript (https://hyperscript.org/) work smoothly
     if name == "_":
