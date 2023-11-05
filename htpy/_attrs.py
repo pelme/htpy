@@ -15,9 +15,12 @@ def class_names(value):
 
 
 def id_classnames_from_css_str(x):
+    if "#" in x and "." in x and x.find("#") > x.find("."):
+        raise ValueError("id (#) must be specified before classes (.)")
+
     parts = x.split(".")
     ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
-    classes = [part for part in parts if not part.startswith("#")]
+    classes = [part for part in parts if not part.startswith("#") if part]
 
     assert len(ids) in (0, 1)
 

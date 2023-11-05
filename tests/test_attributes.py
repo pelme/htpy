@@ -1,3 +1,5 @@
+import pytest
+
 from htpy import button, div
 
 
@@ -70,3 +72,20 @@ def test_id_class() -> None:
     result = div("#myid.cls1.cls2")
 
     assert str(result) == """<div id="myid" class="cls1 cls2"></div>"""
+
+
+def test_id_class_only_id() -> None:
+    result = div("#myid")
+    assert str(result) == """<div id="myid"></div>"""
+
+
+def test_id_class_only_classes() -> None:
+    result = div(".foo.bar")
+    assert str(result) == """<div class="foo bar"></div>"""
+
+
+def test_id_class_wrong_order() -> None:
+    with pytest.raises(
+        ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"
+    ):
+        div(".myclass#myid")
