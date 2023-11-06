@@ -10,6 +10,5 @@ def test_element_type() -> None:
 
 
 def test_html_safestring_interface() -> None:
-    result = div(id="a").__html__()
-    assert_type(result, str)
+    result = str(div(id="a")).__html__()  # type: ignore[attr-defined]
     assert result == '<div id="a"></div>'

@@ -1,12 +1,9 @@
 from html import escape
 
 
-class SafeString:
-    def __init__(self, value):
-        self._value = value
-
+class SafeString(str):
     def __html__(self):
-        return self._value
+        return self
 
 
 def mark_safe(obj):

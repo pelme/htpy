@@ -29,7 +29,7 @@ class Element:
         self._children = children
 
     def __str__(self):
-        return "".join(str(x) for x in self)
+        return SafeString("".join(str(x) for x in self))
 
     def __call__(self, attrs=None, **kwargs):
         # element({"foo": "bar"}) -- dict attributes
@@ -82,9 +82,6 @@ class Element:
             yield from _iter_children(child)
 
         yield f"</{self._name}>"
-
-    def __html__(self):
-        return str(self)
 
     def __repr__(self):
         return f"<htpy element '{self}'>"
