@@ -89,3 +89,8 @@ def test_id_class_wrong_order() -> None:
         ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"
     ):
         div(".myclass#myid")
+
+
+def test_id_class_and_kwargs() -> None:
+    result = div("#theid", name="hello")
+    assert str(result) == """<div id="theid" name="hello"></div>"""
