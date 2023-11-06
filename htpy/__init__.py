@@ -32,20 +32,21 @@ class Element:
         return "".join(str(x) for x in self)
 
     def __call__(self, attrs=None, **kwargs):
-        # element(".foo", name="asdf")
-        if isinstance(attrs, str):
-            return self._evolve(attrs={**id_classnames_from_css_str(attrs), **kwargs})
-
         # element({"foo": "bar"}) -- dict attributes
-        if attrs is not None:
+        if isinstance(attrs, dict):
             if kwargs:
                 raise TypeError(
                     "Pass attributes either by a single dictionary or key word arguments - not both."
                 )
             return self._evolve(attrs=attrs)
 
+        # element(".foo", name="asdf")
+        # element(name="asdf")
         return self._evolve(
-            attrs={kwarg_attribute_name(k): v for k, v in kwargs.items()},
+            attrs={
+                **(id_classnames_from_css_str(attrs) if isinstance(attrs, str) else {}),
+                **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
+            },
         )
 
     def __getitem__(self, children):

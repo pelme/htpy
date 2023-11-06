@@ -92,5 +92,5 @@ def test_id_class_wrong_order() -> None:
 
 
 def test_id_class_and_kwargs() -> None:
-    result = div("#theid", name="hello")
-    assert str(result) == """<div id="theid" name="hello"></div>"""
+    result = div("#theid", for_="hello")
+    assert str(result) == """<div id="theid" for="hello"></div>"""
