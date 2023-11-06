@@ -56,6 +56,7 @@ def test_call_without_args() -> None:
 def test_custom_element() -> None:
     el = my_custom_element()
     assert_type(el, Element)
+    assert isinstance(el, Element)
     assert str(el) == "<my-custom-element></my-custom-element>"
 
 
