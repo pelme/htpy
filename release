@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+./test
 
 rm -rf dist
 flit build
