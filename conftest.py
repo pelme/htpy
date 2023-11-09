@@ -7,10 +7,6 @@ def django_env():
     from django.conf import settings
 
     settings.configure(
-        TEMPLATES=[
-            {
-                "BACKEND": "django.template.backends.django.DjangoTemplates",
-            },
-        ]
+        TEMPLATES=[{"BACKEND": "django.template.backends.django.DjangoTemplates"}]
     )
     django.setup()
