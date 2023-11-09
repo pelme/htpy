@@ -33,6 +33,26 @@ def test_tuple_children() -> None:
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
+def test_disallow_iter_list_list() -> None:
+    with pytest.raises(ValueError, match="list items cannot be of type list"):
+        ul[[[]]]
+
+
+def test_disallow_iter_list_tuple() -> None:
+    with pytest.raises(ValueError, match="list items cannot be of type tuple"):
+        ul[[()]]
+
+
+def test_disallow_iter_tuple_list() -> None:
+    with pytest.raises(ValueError, match="tuple items cannot be of type list"):
+        ul[(([],),)]
+
+
+def test_disallow_iter_tuple_tuple() -> None:
+    with pytest.raises(ValueError, match="tuple items cannot be of type tuple"):
+        ul[(((),),)]
+
+
 def test_generator_children() -> None:
     result = ul[(li[x] for x in ["a", "b"])]
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"

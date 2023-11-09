@@ -16,9 +16,16 @@ def _iter_children(x):
 
 
 def _make_list(x):
-    if isinstance(x, tuple | list | types.GeneratorType):
+    if isinstance(x, types.GeneratorType):
         return x
 
+    if isinstance(x, tuple | list):
+        for item in x:
+            if isinstance(item, list | tuple):
+                raise ValueError(
+                    f"{type(x).__name__} items cannot be of type {type(item).__name__}"
+                )
+        return x
     return [x]
 
 
