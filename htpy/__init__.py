@@ -38,20 +38,27 @@ class Element:
     def __str__(self):
         return SafeString("".join(str(x) for x in self))
 
-    def __call__(self, attrs=None, **kwargs):
-        # element({"foo": "bar"}) -- dict attributes
-        if isinstance(attrs, dict):
-            if kwargs:
-                raise TypeError(
-                    "Pass attributes either by a single dictionary or key word arguments - not both."
-                )
-            return self._evolve(attrs=attrs)
+    def __call__(self, *args, **kwargs):
+        if len(args) == 0:
+            id_class = ""
+            attrs = {}
+        elif len(args) == 1:
+            if isinstance(args[0], str):
+                # element(".foo")
+                id_class = args[0]
+                attrs = {}
+            else:
+                # element({"foo": "bar"})
+                id_class = ""
+                attrs = args[0]
+        if len(args) == 2:
+            # element(".foo", {"bar": "baz"})
+            id_class, attrs = args
 
-        # element(".foo", name="asdf")
-        # element(name="asdf")
         return self._evolve(
             attrs={
-                **(id_classnames_from_css_str(attrs) if isinstance(attrs, str) else {}),
+                **(id_classnames_from_css_str(id_class)),
+                **attrs,
                 **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
             },
         )

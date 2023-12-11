@@ -94,3 +94,21 @@ def test_id_class_wrong_order() -> None:
 def test_id_class_and_kwargs() -> None:
     result = div("#theid", for_="hello", data_foo="<bar")
     assert str(result) == """<div id="theid" for="hello" data-foo="&lt;bar"></div>"""
+
+
+def test_attrs_and_kwargs() -> None:
+    result = div({"a": "1", "for": "a"}, for_="b", b="2")
+    assert str(result) == """<div a="1" for="b" b="2"></div>"""
+
+
+def test_class_priority() -> None:
+    result = div(".a", {"class": "b"}, class_="c")
+    assert str(result) == """<div class="c"></div>"""
+
+    result = div(".a", {"class": "b"})
+    assert str(result) == """<div class="b"></div>"""
+
+
+def test_attribute_priority() -> None:
+    result = div({"foo": "a"}, foo="b")
+    assert str(result) == """<div foo="b"></div>"""
