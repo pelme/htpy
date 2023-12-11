@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from typing import assert_type
 
 import pytest
@@ -49,13 +50,13 @@ def test_flatten_very_nested_children() -> None:
     assert str(result) == """<div>ab</div>"""
 
 
-def test_flatten_nested_generators():
-    def cols():
+def test_flatten_nested_generators() -> None:
+    def cols() -> Generator[str, None, None]:
         yield "a"
         yield "b"
         yield "c"
 
-    def rows():
+    def rows() -> Generator[Generator[str, None, None], None, None]:
         yield cols()
         yield cols()
         yield cols()
