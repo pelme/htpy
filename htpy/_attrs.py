@@ -18,6 +18,9 @@ def id_classnames_from_css_str(x):
     if "#" in x and "." in x and x.find("#") > x.find("."):
         raise ValueError("id (#) must be specified before classes (.)")
 
+    if x[0] not in ".#":
+        raise ValueError("id/class strings must start with # or .")
+
     parts = x.split(".")
     ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
     classes = [part for part in parts if not part.startswith("#") if part]

@@ -91,6 +91,11 @@ def test_id_class_wrong_order() -> None:
         div(".myclass#myid")
 
 
+def test_id_class_bad_format() -> None:
+    with pytest.raises(ValueError, match="id/class strings must start with # or ."):
+        div("foo")
+
+
 def test_id_class_and_kwargs() -> None:
     result = div("#theid", for_="hello", data_foo="<bar")
     assert str(result) == """<div id="theid" for="hello" data-foo="&lt;bar"></div>"""

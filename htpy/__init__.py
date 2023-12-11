@@ -50,7 +50,7 @@ class Element:
 
         return self._evolve(
             attrs={
-                **(id_classnames_from_css_str(id_class)),
+                **(id_classnames_from_css_str(id_class) if id_class else {}),
                 **attrs,
                 **{kwarg_attribute_name(k): v for k, v in kwargs.items()},
             },
