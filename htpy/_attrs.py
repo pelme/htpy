@@ -15,6 +15,9 @@ def class_names(value):
 
 
 def id_classnames_from_css_str(x):
+    if not isinstance(x, str):
+        raise ValueError(f"id/class strings must be str. got {x}")
+
     if "#" in x and "." in x and x.find("#") > x.find("."):
         raise ValueError("id (#) must be specified before classes (.)")
 

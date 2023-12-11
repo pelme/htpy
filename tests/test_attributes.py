@@ -96,6 +96,13 @@ def test_id_class_bad_format() -> None:
         div("foo")
 
 
+def test_id_class_bad_type() -> None:
+    with pytest.raises(
+        ValueError, match="id/class strings must be str. got {'oops': 'yes'}"
+    ):
+        div({"oops": "yes"}, {})  # type: ignore
+
+
 def test_id_class_and_kwargs() -> None:
     result = div("#theid", for_="hello", data_foo="<bar")
     assert str(result) == """<div id="theid" for="hello" data-foo="&lt;bar"></div>"""
