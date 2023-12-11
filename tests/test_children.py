@@ -2,7 +2,7 @@ from typing import assert_type
 
 import pytest
 
-from htpy import Element, div, html, img, input, li, my_custom_element, ul
+from htpy import Element, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 
 
 def test_void_element() -> None:
@@ -33,24 +33,36 @@ def test_tuple_children() -> None:
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
-def test_disallow_iter_list_list() -> None:
-    with pytest.raises(ValueError, match="list items cannot be of type list"):
-        ul[[[]]]
+def test_flatten_nested_children() -> None:
+    result = dl[
+        [
+            (dt["a"], dd["b"]),
+            (dt["c"], dd["d"]),
+        ]
+    ]
+    assert str(result) == """<dl><dt>a</dt><dd>b</dd><dt>c</dt><dd>d</dd></dl>"""
 
 
-def test_disallow_iter_list_tuple() -> None:
-    with pytest.raises(ValueError, match="list items cannot be of type tuple"):
-        ul[[()]]
+def test_flatten_very_nested_children() -> None:
+    # maybe not super useful but the nesting may be arbitrarily deep
+    result = div[[([["a"]],)], [([["b"]],)]]
+    assert str(result) == """<div>ab</div>"""
 
 
-def test_disallow_iter_tuple_list() -> None:
-    with pytest.raises(ValueError, match="tuple items cannot be of type list"):
-        ul[(([],),)]
+def test_flatten_nested_generators():
+    def cols():
+        yield "a"
+        yield "b"
+        yield "c"
 
+    def rows():
+        yield cols()
+        yield cols()
+        yield cols()
 
-def test_disallow_iter_tuple_tuple() -> None:
-    with pytest.raises(ValueError, match="tuple items cannot be of type tuple"):
-        ul[(((),),)]
+    result = div[rows()]
+
+    assert str(result) == """<div>abcabcabc</div>"""
 
 
 def test_generator_children() -> None:

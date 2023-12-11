@@ -1,7 +1,6 @@
 __version__ = "23.11.7"
 import functools
 import types
-from itertools import chain
 
 from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_name
 from ._safestring import SafeString, mark_safe, to_html  # noqa: F401
@@ -15,18 +14,12 @@ def _iter_children(x):
             yield to_html(x, quote=False)
 
 
-def _make_list(x):
-    if isinstance(x, types.GeneratorType):
-        return x
-
-    if isinstance(x, tuple | list):
-        for item in x:
-            if isinstance(item, list | tuple):
-                raise ValueError(
-                    f"{type(x).__name__} items cannot be of type {type(item).__name__}"
-                )
-        return x
-    return [x]
+def _flatten_children(children):
+    for x in children:
+        if isinstance(x, tuple | list | types.GeneratorType):
+            yield from _flatten_children(x)
+        else:
+            yield x
 
 
 class Element:
@@ -68,7 +61,7 @@ class Element:
             children = (children,)
 
         return self._evolve(
-            children=list(chain.from_iterable(_make_list(child) for child in children)),
+            children=list(_flatten_children(children)),
         )
 
     def _evolve(self, attrs=None, children=None, **kwargs):
