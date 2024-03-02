@@ -65,9 +65,7 @@ class BaseElement:
         )
 
     def _attrs_string(self):
-        result = " ".join(
-            k if v is True else f'{k}="{v}"' for k, v in generate_attrs(self._attrs)
-        )
+        result = " ".join(k if v is True else f'{k}="{v}"' for k, v in generate_attrs(self._attrs))
 
         if not result:
             return ""

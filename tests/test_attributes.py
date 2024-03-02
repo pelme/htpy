@@ -85,9 +85,7 @@ def test_id_class_only_classes() -> None:
 
 
 def test_id_class_wrong_order() -> None:
-    with pytest.raises(
-        ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"
-    ):
+    with pytest.raises(ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"):
         div(".myclass#myid")
 
 
@@ -97,9 +95,7 @@ def test_id_class_bad_format() -> None:
 
 
 def test_id_class_bad_type() -> None:
-    with pytest.raises(
-        ValueError, match="id/class strings must be str. got {'oops': 'yes'}"
-    ):
+    with pytest.raises(ValueError, match="id/class strings must be str. got {'oops': 'yes'}"):
         div({"oops": "yes"}, {})  # type: ignore
 
 

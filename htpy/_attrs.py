@@ -7,9 +7,7 @@ def class_names(value):
         return mark_safe(" ".join(to_html(x, quote=True) for x in value if x))
 
     if isinstance(value, dict):
-        return mark_safe(
-            " ".join(to_html(k, quote=True) for k, v in value.items() if v)
-        )
+        return mark_safe(" ".join(to_html(k, quote=True) for k, v in value.items() if v))
 
     return mark_safe(to_html(value, quote=True))
 

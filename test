@@ -2,20 +2,24 @@
 
 set -euo pipefail
 
+echo ---- ruff format ----
+ruff format --check .
+echo
+
+echo ---- ruff lint ----
+ruff .
+echo
+
 echo ---- pytest ----
 pytest
 echo
+
 echo ---- stubtest ----
 stubtest htpy
 echo
+
 echo ---- mypy ----
 mypy
-echo
-echo ---- black ----
-black --check .
-echo
-echo ---- ruff ----
-ruff .
 echo
 
 echo ==== SUCCESS ====
