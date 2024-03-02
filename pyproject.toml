@@ -24,6 +24,9 @@ optional-dependencies.dev = [
     "django-stubs",
     "jinja2",
 ]
+optional-dependencies.docs = [
+    "mkdocs-material==9.5.12",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/pelme/htpy"
