@@ -22,7 +22,7 @@ def _flatten_children(children):
             yield x
 
 
-class Element:
+class BaseElement:
     def __init__(self, name, attrs, children):
         self._name = name
         self._attrs = attrs
@@ -56,14 +56,6 @@ class Element:
             },
         )
 
-    def __getitem__(self, children):
-        if not isinstance(children, tuple):
-            children = (children,)
-
-        return self._evolve(
-            children=list(_flatten_children(children)),
-        )
-
     def _evolve(self, attrs=None, children=None, **kwargs):
         return self.__class__(
             name=self._name,
@@ -92,6 +84,16 @@ class Element:
 
     def __repr__(self):
         return f"<htpy element '{self}'>"
+
+
+class Element(BaseElement):
+    def __getitem__(self, children):
+        if not isinstance(children, tuple):
+            children = (children,)
+
+        return self._evolve(
+            children=list(_flatten_children(children)),
+        )
 
 
 class ElementWithDoctype(Element):
