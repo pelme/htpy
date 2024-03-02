@@ -20,7 +20,6 @@ optional-dependencies.dev = [
     "mypy",
     "pytest",
     "ruff",
-    "wheel",
     "django",
     "django-stubs",
     "jinja2",
