@@ -16,13 +16,14 @@ classifiers = [
 ]
 # Install with pip install .[dev]
 optional-dependencies.dev = [
-    "flit==3.9.0",
-    "mypy==1.5.1",
-    "pytest==7.4.3",
-    "ruff==0.1.3",
-    "wheel==0.41.2",
-    "django==4.2.7",
-    "jinja2==3.1.2",
+    "flit",
+    "mypy",
+    "pytest",
+    "ruff",
+    "wheel",
+    "django",
+    "django-stubs",
+    "jinja2",
 ]
 
 [project.urls]
@@ -38,7 +39,7 @@ name = "htpy"
 
 [tool.ruff]
 line-length = 100
-select = [
+lint.select = [
     "F",        # Pyflakes
     "E",        # pycodestyle error
     "W",        # pycodestyle warning
@@ -51,7 +52,7 @@ select = [
     "TID",      # flake8-tidy-imports
 ]
 
-[tool.ruff.flake8-tidy-imports]
+[tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
 
 [tool.mypy]

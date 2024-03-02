@@ -7,7 +7,7 @@ ruff format --check .
 echo
 
 echo ---- ruff lint ----
-ruff .
+ruff check .
 echo
 
 echo ---- pytest ----
