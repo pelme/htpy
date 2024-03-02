@@ -1,4 +1,4 @@
-from htpy import div, mark_safe
+from htpy import Markup, div
 
 
 def test_escape_children() -> None:
@@ -15,15 +15,15 @@ def test_escape_dict_attribute() -> None:
 
 
 def test_safe_children() -> None:
-    result = str(div[mark_safe("<hello></hello>")])
+    result = str(div[Markup("<hello></hello>")])
     assert result == "<div><hello></hello></div>"
 
 
 def test_safe_kwarg_attribute() -> None:
-    result = str(div(id=mark_safe("<hi>")))
+    result = str(div(id=Markup("<hi>")))
     assert result == '<div id="<hi>"></div>'
 
 
 def test_safe_dict_attribute() -> None:
-    result = str(div({mark_safe('<"'): mark_safe('"hello"')}))
+    result = str(div({Markup('<"'): Markup('"hello"')}))
     assert result == '<div <"=""hello""></div>'

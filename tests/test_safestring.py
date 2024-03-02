@@ -1,6 +1,6 @@
 from typing import assert_type
 
-from htpy import SafeString, div, mark_safe
+from htpy import Markup, div
 
 
 def test_escaping() -> None:
@@ -8,9 +8,9 @@ def test_escaping() -> None:
     assert result == "<div>&lt;foo&gt;&lt;/foo&gt;</div>"
 
 
-def test_mark_safe() -> None:
-    safe_string = mark_safe("<foo></foo>")
-    assert_type(safe_string, SafeString)
+def test_Markup() -> None:
+    safe_string = Markup("<foo></foo>")
+    assert_type(safe_string, Markup)
 
     result = str(div[safe_string])
 

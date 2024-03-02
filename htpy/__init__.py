@@ -3,7 +3,7 @@ import functools
 import types
 
 from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_name
-from ._safestring import SafeString, mark_safe, to_html  # noqa: F401
+from ._markup import Markup, to_html
 
 
 def _iter_children(x):
@@ -29,7 +29,7 @@ class BaseElement:
         self._children = children
 
     def __str__(self):
-        return SafeString("".join(str(x) for x in self))
+        return Markup("".join(str(x) for x in self))
 
     def __call__(self, *args, **kwargs):
         if len(args) == 0:

@@ -1,6 +1,6 @@
 from django.template import Context, Template
 from django.utils.html import escape as django__escape
-from django.utils.safestring import mark_safe as django__mark_safe
+from django.utils.safestring import SafeString as django__SafeString
 
 from htpy import li, ul
 
@@ -12,8 +12,8 @@ def test_template_injection(django_env: None) -> None:
     assert result == "<ul><li>I am safe!</li></ul>"
 
 
-def test_mark_safe(django_env: None) -> None:
-    result = ul[django__mark_safe("<li>hello</li>")]
+def test_Markup(django_env: None) -> None:
+    result = ul[django__SafeString("<li>hello</li>")]
     assert str(result) == "<ul><li>hello</li></ul>"
 
 
