@@ -24,6 +24,8 @@ def _flatten_children(children):
 
 class BaseElement:
     def __init__(self, name, attrs, children):
+        if not name.islower():
+            raise ValueError("html elements must have all lowercase names")
         self._name = name
         self._attrs = attrs
         self._children = children
