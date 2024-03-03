@@ -12,7 +12,7 @@ def test_template_injection(django_env: None) -> None:
     assert result == "<ul><li>I am safe!</li></ul>"
 
 
-def test_Markup(django_env: None) -> None:
+def test_SafeString(django_env: None) -> None:
     result = ul[django__SafeString("<li>hello</li>")]
     assert str(result) == "<ul><li>hello</li></ul>"
 

@@ -2,8 +2,10 @@ __version__ = "24.3"
 import functools
 import types
 
+from markupsafe import Markup as _Markup
+
 from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_name
-from ._markup import Markup, to_html
+from ._to_html import to_html
 
 
 def _iter_children(x):
@@ -31,7 +33,7 @@ class BaseElement:
         self._children = children
 
     def __str__(self):
-        return Markup("".join(str(x) for x in self))
+        return _Markup("".join(str(x) for x in self))
 
     def __call__(self, *args, **kwargs):
         if len(args) == 0:

@@ -1,4 +1,6 @@
-from htpy import Markup, div
+from markupsafe import Markup
+
+from htpy import div
 
 
 def test_escape_children() -> None:

@@ -1,6 +1,7 @@
+import pytest
+
 import htpy
 from htpy import Element
-import pytest
 
 
 def test_instance_cache() -> None:

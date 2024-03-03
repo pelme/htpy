@@ -4,6 +4,7 @@ description = "HTML in Python"
 requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
+    "markupsafe>=2.0.0"
 ]
 readme = "README.md"
 authors = [

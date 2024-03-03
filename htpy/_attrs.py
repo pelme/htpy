@@ -1,4 +1,6 @@
-from ._markup import Markup, to_html
+from markupsafe import Markup
+
+from ._to_html import to_html
 
 
 # Inspired by https://www.npmjs.com/package/classnames
