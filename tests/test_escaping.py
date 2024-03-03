@@ -5,15 +5,15 @@ from htpy import div
 
 def test_escape_children() -> None:
     result = str(div['>"'])
-    assert result == '<div>&gt;"</div>'
+    assert result == "<div>&gt;&#34;</div>"
 
 
 def test_escape_kwarg_attribute() -> None:
-    assert str(div(id='"hello"')) == '<div id="&quot;hello&quot;"></div>'
+    assert str(div(id='"hello"')) == '<div id="&#34;hello&#34;"></div>'
 
 
 def test_escape_dict_attribute() -> None:
-    assert str(div({'<"': '"hello"'})) == '<div &lt;&quot;="&quot;hello&quot;"></div>'
+    assert str(div({'<"': '"hello"'})) == '<div &lt;&#34;="&#34;hello&#34;"></div>'
 
 
 def test_safe_children() -> None:

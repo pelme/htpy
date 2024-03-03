@@ -24,7 +24,8 @@ def test_class_dict() -> None:
 
 def test_dict_attributes() -> None:
     result = div({"@click": 'hi = "hello"'})
-    assert str(result) == """<div @click="hi = &quot;hello&quot;"></div>"""
+
+    assert str(result) == """<div @click="hi = &#34;hello&#34;"></div>"""
 
 
 def test_underscore() -> None:

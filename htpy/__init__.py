@@ -4,9 +4,9 @@ import functools
 import types
 
 from markupsafe import Markup as _Markup
+from markupsafe import escape as _escape
 
 from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_name
-from ._to_html import to_html
 
 
 def _iter_children(x):
@@ -14,7 +14,7 @@ def _iter_children(x):
         yield from x
     else:
         if x is not False and x is not None:
-            yield to_html(x, quote=False)
+            yield _escape(x)
 
 
 def _flatten_children(children):

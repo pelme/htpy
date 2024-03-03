@@ -1,17 +1,15 @@
-from markupsafe import Markup
-
-from ._to_html import to_html
+from markupsafe import Markup, escape
 
 
 # Inspired by https://www.npmjs.com/package/classnames
 def class_names(value):
     if isinstance(value, list | tuple | set):
-        return Markup(" ".join(to_html(x, quote=True) for x in value if x))
+        return Markup(" ").join(x for x in value if x)
 
     if isinstance(value, dict):
-        return Markup(" ".join(to_html(k, quote=True) for k, v in value.items() if v))
+        return Markup(" ").join(k for k, v in value.items() if v)
 
-    return Markup(to_html(value, quote=True))
+    return escape(value)
 
 
 def id_classnames_from_css_str(x):
@@ -51,12 +49,13 @@ def kwarg_attribute_name(name):
 def generate_attrs(raw_attrs):
     for key, value in raw_attrs.items():
         if key == "class":
-            value = class_names(value)
+            yield ("class", class_names(value))
 
-        if value is False:
+        elif value is False:
             continue
 
-        elif value is not True:
-            value = to_html(value, quote=True)
+        elif value is True:
+            yield escape(key), True
 
-        yield to_html(key, quote=True), value
+        else:
+            yield escape(key), escape(value)
