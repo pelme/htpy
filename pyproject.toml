@@ -64,7 +64,9 @@ packages = ["htpy", "tests"]
 exclude = ["examples"]
 
 
+# Avoid errors in htpy code since it is not type annotated
 [[tool.mypy.overrides]]
 module = "htpy.*"
 disallow_untyped_defs = false
 disallow_untyped_calls = false
+disable_error_code = "var-annotated"
