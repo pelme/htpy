@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+        "mypy-type-checker.args": [
+            "--config-file=${workspaceFolder}/pyproject.toml"
+        ]
+    }
+}

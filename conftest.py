@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture(scope="session")
-def django_env():
+def django_env() -> None:
     import django
     from django.conf import settings
 

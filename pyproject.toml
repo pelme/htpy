@@ -60,4 +60,11 @@ ban-relative-imports = "parents"
 
 [tool.mypy]
 strict = true
-packages = "tests"
+packages = ["htpy", "tests"]
+exclude = ["examples"]
+
+
+[[tool.mypy.overrides]]
+module = "htpy.*"
+disallow_untyped_defs = false
+disallow_untyped_calls = false
