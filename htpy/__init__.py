@@ -19,7 +19,7 @@ def _iter_children(x):
 
 def _flatten_children(children):
     for x in children:
-        if isinstance(x, tuple | list | types.GeneratorType):
+        if x.__class__ in (tuple, list, types.GeneratorType):
             yield from _flatten_children(x)
         else:
             yield x
