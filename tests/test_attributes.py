@@ -121,3 +121,8 @@ def test_class_priority() -> None:
 def test_attribute_priority() -> None:
     result = div({"foo": "a"}, foo="b")
     assert str(result) == """<div foo="b"></div>"""
+
+
+def test_mixed_str_dict_class_attribute() -> None:
+    result = div(class_=("class-1", "class-2", {"class-3": False, "class-4": True}))
+    assert str(result) == """<div class="class-1 class-2 class-4"></div>"""
