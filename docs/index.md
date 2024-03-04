@@ -18,7 +18,7 @@ from a Python backend.
 We have been increasing static type coverage and seen great effects of static
 typing. But when it comes to HTML produced by templates, after the template
 context is created, static type checkers hit a wall. This looses a lot of the
-value of using the a type checker since a lot of the code that use domain
+value of using a type checker since a lot of the code that use domain
 specific objects cannot be checked.
 
 ### Debugging
@@ -37,15 +37,15 @@ templates.
 ### Extending
 Extending a template system with custom tags and filters requires learning about
 the template system parser and tokenizer, rather than just writing plain Python
-functions. Adding a even a trivial filter requires putting the function in a
+functions. Adding even a trivial filter requires putting the function in a
 specific location and registering the filter with the template library. Filters
 and tags with htpy are just plain Python functions.
 
 ### Creating components/partials
 Creating components/partials is typically done with includes or inclusion tags
-in a template language. With htpy, includes/components can be plain Python
+in a template language. With htpy, components/partials can be plain Python
 variables or functions. Making it easy to create partials and components makes
-makes it easier to maintain a library of components/pages.
+it easier to maintain a library of components/partials.
 
 ### Familiar concepts
 React/JSX has popularized this idea the last couple of years and the concepts for

@@ -30,7 +30,7 @@ It is possible to pass a string directly:
 ```
 
 Strings are automatically escaped to avoid [XSS
-vulnerabilites](https://owasp.org/www-community/attacks/xss/). It is convenient
+vulnerabilities](https://owasp.org/www-community/attacks/xss/). It is convenient
 and safe to directly insert variable data via f-strings:
 
 ```pycon
@@ -62,9 +62,9 @@ and safe to directly insert variable data via f-strings:
 <div><b>Enter a valid email address.</b></div>
 ```
 
-### Loops/iterating over children
+### Loops / iterating over children
 
-You can pass an list, tuple or generator to generate multiple children:
+You can pass a list, tuple or generator to generate multiple children:
 
 ```pycon title="Iterate over a generator"
 >>> from htpy import ul, li
@@ -165,7 +165,7 @@ that looks like a CSS selector can be used to quickly define id and classes:
 
 ### Attributes as dict
 
-Attributes can also be specified by a `dict`. This is useful when using
+Attributes can also be specified as a `dict`. This is useful when using
 attributes that are reserved Python keywords (like `for` or `class`), when the
 attribute name contains a dash (`-`) or when you want to define attributes
 dynamically.
@@ -184,8 +184,8 @@ dynamically.
 
 ### Boolean attributes
 In HTML, boolean attributes such as `disabled` are considered "true" when they
-exists. Specifying an attribute as `True` will make it appear (without a value).
-`False` will make it hidden. This is useful and brings to semantics of `bool` to
+exist. Specifying an attribute as `True` will make it appear (without a value).
+`False` will make it hidden. This is useful and brings the semantics of `bool` to
 HTML.
 
 ```pycon title="True bool attribute"
