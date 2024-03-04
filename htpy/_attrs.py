@@ -4,12 +4,18 @@ from markupsafe import Markup, escape
 # Inspired by https://www.npmjs.com/package/classnames
 def class_names(value):
     if isinstance(value, list | tuple | set):
-        return Markup(" ").join(x for x in value if x)
+        return Markup(" ").join(
+            _dict_class_names(x) if isinstance(x, dict) else x for x in value if x
+        )
 
     if isinstance(value, dict):
-        return Markup(" ").join(k for k, v in value.items() if v)
+        return _dict_class_names(value)
 
     return escape(value)
+
+
+def _dict_class_names(value):
+    return Markup(" ").join(k for k, v in value.items() if v)
 
 
 def id_classnames_from_css_str(x):
