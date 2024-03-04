@@ -24,6 +24,5 @@ def test_explicit_escape(django_env: None) -> None:
 
 
 def test_errorlist(django_env: None) -> None:
-    error_list = ErrorList(["my error"])
-    result = div[error_list]
+    result = div[ErrorList(["my error"])]
     assert str(result) == """<div><ul class="errorlist"><li>my error</li></ul></div>"""
