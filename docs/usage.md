@@ -1,18 +1,16 @@
 
 # Usage
 
-## Elements
-
-Elements are imported directly from the `htpy` module as their name:
+Elements are imported directly from the `htpy` module as their name. HTML attributes are specified by parenthesis (`()` / "call"). Children are specified using square brackets (`[]` / "getitem").
 
 ```pycon
 >>> from htpy import div
->> print(div)
-<div></div>
+>>> print(div(id="hi")["Hello!"])
+<div id="hi">Hello!</div>
 ```
 
-Children are specified using the `[]` "getitem" syntax. Children can
-be strings, markup, other elements or lists/iterators.
+## Elements
+Children can be strings, markup, other elements or lists/iterators.
 
 Elements can be arbitrarily nested:
 ```pycon title="Nested elements"
@@ -20,6 +18,7 @@ Elements can be arbitrarily nested:
 >>> print(section[article[p["Lorem ipsum"]]])
 <section><article><p>Lorem ipsum</p></article></section>
 ```
+
 ### Text/strings
 
 It is possible to pass a string directly:
