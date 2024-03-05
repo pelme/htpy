@@ -2,7 +2,6 @@ site_name: htpy - HTML in Python
 repo_url: https://github.com/pelme/htpy
 theme:
   name: material
-  logo: assets/htpy.webp
   features:
     - content.code.copy
   palette:

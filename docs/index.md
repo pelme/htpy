@@ -1,4 +1,4 @@
-<img src="assets/htpy.webp" style="max-width: 200px; margin: auto; display: block;">
+<img src="assets/htpy.webp" style="max-width: 300px; margin: 0 auto 60px auto; display: block;">
 
 # htpy - HTML in Python
 
