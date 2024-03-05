@@ -1,6 +1,8 @@
-# Welcome!
+<img src="assets/htpy.webp" style="max-width: 200px; margin: auto; display: block;">
 
-`htpy` is a small library that helps you write HTML directly in Python, without a template language:
+# htpy - HTML in Python
+
+htpy is a small library that helps you write HTML directly in Python, without a template language:
 
 ```pycon
 >>> from htpy import html, head, title, body, h1
