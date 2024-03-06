@@ -50,6 +50,4 @@ variables or functions. Making it easy to create partials and components makes
 it easier to maintain a library of components/partials.
 
 ### Familiar concepts
-React/JSX has popularized this idea the last couple of years and the concepts for
-loops and conditional rendering are the same. Anyone with React experience
-coding in React should feel at home.
+React/JSX has popularized the idea of using a programming language rather than a separate template language. The concept of building a tree of components and composing them with regular modules/classes/functions should be familiar to anyone with React/JSX experience.

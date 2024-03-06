@@ -139,6 +139,16 @@ In Python, `class` and `for` cannot be used as keyword arguments. Instead, they 
 <label for="myfield"></label>
 ```
 
+Attributes that contains dashes `-` can be specified using underscores:
+```pycon
+>>> from htpy import form
+>>> print(form(hx_post="/foo"))
+<form hx-post="/foo"></form>
+```
+
+If you need attributes
+
+
 ### id/class shorthand
 
 Defining `id` and `class` attributes is common when writing HTML. A string shorthand
@@ -199,6 +209,22 @@ HTML.
 <button></button>
 ```
 
+### Conditionally mixing CSS classes
+
+To make it easier to mix CSS classes, the `class` attribute
+accepts a list of class names or a dict. Falsey values will be ignored.
+
+```pycon
+>>> from htpy import button
+>>> is_primary = True
+>>> print(button(class_=["btn", {"btn-primary": is_primary}]))
+<button class="btn btn-primary"></button>
+>>> is_primary = False
+>>> print(button(class_=["btn", {"btn-primary": is_primary}]))
+<button class="btn"></button>
+>>>
+```
+
 ### Combining modes
 
 Attributes via id/class shorthand, keyword arguments and dictionary can be combined:
@@ -208,3 +234,4 @@ Attributes via id/class shorthand, keyword arguments and dictionary can be combi
 >>> print(label("#myid.foo.bar", {'for': "somefield"}, name="myname",))
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
 ```
+
