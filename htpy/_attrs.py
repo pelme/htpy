@@ -5,7 +5,7 @@ from markupsafe import Markup, escape
 def class_names(value):
     if isinstance(value, list | tuple | set):
         return Markup(" ").join(
-            _dict_class_names(x) if isinstance(x, dict) else x for x in value if x
+            result for x in value if (result := _dict_class_names(x) if isinstance(x, dict) else x)
         )
 
     if isinstance(value, dict):
