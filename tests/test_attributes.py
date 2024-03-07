@@ -64,6 +64,16 @@ def test_boolean_attribute_true() -> None:
     assert str(result) == "<button disabled></button>"
 
 
+def test_kwarg_attribute_none() -> None:
+    result = div(foo=None)
+    assert str(result) == "<div></div>"
+
+
+def test_dict_attribute_none() -> None:
+    result = div({"foo": None})
+    assert str(result) == "<div></div>"
+
+
 def test_boolean_attribute_false() -> None:
     result = button(disabled=False)
     assert str(result) == "<button></button>"

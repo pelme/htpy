@@ -57,7 +57,7 @@ def generate_attrs(raw_attrs):
         if key == "class":
             yield ("class", class_names(value))
 
-        elif value is False:
+        elif value in (False, None):
             continue
 
         elif value is True:
