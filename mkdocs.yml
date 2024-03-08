@@ -6,6 +6,10 @@ theme:
     - content.code.copy
   palette:
     scheme: slate
+nav:
+  - index.md
+  - usage.md
+  - django.md
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
