@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .components import index_content
+from htpy import h1
 
 
 def index(request):
-    return render(request, "base.html", {"content": index_content()})
+    return render(request, "base.html", {"content": h1["Welcome to my site!"]})

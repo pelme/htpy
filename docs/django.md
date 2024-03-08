@@ -28,22 +28,14 @@ htpy elements are marked as "safe" and can be injected directly into Django temp
 </html>
 ```
 
-```py title="components.py"
-from htpy import div
-
-
-def index_content():
-    return div["Welcome to my site!"]
-```
-
 ```py title="views.py"
 from django.shortcuts import render
 
-from .components import index_content
+from htpy import h1
 
 
 def index(request):
-    return render(request, "base.html", {"content": index_content()})
+    return render(request, "base.html", {"content": h1["Welcome to my site!"]})
 
 ```
 
