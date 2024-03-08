@@ -2,7 +2,8 @@
 
 # htpy - HTML in Python
 
-htpy is a small library that helps you write HTML directly in Python, without a template language:
+htpy is a library that makes writing HTML in Python fun and efficient,
+without the need for a template language:
 
 ```pycon
 >>> from htpy import html, head, title, body, h1
