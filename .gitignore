@@ -3,3 +3,4 @@ __pycache__
 /dist
 /site
 .env
+*.sqlite3
