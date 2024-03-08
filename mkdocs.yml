@@ -9,8 +9,10 @@ theme:
 nav:
   - index.md
   - usage.md
+  - common-patterns.md
   - django.md
 markdown_extensions:
+  - admonition
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
