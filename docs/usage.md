@@ -106,6 +106,14 @@ library. markupsafe is a dependency of htpy and is automatically installed:
 <div><foo></foo></div>
 ```
 
+If you are generate [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, use `Markup`:
+```pycon title="Injecting generated markdown"
+>>> from markdown import markdown
+>>> from markupsafe import Markup
+>>> from htpy import div
+>>> print(div[Markup(markdown('# Hi'))])
+<div><h1>Hi</h1></div>
+```
 
 ## Attributes
 
