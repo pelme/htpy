@@ -3,7 +3,7 @@ from markupsafe import Markup
 from htpy import button, div, h5, span
 
 
-def bs_modal(*, title, body=None, footer=None):
+def bootstrap_modal(*, title, body=None, footer=None):
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     from htpy import p
 
     print(
-        bs_modal(
+        bootstrap_modal(
             title="Modal title",
             body=p["Modal body text goes here."],
             footer=[

@@ -77,7 +77,7 @@ def about():
 
 ```
 
-## Creating wrappers for UI components
+## UI components
 
 Creating higher level wrappers for common UI components can be a good idea to reduce repitition.
 
@@ -90,7 +90,7 @@ from markupsafe import Markup
 from htpy import button, div, h5, span
 
 
-def bs_modal(*, title, body=None, footer=None):
+def bootstrap_modal(*, title, body=None, footer=None):
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[
