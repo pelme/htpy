@@ -54,7 +54,6 @@ lint.select = [
     "UP",       # pyupgrade
     "TID",      # flake8-tidy-imports
 ]
-exclude = ["examples", "scripts"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
