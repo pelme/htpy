@@ -35,7 +35,7 @@ def greeting(request):
 ```py title="components.py"
 
 def greeting(*, name):
-    return html[body["hi {name}!"]]
+    return html[body[f"hi {name}!"]]
 ```
 
 ## Creating a base layout
