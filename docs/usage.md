@@ -115,6 +115,15 @@ If you are generate [Markdown](https://pypi.org/project/Markdown/) and want to i
 <div><h1>Hi</h1></div>
 ```
 
+### HTML Doctype
+The [HTML doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) is automatically prepended to the `<html>` tag:
+
+```pycon
+>>> from htpy import html
+>>> print(html)
+<!doctype html><html></html>
+```
+
 ## Attributes
 
 HTML attributes are defined by calling the element. They can be specified in a couple of different ways.
