@@ -54,6 +54,7 @@ lint.select = [
     "UP",       # pyupgrade
     "TID",      # flake8-tidy-imports
 ]
+exclude = ["examples", "scripts"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
@@ -61,7 +62,7 @@ ban-relative-imports = "parents"
 [tool.mypy]
 strict = true
 packages = ["htpy", "tests"]
-exclude = ["examples"]
+exclude = ["examples", "scripts"]
 
 
 # Avoid errors in htpy code since it is not type annotated
