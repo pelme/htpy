@@ -30,12 +30,12 @@ hides the real culprit of a problem. Inspecting/debugging the template context
 is not possible without special tooling or debuggers. Debugging code written
 with htpy works with any Python debugger and gives usable stack traces.
 
-### Tooling
-We are big fans of black to format our code. There are formatters that
-formats templates but we have found them lacking compared to tools like black.
-
 Many editors provide "goto definition". These often does not work reliably with
 templates.
+
+### Tooling
+Black is a very popular code formatter for Python. There are formatters that
+formats templates but we have found them lacking compared to tools like Black.
 
 ### Extending
 Extending a template system with custom tags and filters requires learning about
@@ -48,7 +48,10 @@ and tags with htpy are just plain Python functions.
 Creating components/partials is typically done with includes or inclusion tags
 in a template language. With htpy, components/partials can be plain Python
 variables or functions. Making it easy to create partials and components makes
-it easier to maintain a library of components/partials.
+it easier to maintain a library of components/partials. See [UI components](common-patterns.md#ui-components) for more information.
 
 ### Familiar concepts
-React/JSX has popularized the idea of using a programming language rather than a separate template language. The concept of building a tree of components and composing them with regular modules/classes/functions should be familiar to anyone with React/JSX experience.
+React/JSX has popularized the idea of using a programming language rather than a
+separate template language. The concept of building a tree of components and
+composing them with regular modules/classes/functions should be familiar to
+anyone with React/JSX experience.
