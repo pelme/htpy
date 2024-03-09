@@ -6,6 +6,8 @@ theme:
     - content.code.copy
   palette:
     scheme: slate
+  icon:
+    logo: material/code-tags
 nav:
   - index.md
   - usage.md
