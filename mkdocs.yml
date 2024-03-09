@@ -11,6 +11,7 @@ nav:
   - usage.md
   - common-patterns.md
   - django.md
+  - faq.md
 markdown_extensions:
   - admonition
   - pymdownx.highlight:
