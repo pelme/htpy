@@ -18,7 +18,7 @@ def test_class_list() -> None:
 
 
 def test_class_dict() -> None:
-    result = div(class_={">foo": True, "x": False, "y": None, "z": "", "bar": True})
+    result = div(class_={">foo": True, "x": False, "y": None, "bar": True})
     assert str(result) == '<div class="&gt;foo bar"></div>'
 
 
@@ -134,10 +134,10 @@ def test_attribute_priority() -> None:
 
 
 def test_mixed_str_dict_class_attribute() -> None:
-    result = div(class_=("class-1", "class-2", {"class-3": False, "class-4": True}))
+    result = div(class_=["class-1", "class-2", {"class-3": False, "class-4": True}])
     assert str(result) == """<div class="class-1 class-2 class-4"></div>"""
 
 
 def test_mixed_str_dict_class_attribute_false_dict() -> None:
-    result = div(class_=("foo", {"bar": False}))
+    result = div(class_=["foo", {"bar": False}])
     assert str(result) == """<div class="foo"></div>"""

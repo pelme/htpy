@@ -27,8 +27,6 @@ def _flatten_children(children):
 
 class BaseElement:
     def __init__(self, name, attrs, children):
-        if not name.islower():
-            raise ValueError("html elements must have all lowercase names")
         self._name = name
         self._attrs = attrs
         self._children = children
@@ -144,6 +142,10 @@ wbr = VoidElement("wbr", {}, [])
 
 @functools.lru_cache(maxsize=300)
 def __getattr__(name):
+    if not name.islower():
+        raise AttributeError(
+            f"{name} is not a valid element name. html elements must have all lowercase names"
+        )
     return Element(name.replace("_", "-"), {}, [])
 
 

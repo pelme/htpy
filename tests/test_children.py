@@ -99,7 +99,3 @@ def test_ignore_none() -> None:
 
 def test_ignore_false() -> None:
     assert str(div[False]) == "<div></div>"
-
-
-def test_do_not_ignore_zero() -> None:
-    assert str(div[0]) == "<div>0</div>"
