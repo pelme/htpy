@@ -2,6 +2,6 @@
 
 set -euo pipefail
 
-./test
+scripts/test
 
 flit publish
