@@ -1,7 +1,6 @@
 import pytest
 
 import htpy
-from htpy import Element
 
 
 def test_instance_cache() -> None:
@@ -12,5 +11,5 @@ def test_instance_cache() -> None:
 
 
 def test_invalid_element_name() -> None:
-    with pytest.raises(ValueError, match="html elements must have all lowercase names"):
-        Element("Foo", {}, [])
+    with pytest.raises(AttributeError, match="html elements must have all lowercase names"):
+        htpy.Foo  # noqa: B018
