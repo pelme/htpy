@@ -1,4 +1,4 @@
-from collections.abc import Generator, Iterator
+from collections.abc import Generator, Iterator, Sequence
 from typing import Protocol, TypeAlias, overload
 
 class _HasHtml(Protocol):
@@ -6,21 +6,21 @@ class _HasHtml(Protocol):
 
 _ClassNamesDict: TypeAlias = dict[str, bool | None]
 _ClassNames: TypeAlias = list[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Children: TypeAlias = (
+Node: TypeAlias = (
     None
     | bool
     | str
     | BaseElement
     | _HasHtml
-    | list["Children"]
-    | tuple["Children", ...]
-    | Generator["Children", None, None]
+    | Sequence["Node"]
+    | tuple["Node", ...]
+    | Generator["Node", None, None]
 )
 
 Attribute: TypeAlias = None | bool | str | _ClassNames
 
 class BaseElement:
-    def __init__(self, name: str, attrs: dict[str, Attribute], children: list[Children]): ...
+    def __init__(self, name: str, attrs: dict[str, Attribute], children: Node): ...
     @overload
     def __call__(
         self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
@@ -34,13 +34,13 @@ class BaseElement:
     def __iter__(self) -> Iterator[str]: ...
 
 class Element(BaseElement):
-    def __getitem__(self, children: Children) -> Element: ...
+    def __getitem__(self, children: Node) -> Element: ...
 
 class VoidElement(BaseElement): ...
 
 class ElementWithDoctype(Element):
     def __init__(
-        self, name: str, attrs: dict[str, Attribute], children: list[Children], *, doctype: str
+        self, name: str, attrs: dict[str, Attribute], children: list[Node], *, doctype: str
     ): ...
 
 def __getattr__(name: str) -> Element: ...
