@@ -4,8 +4,12 @@ from typing import Protocol, TypeAlias, overload
 class _HasHtml(Protocol):
     def __html__(self) -> str: ...
 
-_ClassNamesDict: TypeAlias = dict[str, bool | None]
-_ClassNames: TypeAlias = list[str | None | bool | _ClassNamesDict] | _ClassNamesDict
+_ClassNamesDict: TypeAlias = dict[str, bool]
+_ClassNames: TypeAlias = (
+    list[str | None | bool | _ClassNamesDict]
+    | tuple[str | None | bool | _ClassNamesDict, ...]
+    | _ClassNamesDict
+)
 Node: TypeAlias = (
     None
     | str
