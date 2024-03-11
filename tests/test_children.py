@@ -3,25 +3,12 @@ from typing import assert_type
 
 import pytest
 
-from htpy import (
-    RegularElement,
-    VoidElement,
-    dd,
-    div,
-    dl,
-    dt,
-    html,
-    img,
-    input,
-    li,
-    my_custom_element,
-    ul,
-)
+from htpy import Element, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 
 
 def test_void_element() -> None:
     element = input(name="foo")
-    assert_type(element, VoidElement)
+    assert_type(element, Element)
 
     result = str(element)
     assert str(result) == '<input name="foo">'
@@ -90,7 +77,7 @@ def test_html_tag_with_doctype() -> None:
 
 
 def test_void_element_children() -> None:
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError, match="img elements cannot have children"):
         img["hey"]  # type: ignore[index]
 
 
@@ -101,8 +88,8 @@ def test_call_without_args() -> None:
 
 def test_custom_element() -> None:
     el = my_custom_element()
-    assert_type(el, RegularElement)
-    assert isinstance(el, RegularElement)
+    assert_type(el, Element)
+    assert isinstance(el, Element)
     assert str(el) == "<my-custom-element></my-custom-element>"
 
 

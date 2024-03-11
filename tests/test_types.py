@@ -1,14 +1,13 @@
 from collections.abc import Generator
 from typing import assert_type
 
-from htpy import Element, RegularElement, VoidElement, div, img, li, ul
+from htpy import Element, div, li, ul
 
 
 def test_element_type() -> None:
-    assert_type(img, VoidElement)
-    assert_type(div, RegularElement)
-    assert_type(div(), RegularElement)
-    assert_type(div()["a"], RegularElement)
+    assert_type(div, Element)
+    assert_type(div(), Element)
+    assert_type(div()["a"], Element)
 
 
 def test_html_safestring_interface() -> None:
@@ -18,7 +17,7 @@ def test_html_safestring_interface() -> None:
 
 class Test_Children:
     def test_children_as_element(self) -> None:
-        child: RegularElement = li
+        child: Element = li
         ul[child]
 
     def test_children_as_list_element(self) -> None:

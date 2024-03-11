@@ -25,7 +25,7 @@ def _flatten_children(children):
             yield x
 
 
-class Element:
+class BaseElement:
     def __init__(self, name, attrs, children):
         self._name = name
         self._attrs = attrs
@@ -87,7 +87,7 @@ class Element:
         return f"<htpy element '{self}'>"
 
 
-class RegularElement(Element):
+class Element(BaseElement):
     def __getitem__(self, children):
         if not isinstance(children, tuple):
             children = (children,)
@@ -97,7 +97,7 @@ class RegularElement(Element):
         )
 
 
-class DoctypeElement(RegularElement):
+class ElementWithDoctype(Element):
     def __init__(self, *args, doctype, **kwargs):
         super().__init__(*args, **kwargs)
         self._doctype = doctype
@@ -121,7 +121,7 @@ class VoidElement(Element):
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
-html = DoctypeElement("html", {}, [], doctype="<!doctype html>")
+html = ElementWithDoctype("html", {}, [], doctype="<!doctype html>")
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 area = VoidElement("area", {}, [])
@@ -146,7 +146,7 @@ def __getattr__(name):
         raise AttributeError(
             f"{name} is not a valid element name. html elements must have all lowercase names"
         )
-    return RegularElement(name.replace("_", "-"), {}, [])
+    return Element(name.replace("_", "-"), {}, [])
 
 
 __all__ = []
