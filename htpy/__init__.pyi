@@ -1,5 +1,5 @@
 from collections.abc import Generator, Iterator, Sequence
-from typing import Protocol, TypeAlias, overload
+from typing import Protocol, Self, TypeAlias, overload
 
 class _HasHtml(Protocol):
     def __html__(self) -> str: ...
@@ -13,7 +13,7 @@ _ClassNames: TypeAlias = (
 Node: TypeAlias = (
     None
     | str
-    | BaseElement
+    | Element
     | _HasHtml
     | Sequence["Node"]
     | tuple["Node", ...]
@@ -22,34 +22,32 @@ Node: TypeAlias = (
 
 Attribute: TypeAlias = None | bool | str | _ClassNames
 
-class BaseElement:
+class Element:
     def __init__(self, name: str, attrs: dict[str, Attribute], children: Node): ...
     @overload
-    def __call__(
-        self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
-    ) -> Element: ...
+    def __call__(self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
     @overload
-    def __call__(self, id_class: str = "", **kwargs: Attribute) -> Element: ...
+    def __call__(self, id_class: str = "", **kwargs: Attribute) -> Self: ...
     @overload
-    def __call__(self, attrs: dict[str, Attribute], **kwargs: Attribute) -> Element: ...
+    def __call__(self, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
     @overload
-    def __call__(self, **kwargs: Attribute) -> Element: ...
+    def __call__(self, **kwargs: Attribute) -> Self: ...
     def __iter__(self) -> Iterator[str]: ...
 
-class Element(BaseElement):
-    def __getitem__(self, children: Node) -> Element: ...
+class RegularElement(Element):
+    def __getitem__(self, children: Node) -> Self: ...
 
-class VoidElement(BaseElement): ...
+class VoidElement(Element): ...
 
-class ElementWithDoctype(Element):
+class DoctypeElement(RegularElement):
     def __init__(
         self, name: str, attrs: dict[str, Attribute], children: list[Node], *, doctype: str
     ): ...
 
-def __getattr__(name: str) -> Element: ...
+def __getattr__(name: str) -> RegularElement: ...
 
 # This list should contain all non-deprecated HTML elements
-html: ElementWithDoctype
+html: DoctypeElement
 
 area: VoidElement
 base: VoidElement
@@ -69,102 +67,102 @@ wbr: VoidElement
 # https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 # Located via the inspector with:
 # Array.from($0.querySelectorAll('li')).filter(x=>!x.querySelector('.icon-deprecated')).map(x => x.querySelector('code').textContent) # noqa: E501
-a: Element
-abbr: Element
-abc: Element
-address: Element
-article: Element
-aside: Element
-audio: Element
-b: Element
-bdi: Element
-bdo: Element
-blockquote: Element
-body: Element
-button: Element
-canvas: Element
-caption: Element
-cite: Element
-code: Element
-colgroup: Element
-data: Element
-datalist: Element
-dd: Element
-del_: Element
-details: Element
-dfn: Element
-dialog: Element
-div: Element
-dl: Element
-dt: Element
-em: Element
-fieldset: Element
-figcaption: Element
-figure: Element
-footer: Element
-form: Element
-h1: Element
-h2: Element
-h3: Element
-h4: Element
-h5: Element
-h6: Element
-head: Element
-header: Element
-hgroup: Element
-i: Element
-iframe: Element
-ins: Element
-kbd: Element
-label: Element
-legend: Element
-li: Element
-main: Element
-map: Element
-mark: Element
-menu: Element
-meter: Element
-nav: Element
-noscript: Element
-object: Element
-ol: Element
-optgroup: Element
-option: Element
-output: Element
-p: Element
-picture: Element
-portal: Element
-pre: Element
-progress: Element
-q: Element
-rp: Element
-rt: Element
-ruby: Element
-s: Element
-samp: Element
-script: Element
-search: Element
-section: Element
-select: Element
-slot: Element
-small: Element
-span: Element
-strong: Element
-style: Element
-sub: Element
-summary: Element
-sup: Element
-table: Element
-tbody: Element
-td: Element
-template: Element
-textarea: Element
-tfoot: Element
-th: Element
-thead: Element
-time: Element
-title: Element
-tr: Element
-u: Element
-ul: Element
-var: Element
+a: RegularElement
+abbr: RegularElement
+abc: RegularElement
+address: RegularElement
+article: RegularElement
+aside: RegularElement
+audio: RegularElement
+b: RegularElement
+bdi: RegularElement
+bdo: RegularElement
+blockquote: RegularElement
+body: RegularElement
+button: RegularElement
+canvas: RegularElement
+caption: RegularElement
+cite: RegularElement
+code: RegularElement
+colgroup: RegularElement
+data: RegularElement
+datalist: RegularElement
+dd: RegularElement
+del_: RegularElement
+details: RegularElement
+dfn: RegularElement
+dialog: RegularElement
+div: RegularElement
+dl: RegularElement
+dt: RegularElement
+em: RegularElement
+fieldset: RegularElement
+figcaption: RegularElement
+figure: RegularElement
+footer: RegularElement
+form: RegularElement
+h1: RegularElement
+h2: RegularElement
+h3: RegularElement
+h4: RegularElement
+h5: RegularElement
+h6: RegularElement
+head: RegularElement
+header: RegularElement
+hgroup: RegularElement
+i: RegularElement
+iframe: RegularElement
+ins: RegularElement
+kbd: RegularElement
+label: RegularElement
+legend: RegularElement
+li: RegularElement
+main: RegularElement
+map: RegularElement
+mark: RegularElement
+menu: RegularElement
+meter: RegularElement
+nav: RegularElement
+noscript: RegularElement
+object: RegularElement
+ol: RegularElement
+optgroup: RegularElement
+option: RegularElement
+output: RegularElement
+p: RegularElement
+picture: RegularElement
+portal: RegularElement
+pre: RegularElement
+progress: RegularElement
+q: RegularElement
+rp: RegularElement
+rt: RegularElement
+ruby: RegularElement
+s: RegularElement
+samp: RegularElement
+script: RegularElement
+search: RegularElement
+section: RegularElement
+select: RegularElement
+slot: RegularElement
+small: RegularElement
+span: RegularElement
+strong: RegularElement
+style: RegularElement
+sub: RegularElement
+summary: RegularElement
+sup: RegularElement
+table: RegularElement
+tbody: RegularElement
+td: RegularElement
+template: RegularElement
+textarea: RegularElement
+tfoot: RegularElement
+th: RegularElement
+thead: RegularElement
+time: RegularElement
+title: RegularElement
+tr: RegularElement
+u: RegularElement
+ul: RegularElement
+var: RegularElement
