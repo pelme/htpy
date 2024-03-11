@@ -8,7 +8,6 @@ _ClassNamesDict: TypeAlias = dict[str, bool | None]
 _ClassNames: TypeAlias = list[str | None | bool | _ClassNamesDict] | _ClassNamesDict
 Node: TypeAlias = (
     None
-    | bool
     | str
     | BaseElement
     | _HasHtml

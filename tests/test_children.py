@@ -95,7 +95,3 @@ def test_custom_element() -> None:
 
 def test_ignore_none() -> None:
     assert str(div[None]) == "<div></div>"
-
-
-def test_ignore_false() -> None:
-    assert str(div[False]) == "<div></div>"
