@@ -1,8 +1,8 @@
 import pytest
 from django.forms.utils import ErrorList
 from django.template import Context, Template
-from django.utils.html import escape as django__escape
-from django.utils.safestring import SafeString as django__SafeString
+from django.utils.html import escape
+from django.utils.safestring import SafeString
 
 from htpy import div, li, ul
 
@@ -17,12 +17,12 @@ def test_template_injection() -> None:
 
 
 def test_SafeString() -> None:
-    result = ul[django__SafeString("<li>hello</li>")]
+    result = ul[SafeString("<li>hello</li>")]
     assert str(result) == "<ul><li>hello</li></ul>"
 
 
 def test_explicit_escape() -> None:
-    result = ul[django__escape("<hello>")]
+    result = ul[escape("<hello>")]
     assert str(result) == "<ul>&lt;hello&gt;</ul>"
 
 
