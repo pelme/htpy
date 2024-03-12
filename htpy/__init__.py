@@ -63,7 +63,7 @@ def _kwarg_attribute_name(name):
     return name.removesuffix("_").replace("_", "-")
 
 
-def generate_attrs(raw_attrs):
+def _generate_attrs(raw_attrs):
     for key, value in raw_attrs.items():
         if key == "class":
             yield ("class", _class_names(value))
@@ -140,7 +140,7 @@ class BaseElement:
         )
 
     def _attrs_string(self):
-        result = " ".join(k if v is True else f'{k}="{v}"' for k, v in generate_attrs(self._attrs))
+        result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(self._attrs))
 
         if not result:
             return ""
