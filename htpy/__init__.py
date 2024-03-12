@@ -28,7 +28,7 @@ def _dict_class_names(value):
     return _Markup(" ").join(k for k, v in value.items() if v)
 
 
-def _id_classnames_from_css_str(x):
+def _id_class_names_from_css_str(x):
     if not isinstance(x, str):
         raise ValueError(f"id/class strings must be str. got {x}")
 
@@ -124,7 +124,7 @@ class BaseElement:
 
         return self._evolve(
             attrs={
-                **(_id_classnames_from_css_str(id_class) if id_class else {}),
+                **(_id_class_names_from_css_str(id_class) if id_class else {}),
                 **attrs,
                 **{_kwarg_attribute_name(k): v for k, v in kwargs.items()},
             },

@@ -8,7 +8,7 @@ def test_attribute() -> None:
     assert str(div(id="hello")["hi"]) == '<div id="hello">hi</div>'
 
 
-class Test_classnames:
+class Test_class_names:
     def test_str(self) -> None:
         result = div(class_=">foo bar")
         assert str(result) == '<div class="&gt;foo bar"></div>'
