@@ -26,7 +26,8 @@ def test_multiple_children() -> None:
 
 
 def test_list_children() -> None:
-    result = ul[[li["a"], li["b"]]]
+    children: list[Element] = [li["a"], li["b"]]
+    result = ul[children]
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
