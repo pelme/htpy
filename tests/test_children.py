@@ -68,7 +68,8 @@ def test_flatten_nested_generators() -> None:
 
 
 def test_generator_children() -> None:
-    result = ul[(li[x] for x in ["a", "b"])]
+    gen: Generator[Element, None, None] = (li[x] for x in ["a", "b"])
+    result = ul[gen]
     assert str(result) == "<ul><li>a</li><li>b</li></ul>"
 
 
