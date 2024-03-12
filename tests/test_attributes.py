@@ -1,4 +1,5 @@
 import pytest
+from markupsafe import Markup
 
 from htpy import button, div
 
@@ -65,9 +66,22 @@ def test_underscore_replacement() -> None:
     assert str(result) == """<button hx-post="/foo">click me!</button>"""
 
 
-def test_escape_attribute_name() -> None:
-    result = div({"<disturbing attr>": "value"})
-    assert str(result) == """<div &lt;disturbing attr&gt;="value"></div>"""
+class Test_attribute_escape:
+    pytestmark = pytest.mark.parametrize(
+        "x",
+        [
+            '<"foo',
+            Markup('<"foo'),
+        ],
+    )
+
+    def test_dict(self, x: str) -> None:
+        result = div({x: x})
+        assert str(result) == """<div &lt;&#34;foo="&lt;&#34;foo"></div>"""
+
+    def test_kwarg(self, x: str) -> None:
+        result = div(**{x: x})
+        assert str(result) == """<div &lt;&#34;foo="&lt;&#34;foo"></div>"""
 
 
 def test_boolean_attribute_true() -> None:
