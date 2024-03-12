@@ -1,8 +1,10 @@
+from typing import assert_type
+
 import pytest
 from markupsafe import Markup
 
 import htpy
-from htpy import div
+from htpy import Element, div
 
 
 def test_instance_cache() -> None:
@@ -30,3 +32,14 @@ def test_markup_str() -> None:
     assert isinstance(result, str)
     assert isinstance(result, Markup)
     assert result == '<div id="a"></div>'
+
+
+def test_element_type() -> None:
+    assert_type(div, Element)
+    assert isinstance(div, Element)
+
+    assert_type(div(), Element)
+    assert isinstance(div(), Element)
+
+    assert_type(div()["a"], Element)
+    assert isinstance(div()["a"], Element)
