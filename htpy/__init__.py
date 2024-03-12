@@ -79,22 +79,18 @@ def _generate_attrs(raw_attrs):
 
 
 def _iter_children(x):
-    if not isinstance(x, BaseElement) and callable(x):
+    while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
     if isinstance(x, BaseElement):
         yield from x
-    else:
-        if x is not None:
-            yield _escape(x)
-
-
-def _flatten_children(children):
-    for x in children:
-        if not hasattr(x, "__html__") and isinstance(x, tuple | list | types.GeneratorType):
-            yield from _flatten_children(x)
-        else:
-            yield x
+    elif hasattr(x, "__html__"):
+        yield x.__html__()
+    elif isinstance(x, tuple | list | types.GeneratorType):
+        for child in x:
+            yield from _iter_children(child)
+    elif x is not None:
+        yield _escape(x)
 
 
 class BaseElement:
@@ -150,8 +146,7 @@ class BaseElement:
     def __iter__(self):
         yield f"<{self._name}{self._attrs_string()}>"
 
-        for child in _flatten_children(self._children):
-            yield from _iter_children(child)
+        yield from _iter_children(self._children)
 
         yield f"</{self._name}>"
 
@@ -161,9 +156,6 @@ class BaseElement:
 
 class Element(BaseElement):
     def __getitem__(self, children):
-        if not isinstance(children, tuple):
-            children = (children,)
-
         return self._evolve(
             children=children,
         )

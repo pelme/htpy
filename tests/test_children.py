@@ -1,10 +1,16 @@
-from collections.abc import Generator
-from typing import assert_type
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, assert_type
 
 import pytest
 from markupsafe import Markup
 
 from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Generator
+
+    from htpy import Node
 
 
 def test_void_element() -> None:
@@ -150,3 +156,24 @@ def test_escape_children() -> None:
 def test_safe_children() -> None:
     result = str(div[Markup("<hello></hello>")])
     assert result == "<div><hello></hello></div>"
+
+
+def test_nested_callable_generator() -> None:
+    def func() -> Generator[str, None, None]:
+        return (x for x in "abc")
+
+    assert str(div[func]) == "<div>abc</div>"
+
+
+def test_nested_callables() -> None:
+    def first() -> Callable[[], Node]:
+        return second
+
+    def second() -> Node:
+        return "hi"
+
+    assert str(div[first]) == "<div>hi</div>"
+
+
+def test_callable_in_generator() -> None:
+    assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
