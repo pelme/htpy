@@ -130,8 +130,8 @@ class BaseElement:
     def _evolve(self, attrs=None, children=None, **kwargs):
         return self.__class__(
             name=self._name,
-            attrs=attrs or dict(self._attrs),
-            children=children or list(self._children),
+            attrs=attrs or self._attrs,
+            children=children or self._children,
             **kwargs,
         )
 
