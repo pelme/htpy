@@ -145,9 +145,7 @@ class BaseElement:
 
     def __iter__(self):
         yield f"<{self._name}{self._attrs_string()}>"
-
         yield from _iter_children(self._children)
-
         yield f"</{self._name}>"
 
     def __repr__(self):
