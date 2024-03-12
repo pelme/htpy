@@ -13,3 +13,7 @@ def test_instance_cache() -> None:
 def test_invalid_element_name() -> None:
     with pytest.raises(AttributeError, match="html elements must have all lowercase names"):
         htpy.Foo  # noqa: B018
+
+
+def test_repr() -> None:
+    assert repr(htpy.div) == "<htpy element '<div></div>'>"
