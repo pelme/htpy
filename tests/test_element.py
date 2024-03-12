@@ -1,6 +1,8 @@
 import pytest
+from markupsafe import Markup
 
 import htpy
+from htpy import div
 
 
 def test_instance_cache() -> None:
@@ -17,3 +19,10 @@ def test_invalid_element_name() -> None:
 
 def test_repr() -> None:
     assert repr(htpy.div) == "<htpy element '<div></div>'>"
+
+
+def test_markup_str() -> None:
+    result = str(div(id="a"))
+    assert isinstance(result, str)
+    assert isinstance(result, Markup)
+    assert result == '<div id="a"></div>'

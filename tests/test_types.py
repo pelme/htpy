@@ -10,11 +10,6 @@ def test_element_type() -> None:
     assert_type(div()["a"], Element)
 
 
-def test_html_safestring_interface() -> None:
-    result = str(div(id="a")).__html__()  # type: ignore[attr-defined]
-    assert result == '<div id="a"></div>'
-
-
 class Test_Children:
     def test_children_as_element(self) -> None:
         child: Element = li
