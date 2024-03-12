@@ -85,7 +85,7 @@ def _iter_children(x):
     if isinstance(x, BaseElement):
         yield from x
     else:
-        if x is not False and x is not None:
+        if x is not None:
             yield _escape(x)
 
 
