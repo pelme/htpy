@@ -10,7 +10,7 @@ from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_
 
 
 def _iter_children(x):
-    if isinstance(x, Element):
+    if isinstance(x, BaseElement):
         yield from x
     else:
         if x is not False and x is not None:
@@ -110,12 +110,7 @@ class ElementWithDoctype(Element):
         yield from super().__iter__()
 
 
-class VoidElement(Element):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self._children:
-            raise ValueError(f"{self._name} elements cannot have children")
-
+class VoidElement(BaseElement):
     def __iter__(self):
         yield f"<{self._name}{self._attrs_string()}>"
 

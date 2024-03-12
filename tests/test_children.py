@@ -77,7 +77,7 @@ def test_html_tag_with_doctype() -> None:
 
 
 def test_void_element_children() -> None:
-    with pytest.raises(ValueError, match="img elements cannot have children"):
+    with pytest.raises(TypeError):
         img["hey"]  # type: ignore[index]
 
 
