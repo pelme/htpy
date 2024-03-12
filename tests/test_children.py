@@ -2,6 +2,7 @@ from collections.abc import Generator
 from typing import assert_type
 
 import pytest
+from markupsafe import Markup
 
 from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 
@@ -160,3 +161,13 @@ def test_callable() -> None:
     assert next(iterator) == "<img>"
     assert called is True
     assert next(iterator) == "</div>"
+
+
+def test_escape_children() -> None:
+    result = str(div['>"'])
+    assert result == "<div>&gt;&#34;</div>"
+
+
+def test_safe_children() -> None:
+    result = str(div[Markup("<hello></hello>")])
+    assert result == "<div><hello></hello></div>"
