@@ -41,16 +41,12 @@ class Element(BaseElement):
     def __getitem__(self, children: Node) -> Element: ...
 
 class VoidElement(BaseElement): ...
-
-class ElementWithDoctype(Element):
-    def __init__(
-        self, name: str, attrs: dict[str, Attribute], children: list[Node], *, doctype: str
-    ): ...
+class HTMLElement(Element): ...
 
 def __getattr__(name: str) -> Element: ...
 
 # This list should contain all non-deprecated HTML elements
-html: ElementWithDoctype
+html: HTMLElement
 
 area: VoidElement
 base: VoidElement

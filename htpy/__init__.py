@@ -100,16 +100,9 @@ class Element(BaseElement):
         )
 
 
-class ElementWithDoctype(Element):
-    def __init__(self, *args, doctype, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._doctype = doctype
-
-    def _evolve(self, **kwargs):
-        return super()._evolve(doctype=self._doctype, **kwargs)
-
+class HTMLElement(Element):
     def __iter__(self):
-        yield self._doctype
+        yield "<!doctype html>"
         yield from super().__iter__()
 
 
@@ -119,7 +112,7 @@ class VoidElement(BaseElement):
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
-html = ElementWithDoctype("html", {}, [], doctype="<!doctype html>")
+html = HTMLElement("html", {}, [])
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 area = VoidElement("area", {}, [])
