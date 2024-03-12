@@ -21,7 +21,7 @@ Node: TypeAlias = (
     | Callable[[], "Node"]
 )
 
-Attribute: TypeAlias = None | bool | str | _ClassNames
+Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
 class BaseElement:
     def __init__(self, name: str, attrs: dict[str, Attribute], children: Node): ...
