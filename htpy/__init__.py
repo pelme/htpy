@@ -1,4 +1,5 @@
 __version__ = "24.3.12"
+__all__ = []
 
 import functools
 import types
@@ -206,6 +207,3 @@ def __getattr__(name):
             f"{name} is not a valid element name. html elements must have all lowercase names"
         )
     return Element(name.replace("_", "-"), {}, [])
-
-
-__all__ = []
