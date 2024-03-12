@@ -10,6 +10,9 @@ from ._attrs import generate_attrs, id_classnames_from_css_str, kwarg_attribute_
 
 
 def _iter_children(x):
+    if not isinstance(x, BaseElement) and callable(x):
+        x = x()
+
     if isinstance(x, BaseElement):
         yield from x
     else:
@@ -78,7 +81,7 @@ class BaseElement:
     def __iter__(self):
         yield f"<{self._name}{self._attrs_string()}>"
 
-        for child in self._children:
+        for child in _flatten_children(self._children):
             yield from _iter_children(child)
 
         yield f"</{self._name}>"
@@ -93,7 +96,7 @@ class Element(BaseElement):
             children = (children,)
 
         return self._evolve(
-            children=list(_flatten_children(children)),
+            children=children,
         )
 
 
