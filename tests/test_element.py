@@ -17,8 +17,12 @@ def test_invalid_element_name() -> None:
         htpy.Foo  # noqa: B018
 
 
-def test_repr() -> None:
-    assert repr(htpy.div) == "<htpy element '<div></div>'>"
+def test_element_repr() -> None:
+    assert repr(htpy.div("#a")) == """<Element '<div id="a"></div>'>"""
+
+
+def test_void_element_repr() -> None:
+    assert repr(htpy.hr("#a")) == """<VoidElement '<hr id="a">'>"""
 
 
 def test_markup_str() -> None:

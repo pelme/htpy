@@ -156,7 +156,7 @@ class BaseElement:
         yield f"</{self._name}>"
 
     def __repr__(self):
-        return f"<htpy element '{self}'>"
+        return f"<{self.__class__.__name__} '{self}'>"
 
 
 class Element(BaseElement):
