@@ -6,7 +6,7 @@ dynamic = ["version"]
 dependencies = [
     "markupsafe>=2.0.0"
 ]
-readme = "README.md"
+readme = "docs/README.md"
 authors = [
   { name="Andreas Pelme", email="andreas@pelme.se" },
 ]
