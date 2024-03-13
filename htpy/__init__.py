@@ -96,6 +96,8 @@ def _iter_children(x):
 
 
 class BaseElement:
+    __slots__ = ("_name", "_attrs", "_children")
+
     def __init__(self, name, attrs, children):
         self._name = name
         self._attrs = attrs
