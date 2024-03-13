@@ -2,7 +2,7 @@ __version__ = "24.3.13"
 __all__ = []
 
 import functools
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -122,10 +122,10 @@ class BaseElement:
         return _Markup("".join(str(x) for x in self))
 
     def __call__(self, *args, **kwargs):
-        if len(args) == 0:
-            id_class = ""
-            attrs = {}
-        elif len(args) == 1:
+        id_class = ""
+        attrs = {}
+
+        if len(args) == 1:
             if isinstance(args[0], str):
                 # element(".foo")
                 id_class = args[0]
@@ -134,7 +134,7 @@ class BaseElement:
                 # element({"foo": "bar"})
                 id_class = ""
                 attrs = args[0]
-        if len(args) == 2:
+        elif len(args) == 2:
             # element(".foo", {"bar": "baz"})
             id_class, attrs = args
 

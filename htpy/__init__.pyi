@@ -15,7 +15,7 @@ Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Calla
 Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
 class BaseElement:
-    def __init__(self, name: str, attrs: dict[str, Attribute], children: Node): ...
+    def __init__(self, name: str, attrs: dict[str, Attribute], children: Node) -> None: ...
     @overload
     def __call__(
         self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
@@ -34,7 +34,7 @@ class Element(BaseElement):
 class VoidElement(BaseElement): ...
 class HTMLElement(Element): ...
 
-def __getattr__(name: str) -> Element: ...
+def __getattr__(name: str) -> Element: ...  # pyright: ignore [reportIncompleteStub]
 
 # This list should contain all non-deprecated HTML elements
 html: HTMLElement

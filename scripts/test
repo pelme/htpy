@@ -22,4 +22,8 @@ echo ---- mypy ----
 mypy
 echo
 
+echo ---- pyright ----
+pyright
+echo
+
 echo ==== SUCCESS ====
