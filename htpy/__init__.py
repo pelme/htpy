@@ -78,6 +78,15 @@ def _generate_attrs(raw_attrs):
             yield _force_escape(key), _force_escape(value)
 
 
+def _attrs_string(attrs):
+    result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs))
+
+    if not result:
+        return ""
+
+    return " " + result
+
+
 def _iter_children(x):
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
@@ -133,16 +142,8 @@ class BaseElement:
             self._children,
         )
 
-    def _attrs_string(self):
-        result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(self._attrs))
-
-        if not result:
-            return ""
-
-        return " " + result
-
     def __iter__(self):
-        yield f"<{self._name}{self._attrs_string()}>"
+        yield f"<{self._name}{_attrs_string(self._attrs)}>"
         yield from _iter_children(self._children)
         yield f"</{self._name}>"
 
@@ -163,7 +164,7 @@ class HTMLElement(Element):
 
 class VoidElement(BaseElement):
     def __iter__(self):
-        yield f"<{self._name}{self._attrs_string()}>"
+        yield f"<{self._name}{_attrs_string(self._attrs)}>"
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
