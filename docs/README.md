@@ -1,4 +1,4 @@
-<img src="assets/htpy.webp" style="max-width: 300px; margin: 0 auto 60px auto; display: block;">
+<img src="assets/htpy.webp" width="300" style="margin: 0 auto 60px auto; display: block;">
 
 # htpy - HTML in Python
 
@@ -8,8 +8,6 @@ without the need for a template language.
 <div class="grid cards" markdown>
 
 -   __Define HTML elements in Python...__
-
-    ___
 
     ```python
     from htpy import (
@@ -27,8 +25,6 @@ without the need for a template language.
     ```
 
 -   __...and render it as HTML.__
-
-    ---
     ```html
     <!doctype html>
     <html>
