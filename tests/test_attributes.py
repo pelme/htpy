@@ -33,6 +33,14 @@ class Test_class_names:
         result = div(class_=("class-1", "class-2", {"class-3": False, "class-4": True}))
         assert str(result) == """<div class="class-1 class-2 class-4"></div>"""
 
+    def test_false(self) -> None:
+        result = str(div(class_=False))
+        assert result == "<div></div>"
+
+    def test_none(self) -> None:
+        result = str(div(class_=None))
+        assert result == "<div></div>"
+
 
 def test_dict_attributes() -> None:
     result = div({"@click": 'hi = "hello"'})

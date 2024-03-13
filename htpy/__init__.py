@@ -65,11 +65,11 @@ def _kwarg_attribute_name(name):
 
 def _generate_attrs(raw_attrs):
     for key, value in raw_attrs.items():
+        if value in (False, None):
+            continue
+
         if key == "class":
             yield ("class", _class_names(value))
-
-        elif value in (False, None):
-            continue
 
         elif value is True:
             yield _force_escape(key), True
