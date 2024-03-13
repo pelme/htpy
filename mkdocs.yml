@@ -9,7 +9,7 @@ theme:
   icon:
     logo: material/code-tags
 nav:
-  - index.md
+  - README.md
   - usage.md
   - common-patterns.md
   - django.md
