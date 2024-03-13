@@ -1,4 +1,4 @@
-__version__ = "24.3.12"
+__version__ = "24.3.13"
 __all__ = []
 
 import functools
@@ -154,9 +154,7 @@ class BaseElement:
 
 class Element(BaseElement):
     def __getitem__(self, children):
-        return self._evolve(
-            children=children,
-        )
+        return self._evolve(children=children)
 
 
 class HTMLElement(Element):
