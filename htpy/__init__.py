@@ -92,8 +92,9 @@ def _iter_children(x):
         x = x()
 
     if x is None:
-        pass
-    elif isinstance(x, BaseElement):
+        return
+
+    if isinstance(x, BaseElement):
         yield from x
     elif isinstance(x, str) or hasattr(x, "__html__"):
         yield _escape(x)
