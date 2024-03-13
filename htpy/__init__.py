@@ -2,7 +2,7 @@ __version__ = "24.3.13"
 __all__ = []
 
 import functools
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -13,20 +13,25 @@ def _force_escape(value):
 
 
 # Inspired by https://www.npmjs.com/package/classnames
-def _class_names(value):
-    if isinstance(value, list | tuple | set):
-        return _Markup(" ").join(
-            result for x in value if (result := _dict_class_names(x) if isinstance(x, dict) else x)
-        )
+def _class_names(items):
+    if isinstance(items, str):
+        return _force_escape(items)
 
-    if isinstance(value, dict):
-        return _dict_class_names(value)
+    if isinstance(items, dict) or not isinstance(items, Iterable):
+        items = [items]
 
-    return _force_escape(value)
+    return " ".join(_force_escape(class_name) for class_name in _class_names_for_items(items))
 
 
-def _dict_class_names(value):
-    return _Markup(" ").join(k for k, v in value.items() if v)
+def _class_names_for_items(items):
+    for item in items:
+        if isinstance(item, dict):
+            for k, v in item.items():
+                if v:
+                    yield k
+        else:
+            if item:
+                yield item
 
 
 def _id_class_names_from_css_str(x):

@@ -10,28 +10,37 @@ def test_attribute() -> None:
 
 class Test_class_names:
     def test_str(self) -> None:
-        result = div(class_=">foo bar")
-        assert str(result) == '<div class="&gt;foo bar"></div>'
+        result = div(class_='">foo bar')
+        assert str(result) == '<div class="&#34;&gt;foo bar"></div>'
+
+    def test_safestring(self) -> None:
+        result = div(class_=Markup('">foo bar'))
+        assert str(result) == '<div class="&#34;&gt;foo bar"></div>'
 
     def test_list(self) -> None:
-        result = div(class_=[">foo", False, None, "", "bar"])
-        assert str(result) == '<div class="&gt;foo bar"></div>'
+        result = div(class_=['">foo', Markup('">bar'), False, None, "", "baz"])
+        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
 
     def test_tuple(self) -> None:
-        result = div(class_=(">foo", False, None, "", "bar"))
-        assert str(result) == '<div class="&gt;foo bar"></div>'
+        result = div(class_=('">foo', Markup('">bar'), False, None, "", "baz"))
+        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
 
     def test_dict(self) -> None:
-        result = div(class_={">foo": True, "x": False, "bar": True})
-        assert str(result) == '<div class="&gt;foo bar"></div>'
+        result = div(class_={'">foo': True, Markup('">bar'): True, "x": False, "baz": True})
+        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
 
-    def test_list_dict(self) -> None:
-        result = div(class_=["class-1", "class-2", {"class-3": False, "class-4": True}])
-        assert str(result) == """<div class="class-1 class-2 class-4"></div>"""
-
-    def test_tuple_dict(self) -> None:
-        result = div(class_=("class-1", "class-2", {"class-3": False, "class-4": True}))
-        assert str(result) == """<div class="class-1 class-2 class-4"></div>"""
+    def test_nested_dict(self) -> None:
+        result = div(
+            class_=[
+                '">list-foo',
+                Markup('">list-bar'),
+                {'">dict-foo': True, Markup('">list-bar'): True, "x": False},
+            ]
+        )
+        assert str(result) == (
+            '<div class="&#34;&gt;list-foo &#34;&gt;list-bar '
+            '&#34;&gt;dict-foo &#34;&gt;list-bar"></div>'
+        )
 
     def test_false(self) -> None:
         result = str(div(class_=False))
