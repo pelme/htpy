@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="assets/htpy.webp" width="300">
+    <img src="https://htpy.dev/assets/htpy.webp" width="300">
 </p>
 
 # htpy - HTML in Python
