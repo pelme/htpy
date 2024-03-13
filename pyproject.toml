@@ -1,6 +1,6 @@
 [project]
 name = "htpy"
-description = "HTML in Python"
+description = "htpy - HTML in Python"
 requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
