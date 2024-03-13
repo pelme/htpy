@@ -28,7 +28,7 @@ django_jinja_template = """
 tests = [
     (
         "htpy",
-        lambda rows: str(table[thead[tr[th["Row #"]]], tbody[(tr[td[row]] for row in rows)]]),
+        lambda rows: str(table[thead[tr[th["Row #"]]], tbody[(tr[td[str(row)]] for row in rows)]]),
     ),
     (
         "django",

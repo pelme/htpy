@@ -2,7 +2,7 @@ __version__ = "24.3.13"
 __all__ = []
 
 import functools
-import types
+from collections.abc import Iterable
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -82,15 +82,17 @@ def _iter_children(x):
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
-    if isinstance(x, BaseElement):
+    if x is None:
+        pass
+    elif isinstance(x, BaseElement):
         yield from x
-    elif hasattr(x, "__html__"):
-        yield x.__html__()
-    elif isinstance(x, tuple | list | types.GeneratorType):
+    elif isinstance(x, str) or hasattr(x, "__html__"):
+        yield _escape(x)
+    elif isinstance(x, Iterable):
         for child in x:
             yield from _iter_children(child)
-    elif x is not None:
-        yield _escape(x)
+    else:
+        raise ValueError(f"{x!r} is not a valid child element")
 
 
 class BaseElement:
@@ -119,20 +121,14 @@ class BaseElement:
             # element(".foo", {"bar": "baz"})
             id_class, attrs = args
 
-        return self._evolve(
-            attrs={
+        return self.__class__(
+            self._name,
+            {
                 **(_id_class_names_from_css_str(id_class) if id_class else {}),
                 **attrs,
                 **{_kwarg_attribute_name(k): v for k, v in kwargs.items()},
             },
-        )
-
-    def _evolve(self, attrs=None, children=None, **kwargs):
-        return self.__class__(
-            name=self._name,
-            attrs=attrs or self._attrs,
-            children=children or self._children,
-            **kwargs,
+            self._children,
         )
 
     def _attrs_string(self):
@@ -154,7 +150,7 @@ class BaseElement:
 
 class Element(BaseElement):
     def __getitem__(self, children):
-        return self._evolve(children=children)
+        return self.__class__(self._name, self._attrs, children)
 
 
 class HTMLElement(Element):
@@ -169,23 +165,23 @@ class VoidElement(BaseElement):
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
-html = HTMLElement("html", {}, [])
+html = HTMLElement("html", {}, None)
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-area = VoidElement("area", {}, [])
-base = VoidElement("base", {}, [])
-br = VoidElement("br", {}, [])
-col = VoidElement("col", {}, [])
-embed = VoidElement("embed", {}, [])
-hr = VoidElement("hr", {}, [])
-img = VoidElement("img", {}, [])
-input = VoidElement("input", {}, [])
-link = VoidElement("link", {}, [])
-meta = VoidElement("meta", {}, [])
-param = VoidElement("param", {}, [])
-source = VoidElement("source", {}, [])
-track = VoidElement("track", {}, [])
-wbr = VoidElement("wbr", {}, [])
+area = VoidElement("area", {}, None)
+base = VoidElement("base", {}, None)
+br = VoidElement("br", {}, None)
+col = VoidElement("col", {}, None)
+embed = VoidElement("embed", {}, None)
+hr = VoidElement("hr", {}, None)
+img = VoidElement("img", {}, None)
+input = VoidElement("input", {}, None)
+link = VoidElement("link", {}, None)
+meta = VoidElement("meta", {}, None)
+param = VoidElement("param", {}, None)
+source = VoidElement("source", {}, None)
+track = VoidElement("track", {}, None)
+wbr = VoidElement("wbr", {}, None)
 
 
 @functools.lru_cache(maxsize=300)
@@ -194,4 +190,4 @@ def __getattr__(name):
         raise AttributeError(
             f"{name} is not a valid element name. html elements must have all lowercase names"
         )
-    return Element(name.replace("_", "-"), {}, [])
+    return Element(name.replace("_", "-"), {}, None)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, assert_type
+from typing import TYPE_CHECKING, Any, assert_type
 
 import pytest
 from markupsafe import Markup
@@ -177,3 +177,9 @@ def test_nested_callables() -> None:
 
 def test_callable_in_generator() -> None:
     assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
+
+
+@pytest.mark.parametrize("not_a_child", [1234, True, False, b"foo", object(), object])
+def test_invalid_child(not_a_child: Any) -> None:
+    with pytest.raises(ValueError, match="is not a valid child element"):
+        str(div[not_a_child])

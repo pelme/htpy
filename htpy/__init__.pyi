@@ -1,4 +1,4 @@
-from collections.abc import Callable, Generator, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator
 from typing import Protocol, TypeAlias, overload
 
 class _HasHtml(Protocol):
@@ -10,16 +10,7 @@ _ClassNames: TypeAlias = (
     | tuple[str | None | bool | _ClassNamesDict, ...]
     | _ClassNamesDict
 )
-Node: TypeAlias = (
-    None
-    | str
-    | BaseElement
-    | _HasHtml
-    | Sequence["Node"]
-    | tuple["Node", ...]
-    | Generator["Node", None, None]
-    | Callable[[], "Node"]
-)
+Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
 
 Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
