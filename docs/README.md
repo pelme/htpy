@@ -12,9 +12,7 @@ without the need for a template language.
 -   __Define HTML elements in Python...__
 
     ```python
-    from htpy import (
-        html, body, h1, img
-    )
+    from htpy import html, body, h1, img
 
     is_cool = True
 
@@ -44,41 +42,14 @@ developed we often found ourselves hitting walls when using classic templates.
 htpy was created to improve the productiveness and experience of generating HTML
 from a Python backend.
 
-### Leverage static types
-We have been increasing static type coverage and seen great effects of static
-typing. But when it comes to HTML produced by templates, after the template
-context is created, static type checkers hit a wall. This looses a lot of the
-value of using a type checker since a lot of the code that use domain
-specific objects cannot be checked.
+## Key features
 
-### Great debugging
-Debugging a template system can be hard. The stack traces are often cryptic and
-hides the real culprit of a problem. Inspecting/debugging the template context
-is not possible without special tooling or debuggers. Debugging code written
-with htpy works with any Python debugger and gives usable stack traces.
+- **Leverage static types:** - Use [mypy](https://mypy.readthedocs.io/en/stable/) or [pyright](https://github.com/microsoft/pyright) to type check your code.
 
-Many editors provide "goto definition". These often does not work reliably with
-templates.
+- **Great debugging:** Avoid cryptic stack traces from templates. Use your favorite Python debugger.
 
-### Automatic code formatting
-Black is a very popular code formatter for Python. There are formatters that
-formats templates but we have found them lacking compared to tools like Black.
+- **Easy to extend:** There is no special way to define template tags/filters. Just call regular functions.
 
-### Easy to extend
-Extending a template system with custom tags and filters requires learning about
-the template system parser and tokenizer, rather than just writing plain Python
-functions. Adding even a trivial filter requires putting the function in a
-specific location and registering the filter with the template library. Filters
-and tags with htpy are just plain Python functions.
+- **Create reusable components:** Define components, snippets, complex layouts/pages as regular Python variables or functions.
 
-### Creating components
-Creating components/partials is typically done with includes or inclusion tags
-in a template language. With htpy, components/partials can be plain Python
-variables or functions. Making it easy to create partials and components makes
-it easier to maintain a library of components/partials. See [UI components](common-patterns.md#ui-components) for more information.
-
-### Familiar concepts
-React/JSX has popularized the idea of using a programming language rather than a
-separate template language. The concept of building a tree of components and
-composing them with regular modules/classes/functions should be familiar to
-anyone with React/JSX experience.
+- **Familiar concepts from React:** React helped make it popular writing HTML with a programming language. htpy uses a lot of similar constructs.
