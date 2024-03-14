@@ -16,12 +16,12 @@ without the need for a template language.
 
     is_cool = True
 
-    html[
+    print(html[
       body(class_={"cool": is_cool})[
         h1("#hi")["Welcome to htpy!"],
         img(src="cat.jpg"),
       ]
-    ]
+    ])
     ```
 
 -   __...and render it as HTML.__
