@@ -19,11 +19,13 @@ from django.contrib import admin
 from django.urls import path
 from form.views import my_form
 from index.views import index
+from stream.views import stream
 from widget.views import widget_view
 
 urlpatterns = [
     path("", index),
     path("form/", my_form),
     path("widget/", widget_view),
+    path("stream/", stream),
     path("admin/", admin.site.urls),
 ]

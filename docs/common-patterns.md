@@ -58,15 +58,18 @@ def base_layout(*, page_title=None, extra_head=None, content=None, body_class=No
     ]
 
 
-def index():
+def index_page():
     return base_layout(
         page_title="Welcome!",
         body_class="green",
-        content=[h1["Welcome to my site!"], p["Hello and welcome!"]],
+        content=[
+            h1["Welcome to my site!"],
+            p["Hello and welcome!"],
+        ],
     )
 
 
-def about():
+def about_page():
     return base_layout(
         page_title="About us",
         content=[
