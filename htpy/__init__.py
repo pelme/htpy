@@ -3,9 +3,14 @@ __all__ = []
 
 import functools
 from collections.abc import Iterable
+from typing import Union
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
+
+# Make Node and Attribute importable without if TYPE_CHECKING: blocks
+Node = Union
+Attribute = Union
 
 
 def _force_escape(value):

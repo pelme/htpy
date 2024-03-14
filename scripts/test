@@ -15,7 +15,7 @@ pytest
 echo
 
 echo ---- stubtest ----
-stubtest htpy --allowlist allowlist
+stubtest htpy
 echo
 
 echo ---- mypy ----
