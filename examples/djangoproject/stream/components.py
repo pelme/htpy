@@ -25,10 +25,8 @@ def streaming_table_page(items: Iterable[Item]) -> Element:
                 ],
                 (
                     tr(f".table-{item.style}")[
-                        td[
-                            f"#{item.count}",
-                            td[item.style],
-                        ]
+                        td[f"#{item.count}"],
+                        td[item.style],
                     ]
                     for item in items
                 ),
