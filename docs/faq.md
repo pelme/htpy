@@ -16,7 +16,7 @@ you are looking to generate XML.
 
 htpy generates HTML, therefore "void elements" such as `<br>` does not include a trailing `/`.
 
-## Does not generating HTML from Python means that mixing up concerns between presentation and business logic?
+## Does not generating HTML from Python mean mixing concerns between presentation and business logic?
 
 With a template language, create HTML markup in separate files is enforced by
 design. Avoiding logic in the presentation layer is also mostly done by making
@@ -33,7 +33,7 @@ project.
 htpy uses the [module level `__getattr__`](https://docs.python.org/3/reference/datamodel.html#customizing-module-attribute-access). It was [introduced in Python 3.7](https://docs.python.org/3/whatsnew/3.7.html#pep-562-customization-of-access-to-module-attributes). It allows [creating `Element` instances](https://github.com/pelme/htpy/blob/855a2a6648ce955be9730fe030a97930df42930a/htpy/__init__.py#L146-L147) for any elements that are imported.
 
 
-## Why does htpy not provide HTML like tag syntax with angel brackets like pyxl and JSX?
+## Why does htpy not provide HTML like tag syntax with angle brackets like pyxl and JSX?
 
 htpy must be compatible with standard Python code formatters, editors and static
 type checkers. Unfortunately, it is not possible to support those workflows with a custom
