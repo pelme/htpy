@@ -151,7 +151,7 @@ Attributes can be specified via keyword arguments:
 In Python, `class` and `for` cannot be used as keyword arguments. Instead, they can be specified as `class_` or `for_` when using keyword arguments:
 
 ```pycon
->>> from htpy import img
+>>> from htpy import label
 >>> print(label(for_="myfield"))
 <label for="myfield"></label>
 ```
@@ -162,8 +162,6 @@ Attributes that contains dashes `-` can be specified using underscores:
 >>> print(form(hx_post="/foo"))
 <form hx-post="/foo"></form>
 ```
-
-If you need attributes
 
 
 ### id/class shorthand
