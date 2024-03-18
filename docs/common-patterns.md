@@ -19,23 +19,26 @@ HTML.
 Using a file named `components.py` can be a good idea. If you have many
 components, you may create a `components` package instead.
 
-Your component functions can accept arbitrary argument with the required data:
+Your component functions can accept arbitrary argument with the required data.
+It is a good idea to only use keyword arguments (put a `*` in the argument list
+to force keyword arguments):
 
 ```py title="views.py"
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 
-from . import components
+from .components import greeting_page
 
-def greeting(request):
-    return HttpResponse(components.greeting(
+def greeting(request: HttpRequest) -> HttpResponse:
+    return HttpResponse(greeting_page(
         name=request.GET.get("name", "anonymous"),
     ))
 ```
 
 ```py title="components.py"
+from htpy import html, body, h1
 
-def greeting(*, name):
-    return html[body[f"hi {name}!"]]
+def greeting_page(*, name: str) -> Element:
+    return html[body[h1[f"hi {name}!"]]]
 ```
 
 ## Creating a base layout
@@ -45,10 +48,15 @@ A common feature of template languages is to "extend" a base/parent template and
 ```py title="components.py"
 import datetime
 
-from htpy import body, div, h1, head, html, p, title
+from htpy import body, div, h1, head, html, p, title, Node, Element
 
 
-def base_layout(*, page_title=None, extra_head=None, content=None, body_class=None):
+def base_layout(*,
+    page_title: str | None = None,
+    extra_head: Node = None,
+    content: Node = None,
+    body_class: str | None = None,
+) -> Element:
     return html[
         head[title[page_title], extra_head],
         body(class_=body_class)[
@@ -58,7 +66,7 @@ def base_layout(*, page_title=None, extra_head=None, content=None, body_class=No
     ]
 
 
-def index_page():
+def index_page() -> Element:
     return base_layout(
         page_title="Welcome!",
         body_class="green",
@@ -69,7 +77,7 @@ def index_page():
     )
 
 
-def about_page():
+def about_page() -> Element:
     return base_layout(
         page_title="About us",
         content=[
@@ -90,10 +98,10 @@ Wrapping [Bootstrap Modal](https://getbootstrap.com/docs/4.0/components/modal/) 
 ```py title="Creating wrapper for Bootstrap Modal"
 from markupsafe import Markup
 
-from htpy import button, div, h5, span
+from htpy import Element, Node, button, div, h5, span
 
 
-def bootstrap_modal(*, title, body=None, footer=None):
+def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Element:
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[
@@ -113,4 +121,21 @@ def bootstrap_modal(*, title, body=None, footer=None):
             ]
         ]
     ]
+```
+
+
+You would then use it like this:
+```py
+from htpy import button, p
+
+print(
+    bootstrap_modal(
+        title="Modal title",
+        body=p["Modal body text goes here."],
+        footer=[
+            button(".btn.btn-primary", type="button")["Save changes"],
+            button(".btn.btn-secondary", type="button")["Close"],
+        ],
+    )
+)
 ```
