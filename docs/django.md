@@ -9,7 +9,7 @@ htpy elements can be passed directly to `HttpResponse`:
 
 ```py title="views.py"
 from django.http import HttpResponse
-from htpy import div
+from htpy import html, body, div
 
 def my_view(request):
     return HttpResponse(html[body[div["Hi Django!"]]])
