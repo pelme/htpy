@@ -49,7 +49,7 @@ from a Python backend.
 
 ## Key features
 
-- **Leverage static types:** - Use [mypy](https://mypy.readthedocs.io/en/stable/) or [pyright](https://github.com/microsoft/pyright) to type check your code.
+- **Leverage static types:** Use [mypy](https://mypy.readthedocs.io/en/stable/) or [pyright](https://github.com/microsoft/pyright) to type check your code.
 
 - **Great debugging:** Avoid cryptic stack traces from templates. Use your favorite Python debugger.
 
