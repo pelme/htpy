@@ -12,6 +12,7 @@ nav:
   - README.md
   - usage.md
   - common-patterns.md
+  - static-typing.md
   - django.md
   - faq.md
   - references.md
