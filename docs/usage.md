@@ -250,3 +250,20 @@ Attributes via id/class shorthand, keyword arguments and dictionary can be combi
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
 ```
 
+## Iterating of the output
+
+Iterating over a htpy element will yield the resulting contents in chunks as
+they are rendered:
+
+```pycon
+>>> from htpy import ul, li
+>>> for chunk in ul[li["a", "b"]]:
+...     print(f"got a chunk: {chunk!r}")
+...
+got a chunk: '<ul>'
+got a chunk: '<li>'
+got a chunk: 'a'
+got a chunk: 'b'
+got a chunk: '</li>'
+got a chunk: '</ul>'
+```
