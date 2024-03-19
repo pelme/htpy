@@ -41,7 +41,7 @@ and safe to directly insert variable data via f-strings:
 
 ### Conditional rendering
 
-`None` and `False` will not render anything. This can be useful to conditionally render some content.
+`None` will not render anything. This can be useful to conditionally render some content.
 
 ```pycon title="Conditional rendering"
 
