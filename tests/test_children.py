@@ -131,6 +131,22 @@ def test_iter() -> None:
     assert trace == "done"
 
 
+def test_iter_str() -> None:
+    _, child, _ = div["a"]
+
+    assert child == "a"
+    # Make sure we dont get Markup (subclass of str)
+    assert type(child) is str  # noqa
+
+
+def test_iter_markup() -> None:
+    _, child, _ = div["a"]
+
+    assert child == "a"
+    # Make sure we dont get Markup (subclass of str)
+    assert type(child) is str  # noqa
+
+
 def test_callable() -> None:
     called = False
 

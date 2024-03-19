@@ -107,7 +107,7 @@ def _iter_children(x):
     if isinstance(x, BaseElement):
         yield from x
     elif isinstance(x, str) or hasattr(x, "__html__"):
-        yield _escape(x)
+        yield str(_escape(x))
     elif isinstance(x, Iterable):
         for child in x:
             yield from _iter_children(child)
