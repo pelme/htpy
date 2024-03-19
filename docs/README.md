@@ -41,7 +41,7 @@ print(
 </html>
 ```
 
-## Introduction
+## Motivation for this project
 At [Personalkollen](https://personalkollen.se/start/), where htpy was originally
 developed we often found ourselves hitting walls when using classic templates.
 htpy was created to improve the productiveness and experience of generating HTML
