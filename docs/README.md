@@ -4,37 +4,42 @@
 
 # htpy - HTML in Python
 
-htpy is a library that makes writing HTML in Python fun and efficient,
-without the need for a template language.
+htpy is a library that makes writing HTML in plain Python fun and efficient,
+without a template language.
 
-<div class="grid cards" markdown>
+**Define HTML in Python:**
+```python
+from htpy import body, h1, html, img, li, ul
 
--   __Define HTML elements in Python...__
+is_fun = True
+menu = ["spam", "ham", "eggs"]
 
-    ```python
-    from htpy import html, body, h1, img
+print(
+    html[
+        body(class_={"fun": is_fun})[
+            h1("#hi")["Welcome to htpy!"],
+            img(src="rabbit.jpg"),
+            ul(".menu")[(li[item] for item in menu)],
+        ]
+    ]
+)
+```
 
-    is_cool = True
-
-    print(html[
-      body(class_={"cool": is_cool})[
-        h1("#hi")["Welcome to htpy!"],
-        img(src="cat.jpg"),
-      ]
-    ])
-    ```
-
--   __...and render it as HTML.__
-    ```html
-    <!doctype html>
-    <html>
-      <body class="cool">
-        <h1 id="hi">Welcome to htpy!</h1>
-        <img src="cat.jpg">
-      </body>
-    </html>
-    ```
-</div>
+**And get HTML:**
+```html
+<!DOCTYPE html>
+<html>
+  <body class="fun">
+    <h1 id="hi">Welcome to htpy!</h1>
+    <img src="rabbit.jpg">
+    <ul class="menu">
+      <li>spam</li>
+      <li>ham</li>
+      <li>eggs</li>
+    </ul>
+  </body>
+</html>
+```
 
 ## Introduction
 At [Personalkollen](https://personalkollen.se/start/), where htpy was originally
@@ -53,3 +58,10 @@ from a Python backend.
 - **Create reusable components:** Define components, snippets, complex layouts/pages as regular Python variables or functions.
 
 - **Familiar concepts from React:** React helped make it popular writing HTML with a programming language. htpy uses a lot of similar constructs.
+
+## Installation
+
+[htpy is available on PyPI](https://pypi.org/project/htpy/). You may install the latest version using pip:
+```
+pip install htpy
+```
