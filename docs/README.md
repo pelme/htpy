@@ -65,3 +65,6 @@ from a Python backend.
 ```
 pip install htpy
 ```
+
+## Documentation
+The full documentation is available at https://htpy.dev.
