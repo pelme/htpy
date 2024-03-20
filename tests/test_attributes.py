@@ -50,6 +50,10 @@ class Test_class_names:
         result = str(div(class_=None))
         assert result == "<div></div>"
 
+    def test_no_classes(self) -> None:
+        result = str(div(class_={"foo": False}))
+        assert result == "<div></div>"
+
 
 def test_dict_attributes() -> None:
     result = div({"@click": 'hi = "hello"'})

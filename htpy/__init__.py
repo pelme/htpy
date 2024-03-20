@@ -25,7 +25,11 @@ def _class_names(items):
     if isinstance(items, dict) or not isinstance(items, Iterable):
         items = [items]
 
-    return " ".join(_force_escape(class_name) for class_name in _class_names_for_items(items))
+    result = list(_class_names_for_items(items))
+    if not result:
+        return False
+
+    return " ".join(_force_escape(class_name) for class_name in result)
 
 
 def _class_names_for_items(items):
@@ -79,7 +83,8 @@ def _generate_attrs(raw_attrs):
             continue
 
         if key == "class":
-            yield ("class", _class_names(value))
+            if result := _class_names(value):
+                yield ("class", result)
 
         elif value is True:
             yield _force_escape(key), True
