@@ -9,18 +9,17 @@ without a template language.
 
 **Define HTML in Python:**
 ```python
-from htpy import body, h1, html, img, li, ul
+from htpy import body, h1, head, html, li, title, ul
 
-is_fun = True
-menu = ["spam", "ham", "eggs"]
+menu = ["egg+bacon", "bacon+spam", "eggs+spam"]
 
 print(
     html[
-        body(class_={"fun": is_fun})[
-            h1("#hi")["Welcome to htpy!"],
-            img(src="rabbit.jpg"),
+        head[title["Todays menu"]],
+        body[
+            h1["Menu"],
             ul(".menu")[(li[item] for item in menu)],
-        ]
+        ],
     ]
 )
 ```
@@ -29,16 +28,19 @@ print(
 ```html
 <!DOCTYPE html>
 <html>
-  <body class="fun">
-    <h1 id="hi">Welcome to htpy!</h1>
-    <img src="rabbit.jpg">
+  <head>
+    <title>Todays menu</title>
+  </head>
+  <body>
+    <h1>Menu</h1>
     <ul class="menu">
-      <li>spam</li>
-      <li>ham</li>
-      <li>eggs</li>
+      <li>egg+bacon</li>
+      <li>bacon+spam</li>
+      <li>eggs+spam</li>
     </ul>
   </body>
 </html>
+
 ```
 
 ## Motivation for this project
@@ -67,4 +69,10 @@ pip install htpy
 ```
 
 ## Documentation
-The full documentation is available at https://htpy.dev.
+The full documentation is available at [https://htpy.dev](https://htpy.dev):
+ - [Usage](https://htpy.dev/usage/)
+ - [Common patterns](https://htpy.dev/common-patterns/)
+ - [Static typing](https://htpy.dev/static-typing/)
+ - [Usage with Django](https://htpy.dev/django/)
+ - [FAQ](https://htpy.dev/faq/)
+ - [References](https://htpy.dev/references/)

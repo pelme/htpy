@@ -25,7 +25,7 @@ The base types/classes in htpy are `Element` and `VoidElement`. `Element` are
 all regular HTML elements that can have children such as `<div>`, `<span>` and
 `<table>`. `VoidElement` are [HTML void
 element](https://developer.mozilla.org/en-US/docs/Glossary/Void_element) which
-cannot have children.
+cannot have children such as `<img>`, `<input>` and `<br>`.
 
 Use `Element` as the return type when you want to always return an element.
 

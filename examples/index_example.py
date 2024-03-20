@@ -1,14 +1,13 @@
-from htpy import body, h1, html, img, li, ul
+from htpy import body, h1, head, html, li, title, ul
 
-is_fun = True
-menu = ["spam", "ham", "eggs"]
+menu = ["egg+bacon", "bacon+spam", "eggs+spam"]
 
 print(
     html[
-        body(class_={"fun": is_fun})[
-            h1("#hi")["Welcome to htpy!"],
-            img(src="rabbit.jpg"),
+        head[title["Todays menu"]],
+        body[
+            h1["Menu"],
             ul(".menu")[(li[item] for item in menu)],
-        ]
+        ],
     ]
 )
