@@ -57,6 +57,8 @@ from a Python backend.
 
 - **Easy to extend:** There is no special way to define template tags/filters. Just call regular functions.
 
+- **Works with any library/web framework:** Works great with Django, Flask or any other Python web framework!
+
 - **Create reusable components:** Define components, snippets, complex layouts/pages as regular Python variables or functions.
 
 - **Familiar concepts from React:** React helped make it popular writing HTML with a programming language. htpy uses a lot of similar constructs.
