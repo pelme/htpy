@@ -1,6 +1,8 @@
 # Static typing
 
-htpy was designed to be used with a typed code base. Since you define all your own data/components with regular Python, a static type checker like mypy will catch errors like this:
+htpy was designed to be used with static typing. Since you define all your own
+data/components with regular Python, a static type checker like mypy will catch
+errors like this:
 
 ```python
 
@@ -59,4 +61,3 @@ from htpy import Element, Node, div
 def bootstrap_alert(contents: Node) -> Element:
     return div(".alert", role="alert")[contents]
 ```
-
