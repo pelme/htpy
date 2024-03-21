@@ -71,6 +71,12 @@ You can pass a list, tuple or generator to generate multiple children:
 <ul><li>a</li><li>b</li><li>c</li></ul>
 ```
 
+!!! note
+
+    The generator will be lazily evaluated when rendering the element, not
+    directly when the element is constructed. See [Streaming](streaming.md) for
+    more information.
+
 A `list` can be used similar to a [JSX fragment](https://react.dev/reference/react/Fragment):
 
 ```pycon title="Render a list of child elements"

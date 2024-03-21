@@ -19,15 +19,9 @@ def streaming_table_page(items: Iterable[Item]) -> Element:
         body[
             h1["Stream example"],
             table(".table.table-striped")[
-                tr[
-                    th["Table row #"],
-                    th["Style"],
-                ],
+                tr[th["Table row #"],],
                 (
-                    tr(f".table-{item.style}")[
-                        td[f"#{item.count}"],
-                        td[item.style],
-                    ]
+                    tr[td(style=f"background-color: {item.color}")[f"#{item.count}"],]
                     for item in items
                 ),
             ],
