@@ -15,7 +15,8 @@ if TYPE_CHECKING:
 
 def test_void_element() -> None:
     element = input(name="foo")
-    assert_type(element, Element)
+    assert_type(element, VoidElement)
+    assert isinstance(element, VoidElement)
 
     result = str(element)
     assert str(result) == '<input name="foo">'

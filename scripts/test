@@ -14,10 +14,6 @@ echo ---- pytest ----
 pytest
 echo
 
-echo ---- stubtest ----
-stubtest htpy
-echo
-
 echo ---- mypy ----
 mypy
 echo

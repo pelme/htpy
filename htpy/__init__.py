@@ -1,16 +1,14 @@
+from __future__ import annotations
+
 __version__ = "24.3.17"
 __all__ = []
 
 import functools
-from collections.abc import Iterable
-from typing import Union
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any, Protocol, Self, TypeAlias, overload
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
-
-# Make Node and Attribute importable without if TYPE_CHECKING: blocks
-Node = Union
-Attribute = Union
 
 
 def _force_escape(value):
@@ -120,10 +118,23 @@ def _iter_children(x):
         raise ValueError(f"{x!r} is not a valid child element")
 
 
+@functools.lru_cache(maxsize=300)
+def _get_element(name: str) -> Element:
+    if not name.islower():
+        raise AttributeError(
+            f"{name} is not a valid element name. html elements must have all lowercase names"
+        )
+    return Element(name.replace("_", "-"), {}, None)
+
+
+def __getattr__(name: str) -> Element:
+    return _get_element(name)
+
+
 class BaseElement:
     __slots__ = ("_name", "_attrs", "_children")
 
-    def __init__(self, name, attrs, children):
+    def __init__(self, name: str, attrs: dict[str, Attribute], children: Node) -> None:
         self._name = name
         self._attrs = attrs
         self._children = children
@@ -131,7 +142,15 @@ class BaseElement:
     def __str__(self):
         return _Markup("".join(str(x) for x in self))
 
-    def __call__(self, *args, **kwargs):
+    @overload
+    def __call__(self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
+    @overload
+    def __call__(self, id_class: str = "", **kwargs: Attribute) -> Self: ...
+    @overload
+    def __call__(self, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
+    @overload
+    def __call__(self, **kwargs: Attribute) -> Self: ...
+    def __call__(self, *args: Any, **kwargs: Any) -> Self:
         id_class = ""
         attrs = {}
 
@@ -158,22 +177,22 @@ class BaseElement:
             self._children,
         )
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
         yield from _iter_children(self._children)
         yield f"</{self._name}>"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__name__} '{self}'>"
 
 
 class Element(BaseElement):
-    def __getitem__(self, children):
+    def __getitem__(self, children: Node) -> Self:
         return self.__class__(self._name, self._attrs, children)
 
 
 class HTMLElement(Element):
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         yield "<!doctype html>"
         yield from super().__iter__()
 
@@ -182,6 +201,20 @@ class VoidElement(BaseElement):
     def __iter__(self):
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
 
+
+class _HasHtml(Protocol):
+    def __html__(self) -> str: ...
+
+
+_ClassNamesDict: TypeAlias = dict[str, bool]
+_ClassNames: TypeAlias = (
+    list[str | None | bool | _ClassNamesDict]
+    | tuple[str | None | bool | _ClassNamesDict, ...]
+    | _ClassNamesDict
+)
+Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+
+Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
 html = HTMLElement("html", {}, None)
@@ -202,11 +235,106 @@ source = VoidElement("source", {}, None)
 track = VoidElement("track", {}, None)
 wbr = VoidElement("wbr", {}, None)
 
-
-@functools.lru_cache(maxsize=300)
-def __getattr__(name):
-    if not name.islower():
-        raise AttributeError(
-            f"{name} is not a valid element name. html elements must have all lowercase names"
-        )
-    return Element(name.replace("_", "-"), {}, None)
+# Non-deprecated HTML elements, extracted from
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+# Located via the inspector with:
+# Array.from($0.querySelectorAll('li')).filter(x=>!x.querySelector('.icon-deprecated')).map(x => x.querySelector('code').textContent) # noqa: E501
+a = Element("a", {}, None)
+abbr = Element("abbr", {}, None)
+abc = Element("abc", {}, None)
+address = Element("address", {}, None)
+article = Element("article", {}, None)
+aside = Element("aside", {}, None)
+audio = Element("audio", {}, None)
+b = Element("b", {}, None)
+bdi = Element("bdi", {}, None)
+bdo = Element("bdo", {}, None)
+blockquote = Element("blockquote", {}, None)
+body = Element("body", {}, None)
+button = Element("button", {}, None)
+canvas = Element("canvas", {}, None)
+caption = Element("caption", {}, None)
+cite = Element("cite", {}, None)
+code = Element("code", {}, None)
+colgroup = Element("colgroup", {}, None)
+data = Element("data", {}, None)
+datalist = Element("datalist", {}, None)
+dd = Element("dd", {}, None)
+del_ = Element("del_", {}, None)
+details = Element("details", {}, None)
+dfn = Element("dfn", {}, None)
+dialog = Element("dialog", {}, None)
+div = Element("div", {}, None)
+dl = Element("dl", {}, None)
+dt = Element("dt", {}, None)
+em = Element("em", {}, None)
+fieldset = Element("fieldset", {}, None)
+figcaption = Element("figcaption", {}, None)
+figure = Element("figure", {}, None)
+footer = Element("footer", {}, None)
+form = Element("form", {}, None)
+h1 = Element("h1", {}, None)
+h2 = Element("h2", {}, None)
+h3 = Element("h3", {}, None)
+h4 = Element("h4", {}, None)
+h5 = Element("h5", {}, None)
+h6 = Element("h6", {}, None)
+head = Element("head", {}, None)
+header = Element("header", {}, None)
+hgroup = Element("hgroup", {}, None)
+i = Element("i", {}, None)
+iframe = Element("iframe", {}, None)
+ins = Element("ins", {}, None)
+kbd = Element("kbd", {}, None)
+label = Element("label", {}, None)
+legend = Element("legend", {}, None)
+li = Element("li", {}, None)
+main = Element("main", {}, None)
+map = Element("map", {}, None)
+mark = Element("mark", {}, None)
+menu = Element("menu", {}, None)
+meter = Element("meter", {}, None)
+nav = Element("nav", {}, None)
+noscript = Element("noscript", {}, None)
+object = Element("object", {}, None)
+ol = Element("ol", {}, None)
+optgroup = Element("optgroup", {}, None)
+option = Element("option", {}, None)
+output = Element("output", {}, None)
+p = Element("p", {}, None)
+picture = Element("picture", {}, None)
+portal = Element("portal", {}, None)
+pre = Element("pre", {}, None)
+progress = Element("progress", {}, None)
+q = Element("q", {}, None)
+rp = Element("rp", {}, None)
+rt = Element("rt", {}, None)
+ruby = Element("ruby", {}, None)
+s = Element("s", {}, None)
+samp = Element("samp", {}, None)
+script = Element("script", {}, None)
+search = Element("search", {}, None)
+section = Element("section", {}, None)
+select = Element("select", {}, None)
+slot = Element("slot", {}, None)
+small = Element("small", {}, None)
+span = Element("span", {}, None)
+strong = Element("strong", {}, None)
+style = Element("style", {}, None)
+sub = Element("sub", {}, None)
+summary = Element("summary", {}, None)
+sup = Element("sup", {}, None)
+table = Element("table", {}, None)
+tbody = Element("tbody", {}, None)
+td = Element("td", {}, None)
+template = Element("template", {}, None)
+textarea = Element("textarea", {}, None)
+tfoot = Element("tfoot", {}, None)
+th = Element("th", {}, None)
+thead = Element("thead", {}, None)
+time = Element("time", {}, None)
+title = Element("title", {}, None)
+tr = Element("tr", {}, None)
+u = Element("u", {}, None)
+ul = Element("ul", {}, None)
+var = Element("var", {}, None)
