@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 __version__ = "24.3.18"
-__all__ = []
+__all__: list[str] = []
 
 import functools
 from collections.abc import Callable, Iterable, Iterator
@@ -11,12 +11,12 @@ from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
 
-def _force_escape(value):
+def _force_escape(value: Any) -> str:
     return _escape(str(value))
 
 
 # Inspired by https://www.npmjs.com/package/classnames
-def _class_names(items):
+def _class_names(items: Any) -> Any:
     if isinstance(items, str):
         return _force_escape(items)
 
@@ -30,7 +30,7 @@ def _class_names(items):
     return " ".join(_force_escape(class_name) for class_name in result)
 
 
-def _class_names_for_items(items):
+def _class_names_for_items(items: Any) -> Any:
     for item in items:
         if isinstance(item, dict):
             for k, v in item.items():
@@ -41,7 +41,7 @@ def _class_names_for_items(items):
                 yield item
 
 
-def _id_class_names_from_css_str(x):
+def _id_class_names_from_css_str(x: str) -> dict[str, Attribute]:
     if not isinstance(x, str):
         raise ValueError(f"id/class strings must be str. got {x}")
 
@@ -57,7 +57,7 @@ def _id_class_names_from_css_str(x):
 
     assert len(ids) in (0, 1)
 
-    result = {}
+    result: dict[str, Attribute] = {}
     if ids:
         result["id"] = ids[0]
 
@@ -67,7 +67,7 @@ def _id_class_names_from_css_str(x):
     return result
 
 
-def _kwarg_attribute_name(name):
+def _kwarg_attribute_name(name: str) -> str:
     # Make _hyperscript (https://hyperscript.org/) work smoothly
     if name == "_":
         return "_"
@@ -75,7 +75,7 @@ def _kwarg_attribute_name(name):
     return name.removesuffix("_").replace("_", "-")
 
 
-def _generate_attrs(raw_attrs):
+def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
     for key, value in raw_attrs.items():
         if value in (False, None):
             continue
@@ -91,7 +91,7 @@ def _generate_attrs(raw_attrs):
             yield _force_escape(key), _force_escape(value)
 
 
-def _attrs_string(attrs):
+def _attrs_string(attrs: dict[str, Attribute]) -> str:
     result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs))
 
     if not result:
@@ -100,7 +100,7 @@ def _attrs_string(attrs):
     return " " + result
 
 
-def _iter_children(x):
+def _iter_children(x: Node) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
@@ -139,7 +139,7 @@ class BaseElement:
         self._attrs = attrs
         self._children = children
 
-    def __str__(self):
+    def __str__(self) -> _Markup:
         return _Markup("".join(str(x) for x in self))
 
     @overload
@@ -152,7 +152,7 @@ class BaseElement:
     def __call__(self, **kwargs: Attribute) -> Self: ...
     def __call__(self, *args: Any, **kwargs: Any) -> Self:
         id_class = ""
-        attrs = {}
+        attrs: dict[str, Attribute] = {}
 
         if len(args) == 1:
             if isinstance(args[0], str):
@@ -198,7 +198,7 @@ class HTMLElement(Element):
 
 
 class VoidElement(BaseElement):
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
 
 

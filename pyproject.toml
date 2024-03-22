@@ -68,10 +68,3 @@ exclude = ["examples", "scripts"]
 [tool.pyright]
 include = ["htpy", "tests"]
 strict = ["htpy/__init__.pyi", "tests"]
-
-# Avoid errors in htpy code since it is not type annotated
-[[tool.mypy.overrides]]
-module = "htpy.*"
-disallow_untyped_defs = false
-disallow_untyped_calls = false
-disable_error_code = "var-annotated"
