@@ -33,7 +33,7 @@ def _class_names(items: Any) -> Any:
 def _class_names_for_items(items: Any) -> Any:
     for item in items:
         if isinstance(item, dict):
-            for k, v in item.items():
+            for k, v in item.items():  # pyright: ignore [reportUnknownVariableType]
                 if v:
                     yield k
         else:
@@ -41,7 +41,7 @@ def _class_names_for_items(items: Any) -> Any:
                 yield item
 
 
-def _id_class_names_from_css_str(x: str) -> dict[str, Attribute]:
+def _id_class_names_from_css_str(x: Any) -> dict[str, Attribute]:
     if not isinstance(x, str):
         raise ValueError(f"id/class strings must be str. got {x}")
 

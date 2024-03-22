@@ -64,7 +64,6 @@ strict = true
 packages = ["htpy", "tests"]
 exclude = ["examples", "scripts"]
 
-
 [tool.pyright]
 include = ["htpy", "tests"]
-strict = ["htpy/__init__.pyi", "tests"]
+strict = ["htpy", "tests"]
