@@ -11,6 +11,7 @@ htpy was heavily inspired by many other libraries and articles. This page lists 
 - [hyperscript](https://github.com/hyperhype/hyperscript) - JavaScript library that also uses CSS selector-like syntax for specifying id and classes.
 - [hyperpython](https://github.com/ejplatform/hyperpython) - A Python interpretation of hyperscript. Not actively maintained.
 - [h by Adam Johnson](https://github.com/adamchainz/h) - Similar to htpy, uses call syntax (`()`) for attributes and getitem (`[]`) for children.
+- [lxml.builder](https://lxml.de/apidoc/lxml.builder.html) - lxml's `E` allows creating XML/XHTML documents from Python.
 
 ## Articles about HTML generation without templates
 - [Jeff Atwood - You're Doing It Wrong](https://blog.codinghorror.com/youre-doing-it-wrong/) - Stack Overflow co-founder Jeff Atwood
