@@ -1,12 +1,12 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 
-from . import components
+from .components import my_form_page, my_form_success_page
 from .forms import MyForm
 
 
-def my_form(request):
+def my_form(request: HttpRequest) -> HttpResponse:
     form = MyForm(request.POST or None)
     if form.is_valid():
-        return HttpResponse(components.my_form_success())
+        return HttpResponse(my_form_success_page())
 
-    return HttpResponse(components.my_form(request, form))
+    return HttpResponse(my_form_page(request, my_form=form))

@@ -17,7 +17,9 @@ def my_view(request):
 
 ## Using htpy as part of an existing Django template
 
-htpy elements are marked as "safe" and can be injected directly into Django templates:
+htpy elements are marked as "safe" and can be injected directly into Django
+templates. This can be useful if you want to start using htpy gradually in an
+existing template based Django project:
 
 ```html title="base.html"
 <html>
@@ -35,11 +37,12 @@ from htpy import h1
 
 
 def index(request):
-    return render(request, "base.html", {"content": h1["Welcome to my site!"]})
-
+    return render(request, "base.html", {
+        "content": h1["Welcome to my site!"],
+    })
 ```
 
-## Render a Django form with htpy
+## Render a Django form
 
 CSRF token, form widgets and errors can be directly used within htpy elements:
 
@@ -52,32 +55,39 @@ class MyForm(forms.Form):
 ```
 
 ```py title="views.py"
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 
-from . import components
+from .components import my_form_page, my_form_success_page
 from .forms import MyForm
 
 
-def my_form(request):
+def my_form(request: HttpRequest) -> HttpResponse:
     form = MyForm(request.POST or None)
     if form.is_valid():
-        return HttpResponse(components.my_form_success())
+        return HttpResponse(my_form_success_page())
 
-    return HttpResponse(components.my_form(request, form))
+    return HttpResponse(my_form_page(request, my_form=form))
+
 ```
 
 ```py title="components.py"
+from django.http import HttpRequest
 from django.template.backends.utils import csrf_input
 
-from htpy import body, button, form, h1, head, html, title
+from htpy import Element, Node, body, button, form, h1, head, html, title
+
+from .forms import MyForm
 
 
-def base(page_title, content):
-    return html[head[title[page_title]], body[content]]
+def base_page(page_title: str, content: Node) -> Element:
+    return html[
+        head[title[page_title]],
+        body[content],
+    ]
 
 
-def my_form(request, my_form):
-    return base(
+def my_form_page(request: HttpRequest, *, my_form: MyForm) -> Element:
+    return base_page(
         "My form",
         form(method="post")[
             csrf_input(request),
@@ -88,8 +98,8 @@ def my_form(request, my_form):
     )
 
 
-def my_form_success():
-    return base(
+def my_form_success_page() -> Element:
+    return base_page(
         "Success!",
         h1["Success! The form was valid!"],
     )

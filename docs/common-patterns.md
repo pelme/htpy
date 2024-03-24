@@ -41,7 +41,7 @@ def greeting_page(*, name: str) -> Element:
     return html[body[h1[f"hi {name}!"]]]
 ```
 
-## Creating a base layout
+## Using a base layout
 
 A common feature of template languages is to "extend" a base/parent template and specify placeholders. This can be achieved with a `base_layout` function:
 
@@ -51,7 +51,7 @@ import datetime
 from htpy import body, div, h1, head, html, p, title, Node, Element
 
 
-def base_layout(*,
+def base_page(*,
     page_title: str | None = None,
     extra_head: Node = None,
     content: Node = None,
@@ -67,7 +67,7 @@ def base_layout(*,
 
 
 def index_page() -> Element:
-    return base_layout(
+    return base_page(
         page_title="Welcome!",
         body_class="green",
         content=[
@@ -78,7 +78,7 @@ def index_page() -> Element:
 
 
 def about_page() -> Element:
-    return base_layout(
+    return base_page(
         page_title="About us",
         content=[
             h1["About us"],
@@ -90,7 +90,7 @@ def about_page() -> Element:
 
 ## UI components
 
-Creating higher level wrappers for common UI components can be a good idea to reduce repitition.
+Creating higher level wrappers for common UI components can be a good idea to reduce repetition.
 
 Wrapping [Bootstrap Modal](https://getbootstrap.com/docs/4.0/components/modal/) could be achieved with a function like this:
 
@@ -122,7 +122,6 @@ def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> El
         ]
     ]
 ```
-
 
 You would then use it like this:
 ```py
