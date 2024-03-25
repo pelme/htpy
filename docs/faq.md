@@ -16,6 +16,8 @@ you are looking to generate XML.
 
 htpy generates HTML, therefore "void elements" such as `<br>` does not include a trailing `/`.
 
+If you are looking to generate generic XML, [`lxml.builder`](https://lxml.de/apidoc/lxml.builder.html) could be a good alternative.
+
 ## Does not generating HTML from Python mean mixing concerns between presentation and business logic?
 
 With a template language, create HTML markup in separate files is enforced by
