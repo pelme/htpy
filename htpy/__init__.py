@@ -5,10 +5,13 @@ __all__: list[str] = []
 
 import functools
 from collections.abc import Callable, Iterable, Iterator
-from typing import Any, Protocol, Self, TypeAlias, overload
+from typing import Any, Protocol, TypeAlias, TypeVar, overload
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
+
+BaseElementSelf = TypeVar("BaseElementSelf", bound="BaseElement")
+ElementSelf = TypeVar("ElementSelf", bound="Element")
 
 
 def _force_escape(value: Any) -> str:
@@ -143,14 +146,20 @@ class BaseElement:
         return _Markup("".join(str(x) for x in self))
 
     @overload
-    def __call__(self, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
+    def __call__(
+        self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
+    ) -> BaseElementSelf: ...
     @overload
-    def __call__(self, id_class: str = "", **kwargs: Attribute) -> Self: ...
+    def __call__(
+        self: BaseElementSelf, id_class: str = "", **kwargs: Attribute
+    ) -> BaseElementSelf: ...
     @overload
-    def __call__(self, attrs: dict[str, Attribute], **kwargs: Attribute) -> Self: ...
+    def __call__(
+        self: BaseElementSelf, attrs: dict[str, Attribute], **kwargs: Attribute
+    ) -> BaseElementSelf: ...
     @overload
-    def __call__(self, **kwargs: Attribute) -> Self: ...
-    def __call__(self, *args: Any, **kwargs: Any) -> Self:
+    def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
+    def __call__(self: BaseElementSelf, *args: Any, **kwargs: Any) -> BaseElementSelf:
         id_class = ""
         attrs: dict[str, Attribute] = {}
 
@@ -187,7 +196,7 @@ class BaseElement:
 
 
 class Element(BaseElement):
-    def __getitem__(self, children: Node) -> Self:
+    def __getitem__(self: ElementSelf, children: Node) -> ElementSelf:
         return self.__class__(self._name, self._attrs, children)
 
 
