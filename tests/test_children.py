@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, assert_type
+from typing import TYPE_CHECKING, Any
 
 import pytest
 from markupsafe import Markup
+from typing_extensions import assert_type
 
 from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 

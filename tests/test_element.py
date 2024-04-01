@@ -1,7 +1,6 @@
-from typing import assert_type
-
 import pytest
 from markupsafe import Markup
+from typing_extensions import assert_type
 
 import htpy
 from htpy import Element, div
