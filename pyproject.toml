@@ -21,6 +21,7 @@ classifiers = [
 ]
 # Install with pip install .[dev]
 optional-dependencies.dev = [
+    "pre-commit",
     "flit",
     "mypy",
     "pyright",
