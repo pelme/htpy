@@ -4,6 +4,7 @@ theme:
   name: material
   features:
     - content.code.copy
+    - toc.integrate
   palette:
     scheme: slate
   icon:
