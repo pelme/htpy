@@ -217,8 +217,7 @@ class _HasHtml(Protocol):
 
 _ClassNamesDict: TypeAlias = dict[str, bool]
 _ClassNames: TypeAlias = (
-    list[str | None | bool | _ClassNamesDict]
-    | tuple[str | None | bool | _ClassNamesDict, ...]
+    Iterable[str | None | bool | _ClassNamesDict]
     | _ClassNamesDict
 )
 Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
