@@ -4,6 +4,7 @@ theme:
   name: material
   features:
     - content.code.copy
+    - toc.integrate
   palette:
     scheme: slate
   icon:
@@ -28,3 +29,5 @@ markdown_extensions:
   - pymdownx.superfences
   - attr_list
   - md_in_html
+  - toc:
+      permalink: true
