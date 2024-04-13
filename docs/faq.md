@@ -20,7 +20,7 @@ If you are looking to generate generic XML, [`lxml.builder`](https://lxml.de/api
 
 ## Does not generating HTML from Python mean mixing concerns between presentation and business logic?
 
-With a template language, create HTML markup in separate files is enforced by
+With a template language, putting HTML markup in separate files is enforced by
 design. Avoiding logic in the presentation layer is also mostly done by making
 the language very restrictive.
 
@@ -28,7 +28,6 @@ It takes a little bit of planning and effort, but it is possible to have a
 nicely separated presentation layer that is free from logic. See [Common
 patterns](common-patterns.md) for more details on how you can structure your
 project.
-
 
 ## What kind of black magic makes `from htpy import whatever_element` work?
 
