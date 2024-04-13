@@ -65,6 +65,23 @@ from a Python backend.
 
 - **Familiar concepts from React:** React helped make it popular writing HTML with a programming language. htpy uses a lot of similar constructs.
 
+## Philosophy
+
+htpy generates HTML elements and attributes and provide a few helpers.
+
+htpy does not enforce any particular pattern or style to organize
+your pages, components and layouts. That does not mean that htpy cannot be used
+to build sophisticated web pages or applications.
+
+Rather the opposite: you are encouraged the leverage the power of Python to
+structure your project. Use modules, classes, functions, decorators, list
+comprehension, generators, conditionals, static typing and any other feature of
+Python to organize your components. This gives you a lot of power and makes htpy
+scale from a single small Flask project to bigger applications.
+
+[Common patterns](https://htpy.dev/common-patterns/) can give you some ideas
+that you can build upon yourself.
+
 ## Installation
 
 [htpy is available on PyPI](https://pypi.org/project/htpy/). You may install the latest version using pip:
