@@ -11,9 +11,9 @@ pytestmark = pytest.mark.usefixtures("django_env")
 
 def test_template_injection() -> None:
     t = Template("<ul>{{ stuff }}</ul>")
-    result = t.render(Context({"stuff": li["I am safe!"]}))
+    result = t.render(Context({"stuff": li(id="hi")["I am safe!"]}))
 
-    assert result == "<ul><li>I am safe!</li></ul>"
+    assert result == '<ul><li id="hi">I am safe!</li></ul>'
 
 
 def test_SafeString() -> None:

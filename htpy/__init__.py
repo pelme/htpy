@@ -194,6 +194,12 @@ class BaseElement:
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} '{self}'>"
 
+    # Avoid having Django "call" a htpy element that is injected into a
+    # template. Setting do_not_call_in_templates will prevent Django from doing
+    # an extra call:
+    # https://docs.djangoproject.com/en/5.0/ref/templates/api/#variables-and-lookups
+    do_not_call_in_templates = True
+
 
 class Element(BaseElement):
     def __getitem__(self: ElementSelf, children: Node) -> ElementSelf:
