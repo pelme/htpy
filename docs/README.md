@@ -45,8 +45,8 @@ print(
 
 **The syntax**
 
-You might notice that htpy uses a special syntax where child elements are placed in square brackets, 
-almost as if you are indexing the element(s) of a dictionary.
+htpy uses a special syntax where child elements are placed in square brackets, 
+almost as if you are indexing the element(s) of a dictionary or a list.
 
 ```python
 from htpy import div, p
@@ -57,7 +57,7 @@ div[
 ]
 ```
 
-htpy implements the `__getattr__` method of elements, making it possible to assign child elements to a parent by declaring them inside a square bracket. 
+htpy implements the `__getitem__` method of elements, making it possible to assign child elements to a parent by declaring them inside a square bracket. 
 It might look a bit strange at first, but it has some very nice benefits. Most notably, it clearly separates the **arguments** (in paranthesis) 
 from the **content** (in the square bracket) of an element. For example, here is a typical anchor tag representation with an `href` attribute and 
 some `Click here!` content.
