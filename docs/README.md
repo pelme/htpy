@@ -43,6 +43,31 @@ print(
 
 ```
 
+**The syntax**
+
+You might notice that htpy uses a special syntax where child elements are placed in square brackets, 
+almost as if you are indexing the element(s) of a dictionary.
+
+```python
+from htpy import div, p
+
+div[
+    p["Child Number One"],
+    p["Child Number Two"],
+]
+```
+
+htpy implements the `__getattr__` method of elements, making it possible to assign child elements to a parent by declaring them inside a square bracket. 
+It might look a bit strange at first, but it has some very nice benefits. Most notably, it clearly separates the **arguments** (in paranthesis) 
+from the **content** (in the square bracket) of an element. For example, here is a typical anchor tag representation with an `href` attribute and 
+some `Click here!` content.
+
+```python
+from htpy import a
+
+a(href="/some/path")["Click here!"]
+```
+
 ## Motivation for this project
 At [Personalkollen](https://personalkollen.se/start/), where htpy was originally
 developed we often found ourselves hitting walls when using classic templates.
