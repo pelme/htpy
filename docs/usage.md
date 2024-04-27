@@ -61,6 +61,21 @@ and safe to directly insert variable data via f-strings:
 <div><b>Enter a valid email address.</b></div>
 ```
 
+Optionally use the provided `if_` utility function.
+
+```pycon title="Utility function: if_"
+
+>>> from htpy import if_, div, b
+>>> error = None
+
+>>> print(div[if_(error)[b[error]]])
+<div></div>
+
+>>> error = 'Enter a valid email address.'
+>>> print(div[if_(error)[b[error]]])
+<div><b>Enter a valid email address.</b></div>
+```
+
 ### Loops / iterating over children
 
 You can pass a list, tuple or generator to generate multiple children:
@@ -84,6 +99,54 @@ A `list` can be used similar to a [JSX fragment](https://react.dev/reference/rea
 >>> my_images = [img(src="a.jpg"), img(src="b.jpg")]
 >>> print(div[my_images])
 <div><img src="a.jpg"><img src="b.jpg"></div>
+```
+
+Optionally use the provided `for_` utility function to map an iterable to a callback. 
+The function is generic, and gives type inferrence for the lambda argument. It should return (more) element(s).
+
+```pycon title="for_"
+>>> from htpy import div, p
+>>> from htpy.utils import for_
+
+>>> print(div[for_(["Cat", "Doge", "Horse"], lambda animal: p[animal])])
+"<div><p>Cat</p><p>Doge</p><p>Horse</p></div>"
+```
+
+```py title="for_utility_example.py"
+from dataclasses import dataclass
+from htpy import ul, li, span 
+from htpy.utils import for_
+
+@dataclass
+class Person:
+    name: str
+    age: int
+
+persons = [Person("Morgan", 51), Person("Ola Conny", 60)]
+
+print(
+    ul[
+        for_(
+            persons,
+            lambda pax: li[
+                span[pax.name],
+                span[str(pax.age)],
+            ],
+        )
+    ]
+)
+
+#  Prettified output:
+#  <ul>
+#    <li>
+#      <span>Morgan</span>
+#      <span>51</span>
+#    </li>
+#    <li>
+#      <span>Ola Conny</span>
+#      <span>60</span>
+#    </li>
+#  </ul>
 ```
 
 ### Custom elements / web components

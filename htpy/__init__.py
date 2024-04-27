@@ -5,7 +5,7 @@ __all__: list[str] = []
 
 import functools
 from collections.abc import Callable, Iterable, Iterator
-from typing import Any, Protocol, TypeAlias, TypeVar, overload
+from typing import Any, Protocol, Self, TypeAlias, TypeVar, overload
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -219,6 +219,22 @@ class VoidElement(BaseElement):
 
 class _HasHtml(Protocol):
     def __html__(self) -> str: ...
+
+
+class Fragment(BaseElement):
+    def __init__(self, children: Node) -> None:
+        self._children = children
+
+    def __getitem__(self: Self, children: Node) -> Self:
+        return self.__class__(children)
+
+    def __iter__(self) -> Iterator[str]:
+        yield from _iter_children(self._children)
+
+
+class IgnoredFragment(Fragment):
+    def __getitem__(self: Self, _: Node) -> Self:
+        return self.__class__(None)
 
 
 _ClassNamesDict: TypeAlias = dict[str, bool]
