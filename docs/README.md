@@ -82,6 +82,12 @@ scale from a single small Flask project to bigger applications.
 [Common patterns](https://htpy.dev/common-patterns/) can give you some ideas
 that you can build upon yourself.
 
+## The syntax
+Child elements are specified using the `[]` syntax. This may look strange at
+first but it has some nice benefits. This clearly separates attributes from
+children elements and makes the code more readable. It is implemented using the
+`__getitem__` method, just like lists or dicts.
+
 ## Installation
 
 [htpy is available on PyPI](https://pypi.org/project/htpy/). You may install the latest version using pip:
