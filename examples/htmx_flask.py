@@ -33,7 +33,7 @@ def home():
 
 @app.route("/count")
 def counter():
-    one_to_ten = [li[i] for i in range(1, 11)]
+    one_to_ten = [li[str(i)] for i in range(1, 11)]
     return str(ul[one_to_ten])
 
 
