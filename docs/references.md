@@ -1,8 +1,11 @@
 # References
 
-htpy was heavily inspired by many other libraries and articles. This page lists some of them.
+## Projects that use htpy
+
+- [voterbowl.org](https://voterbowl.org) - College students win prizes by checking if they are registered to vote: [Github repository](https://github.com/front-seat/voterbowl/tree/main/server/vb/components).
 
 ## Similar libraries and tools
+htpy was heavily inspired by many other libraries that came before it.
 
 - [JSX/React](https://legacy.reactjs.org/docs/introducing-jsx.html) - Made writing HTML in a programming language popular.
 - [pyxl](https://github.com/dropbox/pyxl), [pyxl3](https://github.com/gvanrossum/pyxl3), [pyxl4](https://github.com/pyxl4/pyxl4) - Write HTML in Python with JSX-like syntax. Not actively maintained.
