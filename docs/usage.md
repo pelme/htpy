@@ -184,7 +184,7 @@ that looks like a CSS selector can be used to quickly define id and classes:
 ```pycon title="Define multiple classes"
 >>> from htpy import div
 >>> print(div(".foo.bar"))
-<div id="foo bar"></div>
+<div class="foo bar"></div>
 ```
 
 ```pycon title="Combining both id and classes"
