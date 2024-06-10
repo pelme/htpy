@@ -48,7 +48,7 @@ def bootstrap_badge(
 ## Node
 `Node` is a type alias for all possible objects that can be used as a child
 node. [See the source for the exact
-definition](https://github.com/pelme/htpy/blob/09b43444fc2c6ebcf6b8070ef5ac1d2fa0d1901b/htpy/__init__.pyi#L13)
+definition](https://github.com/pelme/htpy/blob/28ec3b3d469e11192079378598d549305709999c/htpy/__init__.py#L226C1-L226C5)
 that defines all kinds of nodes that can be children of an element. This is a
 wider type than `Element` since child nodes can be str, markup, None, iterables
 or callables.
