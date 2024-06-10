@@ -31,6 +31,9 @@ optional-dependencies.dev = [
     "django-stubs",
     "jinja2",
 ]
+optional-dependencies.extras = [
+    "black"
+]
 optional-dependencies.docs = [
     "mkdocs-material==9.5.12",
 ]
@@ -40,6 +43,9 @@ Homepage = "https://htpy.dev"
 Repository = "https://github.com/pelme/htpy"
 Documentation = "https://htpy.dev"
 Issues = "https://github.com/pelme/htpy/issues"
+
+[project.scripts]
+htpy = "htpy.cli.cli:main"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]
