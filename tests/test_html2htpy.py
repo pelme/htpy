@@ -70,7 +70,18 @@ def test_convert_special_characters():
     """
 
     actual = html2htpy(input)
-    assert actual == """p["Special characters: & < > " ' ©"]"""
+    assert actual == 'p["Special characters: & < > \\" \' ©"]'
+
+
+def test_convert_f_string_escaping():
+    input = """
+        <p>{{ variable }} is "a" { paragraph }.</p>
+    """
+
+    actual = html2htpy(input, format=False)
+    expected = r'p[f"{ variable } is \"a\" {{ paragraph }}."]'
+
+    assert actual == expected
 
 
 def test_convert_script_style_tags():

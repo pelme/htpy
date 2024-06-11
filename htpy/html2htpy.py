@@ -183,18 +183,34 @@ def html2htpy(html: str, shorthand_id_class: bool = False, format: bool = False)
 
 def _convert_data_to_string(data: str):
     _data = str(data)
-    escaped_text = _data.replace('"', '\\"')
 
-    pattern = re.compile(r"\{\{\s*(\w+)\s*\}\}")
+    # escape unescaped dblquote: " -> \"
+    _data = re.compile(r'(?<![\\])"').sub('\\"', _data)
 
-    has_jinja_pattern = re.search(pattern, _data)
+    template_string_pattern = re.compile(r"\{\{\s*(\w+)\s*\}\}")
+
+    has_jinja_pattern = re.search(template_string_pattern, _data)
     if has_jinja_pattern:
+        # regex replaces these 3 cases:
+        # {{ var }} -> { var }
+        # { -> {{
+        # } -> }}
+        template_string_replace_pattern = re.compile(
+            r"(\{\{\s*(\w+)\s*\}\}|(?<![\{]){(?![\{])|(?<![\}])}(?![\}]))"
+        )
 
         def replacer(match: re.Match[str]):
-            var_name = match.group(1)
-            return f"{{{var_name}}}"
+            captured = match.group(1)
 
-        _data = pattern.sub(replacer, escaped_text)
+            if captured.startswith("{{"):
+                return captured[1:-1]
+
+            if captured == "{":
+                return "{{"
+
+            return "}}"
+
+        _data = template_string_replace_pattern.sub(replacer, _data)
         _data = 'f"' + _data + '"'
     else:
         _data = '"' + _data + '"'
