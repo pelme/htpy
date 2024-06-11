@@ -1,4 +1,4 @@
-import black
+import textwrap
 import pytest
 from htpy import html2htpy
 
@@ -11,31 +11,25 @@ def test_convert_shorthand_id_and_class():
     """
 
     actual = html2htpy(input, shorthand_id_class=True, format=True)
-    expected = _format(
-        """
-        div("#div-id.some-class.other-class")[
-            p["This is a paragraph."]
-        ]
-        """
-    )
+    expected = 'div("#div-id.some-class.other-class")[p["This is a paragraph."]]\n'
 
     assert actual == expected
 
 
 def test_convert_nested_element():
     input = """
-        <div>
-          <p>This is a <span>nested</span> element.</p>
-          <p>Another <a href="#">nested <strong>tag</strong></a>.</p>
-        </div>
+    <div>
+      <p>This is a <span>nested</span> element.</p>
+      <p>Another <a href="#">nested <strong>tag</strong></a>.</p>
+    </div>
     """
 
     actual = html2htpy(input, format=True)
-    expected = _format(
-        """
+    expected = textwrap.dedent(
+        """\
         div[
             p["This is a ", span["nested"], " element."],
-            p["Another ", a(href="#")["nested ", strong["tag"]], "."]
+            p["Another ", a(href="#")["nested ", strong["tag"]], "."],
         ]
         """
     )
@@ -86,13 +80,13 @@ def test_convert_script_style_tags():
     """
 
     actual = html2htpy(input, format=True)
-    assert actual == _format(
-        """[
-            script(type="text/javascript")[
-                "alert('This is a script');"
-            ],
+    assert actual == textwrap.dedent(
+        """\
+        [
+            script(type="text/javascript")["alert('This is a script');"],
             style["body { background-color: #fff; }"],
-        ]"""
+        ]
+        """
     )
 
 
@@ -177,13 +171,13 @@ def test_convert_section_regular():
     """
 
     actual = html2htpy(input, shorthand_id_class=False, format=True)
-    expected = _format(
-        """
+    expected = textwrap.dedent(
+        """\
         section(class_="hero is-fullheight is-link")[
             div(class_="hero-body")[
                 div(class_="container")[
                     p(class_="subtitle is-3 is-spaced")["Welcome"],
-                    p(class_="title is-1 is-spaced")[f"Student code: {student_code}"]
+                    p(class_="title is-1 is-spaced")[f"Student code: {student_code}"],
                 ]
             ]
         ]
@@ -207,8 +201,8 @@ def test_convert_section_shorthand_id_class():
 
     actual = html2htpy(input, shorthand_id_class=True, format=True)
 
-    assert actual == _format(
-        """
+    assert actual == textwrap.dedent(
+        """\
         section(".hero.is-fullheight.is-link")[
             div(".hero-body")[
                 div(".container")[
@@ -245,30 +239,23 @@ def test_convert_html_to_htpy_svg():
 
     actual_output = html2htpy(input, format=True)
 
-    expected_output = _format(
-        """
+    expected_output = textwrap.dedent(
+        """\
             svg(
                 xmlns="http://www.w3.org/2000/svg",
                 fill="none",
                 viewbox="0 0 24 24",
                 stroke_width="1.5",
                 stroke="currentColor",
-                class_="w-6 h-6"
+                class_="w-6 h-6",
             )[
                 path(
                     stroke_linecap="round",
                     stroke_linejoin="round",
-                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10",
                 )
             ]
         """
     )
 
     assert expected_output == actual_output
-
-
-def _format(s: str):
-    return black.format_str(
-        s,
-        mode=black.FileMode(line_length=80, magic_trailing_comma=False),
-    )
