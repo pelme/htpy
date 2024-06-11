@@ -1,5 +1,7 @@
+import sys
 import re
 import argparse
+import select
 from dataclasses import dataclass
 from typing import Self
 from html.parser import HTMLParser
@@ -246,50 +248,36 @@ def main():
         help="Format output code (requires black installed)",
         action="store_true",
     )
-
-    def _convert_html(args: ConvertArgs):
-        convert_html_cli(args.shorthand, args.format)
-
-    parser.set_defaults(func=_convert_html)
+    parser.add_argument(
+        "input",
+        type=argparse.FileType("r"),
+        nargs="?",
+        default=sys.stdin,
+        help="input html from file or stdin",
+    )
 
     args = parser.parse_args()
 
-    args.func(args)
+    if args.input == sys.stdin and select.select([sys.stdin], [], [], 0.1)[0]:
+        input = args.input.read()
+    elif args.input != sys.stdin:
+        input = args.input.read()
+    else:
+        _printerr(
+            "No input provided. Please supply an input file or stream.",
+        )
+        _printerr("Example usage: `cat index.html | html2htpy`")
+        _printerr("`html2htpy -h` for help")
+        sys.exit(1)
+
+    shorthand: bool = args.shorthand
+    format: bool = args.format
+
+    print(html2htpy(input, shorthand, format))
 
 
-def convert_html_cli(shorthand_id_class: bool, format: bool):
-    import time
-
-    print("")
-    print(f"HTML to HTPY converter")
-    print(f"selected options: ")
-    print(f"              format: {format}")
-    print(f"  shorthand id class: {shorthand_id_class}")
-    print("\n>>>>>>>>>>>>>>>>>>")
-    print(">>> paste html >>>")
-    print(">>>>>>>>>>>>>>>>>>\n")
-
-    collected_text = ""
-    input_starttime = None
-
-    try:
-        while True:
-            user_input = input()
-            if not input_starttime:
-                input_starttime = time.time()
-
-            collected_text += user_input
-
-            if input_starttime + 0.1 < time.time():
-                break
-
-        output = html2htpy(collected_text, shorthand_id_class, format)
-        print("\n##############################################")
-        print("### serialized and formatted python (htpy) ###")
-        print("##############################################\n")
-        print(output)
-    except KeyboardInterrupt:
-        print("\nInterrupted")
+def _printerr(value: str):
+    print(value, file=sys.stderr)
 
 
 if __name__ == "__main__":
