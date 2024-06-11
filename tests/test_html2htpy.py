@@ -1,6 +1,6 @@
 import textwrap
 import pytest
-from htpy import html2htpy
+from htpy.html2htpy import html2htpy
 
 
 def test_convert_shorthand_id_and_class():
