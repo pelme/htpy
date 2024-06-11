@@ -186,19 +186,23 @@ def html2htpy(html: str, shorthand_id_class: bool = False, format: bool = False)
 def _convert_data_to_string(data: str):
     _data = str(data)
 
+    is_multiline = "\n" in _data
+
+    _data = _data.replace("\n", "")
+
     # escape unescaped dblquote: " -> \"
     _data = re.compile(r'(?<![\\])"').sub('\\"', _data)
 
-    template_string_pattern = re.compile(r"\{\{\s*(\w+)\s*\}\}")
+    template_string_pattern = re.compile(r"\{\{\s*[\w\.]+\s*\}\}")
 
     has_jinja_pattern = re.search(template_string_pattern, _data)
     if has_jinja_pattern:
         # regex replaces these 3 cases:
-        # {{ var }} -> { var }
+        # {{ var.xx }} -> { var.xx }
         # { -> {{
         # } -> }}
         template_string_replace_pattern = re.compile(
-            r"(\{\{\s*(\w+)\s*\}\}|(?<![\{]){(?![\{])|(?<![\}])}(?![\}]))"
+            r"(\{\{\s*[\w\.]+\s*\}\}|(?<![\{]){(?![\{])|(?<![\}])}(?![\}]))"
         )
 
         def replacer(match: re.Match[str]):
@@ -213,8 +217,14 @@ def _convert_data_to_string(data: str):
             return "}}"
 
         _data = template_string_replace_pattern.sub(replacer, _data)
+        if is_multiline:
+            _data = '""' + _data + '""'
+
         _data = 'f"' + _data + '"'
     else:
+        if is_multiline:
+            _data = '""' + _data + '""'
+
         _data = '"' + _data + '"'
 
     return _data

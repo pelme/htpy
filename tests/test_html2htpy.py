@@ -84,6 +84,45 @@ def test_convert_f_string_escaping():
     assert actual == expected
 
 
+def test_convert_f_string_escaping_complex():
+    input = """
+    <body>
+      <h1>{{ heading }}</h1>
+      <p>Welcome to our cooking site, {{ user.name }}!</p>
+
+      <h2>Recipe of the Day: {{ recipe.name }}</h2>
+      <p>{{ recipe.description }}</p>
+
+      <h3>Instructions:</h3>
+      <ol>
+          {% for step in recipe.steps %}
+          <li>{{ step }}</li>
+          {% endfor %}
+      </ol>
+    </body>
+    """
+
+    actual = html2htpy(input, format=True)
+    expected = textwrap.dedent(
+        """\
+        body[
+            h1[f"{ heading }"],
+            p[f"Welcome to our cooking site, { user.name }!"],
+            h2[f"Recipe of the Day: { recipe.name }"],
+            p[f"{ recipe.description }"],
+            h3["Instructions:"],
+            ol[
+                \"\"\"          {% for step in recipe.steps %}          \"\"\",
+                li[f"{ step }"],
+                \"\"\"          {% endfor %}      \"\"\",
+            ],
+        ]
+    """
+    )
+
+    assert actual == expected
+
+
 def test_convert_script_style_tags():
     input = """
         <script type="text/javascript">alert('This is a script');</script>
