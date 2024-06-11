@@ -10,6 +10,8 @@ from typing import Any, Protocol, TypeAlias, TypeVar, overload
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
+from .html2htpy import *
+
 BaseElementSelf = TypeVar("BaseElementSelf", bound="BaseElement")
 ElementSelf = TypeVar("ElementSelf", bound="Element")
 
@@ -95,7 +97,9 @@ def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attr
 
 
 def _attrs_string(attrs: dict[str, Attribute]) -> str:
-    result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs))
+    result = " ".join(
+        k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs)
+    )
 
     if not result:
         return ""
@@ -147,7 +151,10 @@ class BaseElement:
 
     @overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf,
+        id_class: str,
+        attrs: dict[str, Attribute],
+        **kwargs: Attribute,
     ) -> BaseElementSelf: ...
     @overload
     def __call__(
@@ -223,7 +230,9 @@ class _HasHtml(Protocol):
 
 _ClassNamesDict: TypeAlias = dict[str, bool]
 _ClassNames: TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+Node: TypeAlias = (
+    None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+)
 
 Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 

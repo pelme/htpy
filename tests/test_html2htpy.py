@@ -1,6 +1,6 @@
 import black
 import pytest
-from htpy.utils import html_to_htpy
+from htpy import html2htpy
 
 
 def test_convert_shorthand_id_and_class():
@@ -10,7 +10,7 @@ def test_convert_shorthand_id_and_class():
         </div>
     """
 
-    actual = html_to_htpy(input, shorthand_id_class=True, format=True)
+    actual = html2htpy(input, shorthand_id_class=True, format=True)
     expected = _format(
         """
         div("#div-id.some-class.other-class")[
@@ -21,6 +21,7 @@ def test_convert_shorthand_id_and_class():
 
     assert actual == expected
 
+
 def test_convert_nested_element():
     input = """
         <div>
@@ -29,7 +30,7 @@ def test_convert_nested_element():
         </div>
     """
 
-    actual = html_to_htpy(input, format=True)
+    actual = html2htpy(input, format=True)
     expected = _format(
         """
         div[
@@ -41,6 +42,7 @@ def test_convert_nested_element():
 
     assert actual == expected
 
+
 def test_convert_self_closing_tags():
     input = """
         <img src="image.jpg" alt="An image" />
@@ -48,14 +50,14 @@ def test_convert_self_closing_tags():
         <input type="text" />
     """
 
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
 
     assert actual == '[img(src="image.jpg",alt="An image"),br,input(type="text")]'
 
 
 def test_convert_attribute_with_special_characters():
     input = """<img src="path/to/image.jpg" alt="A <test> & 'image'" />"""
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert actual == """img(src="path/to/image.jpg",alt="A <test> & 'image'")"""
 
 
@@ -64,7 +66,7 @@ def test_convert_ignores_comments():
     <!-- This is a comment -->
     <div>Content <!-- Another comment --> inside</div>
     """
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert actual == 'div["Content "," inside"]'
 
 
@@ -73,7 +75,7 @@ def test_convert_special_characters():
     <p>Special characters: &amp; &lt; &gt; &quot; &apos; &copy;</p>
     """
 
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert actual == """p["Special characters: & < > " ' ©"]"""
 
 
@@ -83,7 +85,7 @@ def test_convert_script_style_tags():
         <style>body { background-color: #fff; }</style>
     """
 
-    actual = html_to_htpy(input, format=True)
+    actual = html2htpy(input, format=True)
     assert actual == _format(
         """[
             script(type="text/javascript")[
@@ -108,7 +110,7 @@ def test_convert_html_doctype():
         </html>
     """
 
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     expected = (
         """html[head[title["Test Document"]],body[h1["Header"],p["Paragraph"]]]"""
     )
@@ -123,7 +125,7 @@ def test_convert_empty_elements():
         <span></span>
     """
 
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert actual == "[div,p,span]"
 
 
@@ -132,7 +134,7 @@ def test_convert_custom_tag():
         <custom-element attribute="value">Custom content</custom-element>
     """
 
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert actual == """custom_element(attribute="value")["Custom content"]"""
 
 
@@ -145,7 +147,7 @@ def test_convert_malformed_html():
     """
 
     with pytest.raises(Exception) as e:
-        html_to_htpy(input)
+        html2htpy(input)
 
     assert "Closing tag p does not match the currently open tag (div)" in str(e.value)
 
@@ -155,7 +157,7 @@ def test_convert_attributes_without_values():
         <input type="checkbox" checked />
         <option selected>Option</option>
     """
-    actual = html_to_htpy(input)
+    actual = html2htpy(input)
     assert (
         actual
         == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
@@ -174,7 +176,7 @@ def test_convert_section_regular():
         </section>
     """
 
-    actual = html_to_htpy(input, shorthand_id_class=False, format=True)
+    actual = html2htpy(input, shorthand_id_class=False, format=True)
     expected = _format(
         """
         section(class_="hero is-fullheight is-link")[
@@ -190,6 +192,7 @@ def test_convert_section_regular():
 
     assert actual == expected
 
+
 def test_convert_section_shorthand_id_class():
     input = """
         <section class="hero is-fullheight is-link">
@@ -202,7 +205,7 @@ def test_convert_section_shorthand_id_class():
         </section>
     """
 
-    actual = html_to_htpy(input, shorthand_id_class=True, format=True)
+    actual = html2htpy(input, shorthand_id_class=True, format=True)
 
     assert actual == _format(
         """
@@ -226,7 +229,7 @@ def test_convert_nested_element_without_formatting():
         </div>
     """
 
-    actual = html_to_htpy(input, format=False)
+    actual = html2htpy(input, format=False)
 
     expected = 'div[p["This is a ",span["nested"]," element."],p["Another ",a(href="#")["nested ",strong["tag"]],"."]]'
 
@@ -240,7 +243,7 @@ def test_convert_html_to_htpy_svg():
         </svg>
     """
 
-    actual_output = html_to_htpy(input, format=True)
+    actual_output = html2htpy(input, format=True)
 
     expected_output = _format(
         """

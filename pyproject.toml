@@ -45,7 +45,7 @@ Documentation = "https://htpy.dev"
 Issues = "https://github.com/pelme/htpy/issues"
 
 [project.scripts]
-htpy = "htpy.cli.cli:main"
+html2htpy = "htpy.html2htpy:main"
 
 [build-system]
 requires = ["flit_core >=3.2,<4"]

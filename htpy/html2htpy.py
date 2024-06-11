@@ -1,8 +1,10 @@
-from html.parser import HTMLParser
 import re
+import argparse
+from dataclasses import dataclass
 from typing import Self
+from html.parser import HTMLParser
 
-__all__ = ["html_to_htpy"]
+__all__ = ["html2htpy"]
 
 
 class Tag:
@@ -173,7 +175,7 @@ class HTPYParser(HTMLParser):
             return o
 
 
-def html_to_htpy(html: str, shorthand_id_class: bool = False, format: bool = False):
+def html2htpy(html: str, shorthand_id_class: bool = False, format: bool = False):
     parser = HTPYParser()
     parser.feed(html)
 
@@ -206,3 +208,74 @@ def _serialize(el: Tag | str, shorthand_id_class: bool):
         return el.serialize(shorthand_id_class=shorthand_id_class)
     else:
         return str(el)
+
+
+@dataclass
+class ConvertArgs:
+    shorthand: bool
+    format: bool
+
+
+def main():
+    parser = argparse.ArgumentParser(prog="html2htpy")
+
+    parser.add_argument(
+        "-s",
+        "--shorthand",
+        help="Use shorthand syntax for class and id attributes",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-f",
+        "--format",
+        help="Format output code (requires black installed)",
+        action="store_true",
+    )
+
+    def _convert_html(args: ConvertArgs):
+        convert_html_cli(args.shorthand, args.format)
+
+    parser.set_defaults(func=_convert_html)
+
+    args = parser.parse_args()
+
+    args.func(args)
+
+
+def convert_html_cli(shorthand_id_class: bool, format: bool):
+    import time
+
+    print("")
+    print(f"HTML to HTPY converter")
+    print(f"selected options: ")
+    print(f"              format: {format}")
+    print(f"  shorthand id class: {shorthand_id_class}")
+    print("\n>>>>>>>>>>>>>>>>>>")
+    print(">>> paste html >>>")
+    print(">>>>>>>>>>>>>>>>>>\n")
+
+    collected_text = ""
+    input_starttime = None
+
+    try:
+        while True:
+            user_input = input()
+            if not input_starttime:
+                input_starttime = time.time()
+
+            collected_text += user_input
+
+            if input_starttime + 0.1 < time.time():
+                break
+
+        output = html2htpy(collected_text, shorthand_id_class, format)
+        print("\n##############################################")
+        print("### serialized and formatted python (htpy) ###")
+        print("##############################################\n")
+        print(output)
+    except KeyboardInterrupt:
+        print("\nInterrupted")
+
+
+if __name__ == "__main__":
+    main()
