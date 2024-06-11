@@ -28,18 +28,17 @@ class Tag:
         _attrs = ""
         _kwattrs: list[tuple[str, str | None]] = []
 
-        for i in range(len(self.attrs)):
-            a = self.attrs[i]
+        for a in self.attrs:
             key = a[0]
             if key == "class":
                 if shorthand_id_class:
-                    _positional_attrs[key] = self.attrs[i][1]
+                    _positional_attrs[key] = a[1]
                 else:
                     _kwattrs.append(a)
 
             elif key == "id":
                 if shorthand_id_class:
-                    _positional_attrs[key] = self.attrs[i][1]
+                    _positional_attrs[key] = a[1]
                 else:
                     _kwattrs.append(a)
             else:
