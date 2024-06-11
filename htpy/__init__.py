@@ -10,8 +10,6 @@ from typing import Any, Protocol, TypeAlias, TypeVar, overload
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
-from .html2htpy import *
-
 BaseElementSelf = TypeVar("BaseElementSelf", bound="BaseElement")
 ElementSelf = TypeVar("ElementSelf", bound="Element")
 
