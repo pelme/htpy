@@ -1,16 +1,16 @@
 
-# Convert HTML to HTPY
+# Convert HTML to htpy code
 
-Maybe you already have a bunch of html, or templates that you would like to migrate to htpy. 
-We got you covered. HTPY ships with a utility command `html2htpy` that can be used to transform existing 
-html into python code (htpy!).
+Maybe you already have a bunch of HTML, or templates that you would like to migrate to htpy. 
+We got you covered. The utility command `html2htpy` ships with htpy`, and can be used to transform existing 
+html into Python code (htpy!).
 
 ```
 $ html2htpy -h
 usage: html2htpy [-h] [-s] [-f {auto,ruff,black,none}] [input]
 
 positional arguments:
-  input                 input html from file or stdin
+  input                 input HTML from file or stdin
 
 options:
   -h, --help            show this help message and exit
@@ -20,7 +20,7 @@ options:
 ```
 
 
-Lets say you have an existing html file:
+Lets say you have an existing HTML file:
 
 ```html title="index.html"
 <!DOCTYPE html>
@@ -28,7 +28,7 @@ Lets say you have an existing html file:
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HTPY Recipes</title>
+    <title>htpy Recipes</title>
 </head>
 <body>
     <div id="header">
@@ -48,7 +48,7 @@ Lets say you have an existing html file:
 </html>
 ```
 
-Now, if you run the command, it outputs the corresponding python code (htpy).
+Now, if you run the command, it outputs the corresponding Python code (htpy).
 
 ```
 $  html2htpy index.html
@@ -59,7 +59,7 @@ html(lang="en")[
     head[
         meta(charset="UTF-8"),
         meta(name="viewport", content="width=device-width, initial-scale=1.0"),
-        title["HTPY Recipes"],
+        title["htpy Recipes"],
     ],
     body[
         div(id="header")[
@@ -105,7 +105,7 @@ powershell Get-Clipboard | html2htpy > output.py
 
 
 ## Formatting the output
-`html2htpy` can format the output python code using `black` or `ruff`.
+`html2htpy` can format the output Python code using `black` or `ruff`.
 Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`, `ruff`, `black` and `none`.
 
 By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `ruff` if it's available.

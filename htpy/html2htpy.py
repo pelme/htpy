@@ -320,7 +320,7 @@ def main():
         type=argparse.FileType("r"),
         nargs="?",
         default=sys.stdin,
-        help="input html from file or stdin",
+        help="input HTML from file or stdin",
     )
 
     args = parser.parse_args()
