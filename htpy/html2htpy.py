@@ -43,7 +43,7 @@ class Tag:
         self.parent = parent
         self.children: list[Any | str] = []
 
-    def serialize(self, shorthand_id_class: bool = False) -> str:
+    def serialize(self, shorthand_id_class: bool, use_h_prefix: bool) -> str:
         _positional_attrs: dict[str, str | None] = {}
         _attrs = ""
         _kwattrs: list[tuple[str, str | None]] = []
@@ -110,13 +110,16 @@ class Tag:
             _children += "["
             for c in self.children:
                 if isinstance(c, Tag):
-                    _children += c.serialize(shorthand_id_class=shorthand_id_class)
+                    _children += c.serialize(shorthand_id_class, use_h_prefix)
                 else:
                     _children += str(c)
 
                 _children += ","
 
             _children = _children[:-1] + "]"
+
+        if use_h_prefix:
+            return f"h.{self.python_type}{_attrs}{_children}"
 
         return f"{self.python_type}{_attrs}{_children}"
 
@@ -196,12 +199,14 @@ class HTPYParser(HTMLParser):
     def serialize_python(
         self,
         shorthand_id_class: bool = False,
-        include_imports: bool = False,
+        import_mode: Literal["yes", "h", "no"] = "yes",
         formatter: Formatter | None = None,
     ) -> str:
         o = ""
 
-        if include_imports:
+        use_h_prefix = False
+
+        if import_mode == "yes":
             unique_tags: set[str] = set()
 
             def _tags_from_children(parent: Tag) -> None:
@@ -220,13 +225,17 @@ class HTPYParser(HTMLParser):
 
             o += f'from htpy import {", ".join(sorted_tags)}\n'
 
+        elif import_mode == "h":
+            o += "import htpy as h\n"
+            use_h_prefix = True
+
         if len(self._collected) == 1:
-            o += _serialize(self._collected[0], shorthand_id_class)
+            o += _serialize(self._collected[0], shorthand_id_class, use_h_prefix)
 
         else:
             o += "["
             for t in self._collected:
-                o += _serialize(t, shorthand_id_class) + ","
+                o += _serialize(t, shorthand_id_class, use_h_prefix) + ","
             o = o[:-1] + "]"
 
         if formatter:
@@ -238,13 +247,13 @@ class HTPYParser(HTMLParser):
 def html2htpy(
     html: str,
     shorthand_id_class: bool = True,
-    include_imports: bool = False,
+    import_mode: Literal["yes", "h", "no"] = "yes",
     formatter: Formatter | None = None,
 ) -> str:
     parser = HTPYParser()
     parser.feed(html)
 
-    return parser.serialize_python(shorthand_id_class, include_imports, formatter)
+    return parser.serialize_python(shorthand_id_class, import_mode, formatter)
 
 
 def _convert_data_to_string(data: str) -> str:
@@ -294,9 +303,9 @@ def _convert_data_to_string(data: str) -> str:
     return _data
 
 
-def _serialize(el: Tag | str, shorthand_id_class: bool) -> str:
+def _serialize(el: Tag | str, shorthand_id_class: bool, use_h_prefix: bool) -> str:
     if isinstance(el, Tag):
-        return el.serialize(shorthand_id_class=shorthand_id_class)
+        return el.serialize(shorthand_id_class, use_h_prefix)
     else:
         return str(el)
 
@@ -356,8 +365,9 @@ def main() -> None:
     parser.add_argument(
         "-i",
         "--imports",
-        help="Output imports for htpy elements found",
-        action="store_true",
+        choices=["yes", "h", "no"],
+        help="Output mode for imports of found htpy elements",
+        default="yes",
     )
     parser.add_argument(
         "input",
@@ -388,7 +398,7 @@ def main() -> None:
         sys.exit(1)
 
     shorthand: bool = False if args.explicit else True
-    imports: bool = args.imports
+    imports: Literal["yes", "h", "no"] = args.imports
 
     formatter = _get_formatter(args.format)
 

@@ -12,7 +12,7 @@ def test_convert_default_shorthand_id_and_class() -> None:
         </div>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     expected = 'div("#div-id.some-class.other-class")[p["This is a paragraph."]]'
 
     assert actual == expected
@@ -25,7 +25,7 @@ def test_convert_explicit_id_class_syntas() -> None:
         </div>
     """
 
-    actual = html2htpy(input, shorthand_id_class=False)
+    actual = html2htpy(input, shorthand_id_class=False, import_mode="no")
     expected = 'div(id="div-id",class_="some-class other-class")[p["This is a paragraph."]]'
 
     assert actual == expected
@@ -40,7 +40,7 @@ nested_html = """
 
 
 def test_convert_nested_element_without_formatting() -> None:
-    actual = html2htpy(nested_html, formatter=None)
+    actual = html2htpy(nested_html, formatter=None, import_mode="no")
 
     expected = (
         "div["
@@ -53,7 +53,7 @@ def test_convert_nested_element_without_formatting() -> None:
 
 
 def test_convert_nested_element_ruff_formatting() -> None:
-    actual = html2htpy(nested_html, formatter=RuffFormatter())
+    actual = html2htpy(nested_html, formatter=RuffFormatter(), import_mode="no")
     assert actual == textwrap.dedent(
         """\
         div[
@@ -65,7 +65,7 @@ def test_convert_nested_element_ruff_formatting() -> None:
 
 
 def test_convert_nested_element_black_formatting() -> None:
-    actual = html2htpy(nested_html, formatter=BlackFormatter())
+    actual = html2htpy(nested_html, formatter=BlackFormatter(), import_mode="no")
     assert actual == textwrap.dedent(
         """\
         div[
@@ -76,8 +76,8 @@ def test_convert_nested_element_black_formatting() -> None:
     )
 
 
-def test_convert_nested_element_include_imports() -> None:
-    actual = html2htpy(nested_html, include_imports=True)
+def test_convert_nested_element___import_mode_yes() -> None:
+    actual = html2htpy(nested_html, import_mode="yes")
     assert actual == (
         "from htpy import a, div, p, span, strong\n"
         "div["
@@ -87,9 +87,20 @@ def test_convert_nested_element_include_imports() -> None:
     )
 
 
+def test_convert_nested_element___import_mode_h() -> None:
+    actual = html2htpy(nested_html, import_mode="h")
+    assert actual == (
+        "import htpy as h\n"
+        "h.div["
+        'h.p["This is a ",h.span["nested"]," element."],'
+        'h.p["Another ",h.a(href="#")["nested ",h.strong["tag"]],"."]'
+        "]"
+    )
+
+
 def test_convert_custom_element_include_imports() -> None:
     input = '<custom-element attribute="value">Custom content</custom-element>'
-    actual = html2htpy(input, include_imports=True)
+    actual = html2htpy(input, import_mode="yes")
 
     assert actual == (
         "from htpy import custom_element\n" 'custom_element(attribute="value")["Custom content"]'
@@ -103,14 +114,14 @@ def test_convert_self_closing_tags() -> None:
         <input type="text" />
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
 
     assert actual == '[img(src="image.jpg",alt="An image"),br,input(type="text")]'
 
 
 def test_convert_attribute_with_special_characters() -> None:
     input = """<img src="path/to/image.jpg" alt="A <test> & 'image'" />"""
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == """img(src="path/to/image.jpg",alt="A <test> & 'image'")"""
 
 
@@ -119,7 +130,7 @@ def test_convert_ignores_comments() -> None:
     <!-- This is a comment -->
     <div>Content <!-- Another comment --> inside</div>
     """
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == 'div["Content "," inside"]'
 
 
@@ -128,7 +139,7 @@ def test_convert_special_characters() -> None:
     <p>Special characters: &amp; &lt; &gt; &quot; &apos; &copy;</p>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == 'p["Special characters: & < > \\" \' ©"]'
 
 
@@ -137,7 +148,7 @@ def test_convert_f_string_escaping() -> None:
         <p>{{ variable }} is "a" { paragraph }.</p>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     expected = r'p[f"{ variable } is \"a\" {{ paragraph }}."]'
 
     assert actual == expected
@@ -161,7 +172,7 @@ def test_convert_f_string_escaping_complex() -> None:
     </body>
     """
 
-    actual = html2htpy(input, formatter=RuffFormatter())
+    actual = html2htpy(input, formatter=RuffFormatter(), import_mode="no")
     expected = textwrap.dedent(
         """\
         body[
@@ -187,7 +198,7 @@ def test_convert_script_tag() -> None:
         <script type="text/javascript">alert('This is a script');</script>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == """script(type="text/javascript")["alert('This is a script');"]"""
 
 
@@ -195,7 +206,7 @@ def test_convert_style_tag() -> None:
     input = """
         <style>body { background-color: #fff; }</style>
     """
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == """style["body { background-color: #fff; }"]"""
 
 
@@ -213,7 +224,7 @@ def test_convert_html_doctype() -> None:
         </html>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     expected = """html[head[title["Test Document"]],body[h1["Header"],p["Paragraph"]]]"""
 
     assert actual == expected
@@ -226,7 +237,7 @@ def test_convert_empty_elements() -> None:
         <span></span>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == "[div,p,span]"
 
 
@@ -243,7 +254,7 @@ def test_convert_void_elements() -> None:
       </div>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == 'div[div[input(type="text")],div[input(type="text")]]'
 
 
@@ -252,7 +263,7 @@ def test_convert_custom_tag() -> None:
         <custom-element attribute="value">Custom content</custom-element>
     """
 
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == """custom_element(attribute="value")["Custom content"]"""
 
 
@@ -275,7 +286,7 @@ def test_convert_attributes_without_values() -> None:
         <input type="checkbox" checked />
         <option selected>Option</option>
     """
-    actual = html2htpy(input)
+    actual = html2htpy(input, import_mode="no")
     assert actual == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
 
 
@@ -291,7 +302,7 @@ def test_convert_complex_section() -> None:
         </section>
     """
 
-    actual = html2htpy(input, shorthand_id_class=False)
+    actual = html2htpy(input, shorthand_id_class=False, import_mode="no")
     expected = (
         'section(class_="hero is-fullheight is-link")['
         'div(class_="hero-body")['
@@ -331,7 +342,7 @@ def test_convert_complex_svg() -> None:
         </svg>
     """
 
-    actual_output = html2htpy(input, formatter=BlackFormatter())
+    actual_output = html2htpy(input, formatter=BlackFormatter(), import_mode="no")
 
     expected_output = textwrap.dedent(
         f"""\
