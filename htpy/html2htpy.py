@@ -1,8 +1,11 @@
+from abc import ABC, abstractmethod
 import sys
 import re
+import subprocess
 import argparse
+import shutil
 from dataclasses import dataclass
-from typing import Self
+from typing import Literal, Self
 from html.parser import HTMLParser
 
 __all__ = ["html2htpy"]
@@ -102,6 +105,32 @@ class Tag:
         return f"{_type}{_attrs}{_children}"
 
 
+class Formatter(ABC):
+    @abstractmethod
+    def format(self, s: str) -> str:
+        raise NotImplementedError()
+
+
+class BlackFormatter(Formatter):
+    def format(self, s: str) -> str:
+        result = subprocess.run(
+            ["black", "-q", "-"],
+            input=s.encode("utf8"),
+            stdout=subprocess.PIPE,
+        )
+        return result.stdout.decode("utf8")
+
+
+class RuffFormatter(Formatter):
+    def format(self, s: str) -> str:
+        result = subprocess.run(
+            ["ruff", "format", "-"],
+            input=s.encode("utf8"),
+            stdout=subprocess.PIPE,
+        )
+        return result.stdout.decode("utf8")
+
+
 class HTPYParser(HTMLParser):
     def __init__(self):
         self._collected: list[Tag | str] = []
@@ -148,7 +177,9 @@ class HTPYParser(HTMLParser):
             else:
                 self._collected.append(stringified_data)
 
-    def serialize_python(self, shorthand_id_class: bool = False, format: bool = False):
+    def serialize_python(
+        self, shorthand_id_class: bool = False, formatter: Formatter | None = None
+    ):
         o = ""
 
         if len(self._collected) == 1:
@@ -160,26 +191,21 @@ class HTPYParser(HTMLParser):
                 o += _serialize(t, shorthand_id_class) + ","
             o = o[:-1] + "]"
 
-        if format:
-            try:
-                import black
-            except:
-                raise Exception(
-                    "Cannot import formatter. Please ensure black is installed."
-                )
-
-            return black.format_str(
-                o, mode=black.FileMode(line_length=80, magic_trailing_comma=False)
-            )
+        if formatter:
+            return formatter.format(o)
         else:
             return o
 
 
-def html2htpy(html: str, shorthand_id_class: bool = False, format: bool = False):
+def html2htpy(
+    html: str,
+    shorthand_id_class: bool = False,
+    formatter: Formatter | None = None,
+):
     parser = HTPYParser()
     parser.feed(html)
 
-    return parser.serialize_python(shorthand_id_class, format)
+    return parser.serialize_python(shorthand_id_class, formatter)
 
 
 def _convert_data_to_string(data: str):
@@ -236,6 +262,45 @@ def _serialize(el: Tag | str, shorthand_id_class: bool):
         return str(el)
 
 
+def _get_formatter(
+    format: Literal["auto", "ruff", "black", "none"]
+) -> Formatter | None:
+    formatter: Formatter | None = None
+    if format == "ruff":
+        if _is_package_installed("ruff"):
+            formatter = RuffFormatter()
+        else:
+            _printerr(
+                "Selected formatter (ruff) is not installed.",
+            )
+            _printerr("Please install it or select another formatter.")
+            _printerr("`html2htpy -h` for help")
+            sys.exit(1)
+
+    if format == "black":
+        if _is_package_installed("black"):
+            formatter = BlackFormatter()
+        else:
+            _printerr(
+                "Selected formatter (black) is not installed.",
+            )
+            _printerr("Please install it or select another formatter.")
+            _printerr("`html2htpy -h` for help")
+            sys.exit(1)
+
+    elif format == "auto":
+        if _is_package_installed("ruff"):
+            formatter = RuffFormatter()
+        elif _is_package_installed("black"):
+            formatter = BlackFormatter()
+
+    return formatter
+
+
+def _is_package_installed(package_name: str):
+    return shutil.which(package_name) is not None
+
+
 @dataclass
 class ConvertArgs:
     shorthand: bool
@@ -254,8 +319,9 @@ def main():
     parser.add_argument(
         "-f",
         "--format",
-        help="Format output code (requires black installed)",
-        action="store_true",
+        choices=["auto", "ruff", "black", "none"],
+        default="auto",
+        help="Select one of the following formatting options: auto, ruff, black or none",
     )
     parser.add_argument(
         "input",
@@ -286,9 +352,10 @@ def main():
         sys.exit(1)
 
     shorthand: bool = args.shorthand
-    format: bool = args.format
 
-    print(html2htpy(input, shorthand, format))
+    formatter = _get_formatter(args.format)
+
+    print(html2htpy(input, shorthand, formatter))
 
 
 def _printerr(value: str):

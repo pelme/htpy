@@ -7,15 +7,16 @@ html into python code (htpy!).
 
 ```
 $ html2htpy -h
-usage: html2htpy [-h] [-s] [-f] [input]
+usage: html2htpy [-h] [-s] [-f {auto,ruff,black,none}] [input]
 
 positional arguments:
-  input            input html from file or stdin
+  input                 input html from file or stdin
 
 options:
-  -h, --help       show this help message and exit
-  -s, --shorthand  Use shorthand syntax for class and id attributes
-  -f, --format     Format output code (requires black installed)
+  -h, --help            show this help message and exit
+  -s, --shorthand       Use shorthand syntax for class and id attributes
+  -f {auto,ruff,black,none}, --format {auto,ruff,black,none}
+                        Select one of the following formatting options: auto, ruff, black or none
 ```
 
 
@@ -50,7 +51,7 @@ Lets say you have an existing html file:
 Now, if you run the command, it outputs the corresponding python code (htpy).
 
 ```
-$  html2htpy -f index.html
+$  html2htpy index.html
 ```
 
 ```py
@@ -104,11 +105,11 @@ powershell Get-Clipboard | html2htpy > output.py
 
 
 ## Formatting the output
-`html2htpy` can format the output python code using `black`. It needs to be available in your python environment
-when you run `html2htpy` with the `-f`/`--format` flag. You might have it in your environment already, or you can install it 
-as part of the htpy extras: `pip install htpy[extras]`.
+`html2htpy` can format the output python code using `black` or `ruff`.
+Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`, `ruff`, `black` and `none`.
 
-By default, output code is not formatted.
+By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `ruff` if it's available.
+If no formatters are available on path, the output not be formatted.
 
 
 ## Shorthand syntax
@@ -170,7 +171,7 @@ See the example below:
 ```
 
 ```py
-$ html2htpy -f -s jinja.html
+$ html2htpy -s jinja.html
 body[
     h1[f"{ heading }"],
     p[f"Welcome to our cooking site, { user.name }!"],

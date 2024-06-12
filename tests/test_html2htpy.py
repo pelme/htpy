@@ -1,6 +1,6 @@
 import textwrap
 import pytest
-from htpy.html2htpy import html2htpy
+from htpy.html2htpy import BlackFormatter, html2htpy
 
 
 def test_convert_shorthand_id_and_class():
@@ -10,7 +10,7 @@ def test_convert_shorthand_id_and_class():
         </div>
     """
 
-    actual = html2htpy(input, shorthand_id_class=True, format=True)
+    actual = html2htpy(input, shorthand_id_class=True, formatter=BlackFormatter())
     expected = 'div("#div-id.some-class.other-class")[p["This is a paragraph."]]\n'
 
     assert actual == expected
@@ -24,7 +24,7 @@ def test_convert_nested_element():
     </div>
     """
 
-    actual = html2htpy(input, format=True)
+    actual = html2htpy(input, formatter=BlackFormatter())
     expected = textwrap.dedent(
         """\
         div[
@@ -78,7 +78,7 @@ def test_convert_f_string_escaping():
         <p>{{ variable }} is "a" { paragraph }.</p>
     """
 
-    actual = html2htpy(input, format=False)
+    actual = html2htpy(input)
     expected = r'p[f"{ variable } is \"a\" {{ paragraph }}."]'
 
     assert actual == expected
@@ -102,7 +102,7 @@ def test_convert_f_string_escaping_complex():
     </body>
     """
 
-    actual = html2htpy(input, format=True)
+    actual = html2htpy(input, formatter=BlackFormatter())
     expected = textwrap.dedent(
         """\
         body[
@@ -129,7 +129,7 @@ def test_convert_script_style_tags():
         <style>body { background-color: #fff; }</style>
     """
 
-    actual = html2htpy(input, format=True)
+    actual = html2htpy(input, formatter=BlackFormatter())
     assert actual == textwrap.dedent(
         """\
         [
@@ -220,7 +220,7 @@ def test_convert_section_regular():
         </section>
     """
 
-    actual = html2htpy(input, shorthand_id_class=False, format=True)
+    actual = html2htpy(input, shorthand_id_class=False, formatter=BlackFormatter())
     expected = textwrap.dedent(
         """\
         section(class_="hero is-fullheight is-link")[
@@ -249,7 +249,7 @@ def test_convert_section_shorthand_id_class():
         </section>
     """
 
-    actual = html2htpy(input, shorthand_id_class=True, format=True)
+    actual = html2htpy(input, shorthand_id_class=True, formatter=BlackFormatter())
 
     assert actual == textwrap.dedent(
         """\
@@ -273,7 +273,7 @@ def test_convert_nested_element_without_formatting():
         </div>
     """
 
-    actual = html2htpy(input, format=False)
+    actual = html2htpy(input, formatter=None)
 
     expected = 'div[p["This is a ",span["nested"]," element."],p["Another ",a(href="#")["nested ",strong["tag"]],"."]]'
 
@@ -287,7 +287,7 @@ def test_convert_html_to_htpy_svg():
         </svg>
     """
 
-    actual_output = html2htpy(input, format=True)
+    actual_output = html2htpy(input, formatter=BlackFormatter())
 
     expected_output = textwrap.dedent(
         """\

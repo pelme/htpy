@@ -31,9 +31,6 @@ optional-dependencies.dev = [
     "django-stubs",
     "jinja2",
 ]
-optional-dependencies.extras = [
-    "black"
-]
 optional-dependencies.docs = [
     "mkdocs-material==9.5.12",
 ]
