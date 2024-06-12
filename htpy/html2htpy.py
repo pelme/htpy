@@ -1,7 +1,6 @@
 import sys
 import re
 import argparse
-import select
 from dataclasses import dataclass
 from typing import Self
 from html.parser import HTMLParser
@@ -268,16 +267,22 @@ def main():
 
     args = parser.parse_args()
 
-    if args.input == sys.stdin and select.select([sys.stdin], [], [], 0.1)[0]:
-        input = args.input.read()
-    elif args.input != sys.stdin:
-        input = args.input.read()
-    else:
+    try:
+        if args.input == sys.stdin:
+            input = args.input.read()
+        elif args.input != sys.stdin:
+            input = args.input.read()
+        else:
+            _printerr(
+                "No input provided. Please supply an input file or stream.",
+            )
+            _printerr("Example usage: `cat index.html | html2htpy`")
+            _printerr("`html2htpy -h` for help")
+            sys.exit(1)
+    except KeyboardInterrupt:
         _printerr(
-            "No input provided. Please supply an input file or stream.",
+            "\nInterrupted",
         )
-        _printerr("Example usage: `cat index.html | html2htpy`")
-        _printerr("`html2htpy -h` for help")
         sys.exit(1)
 
     shorthand: bool = args.shorthand
