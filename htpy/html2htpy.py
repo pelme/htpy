@@ -397,7 +397,6 @@ def main() -> None:
         sys.exit(1)
 
     shorthand: bool = False if args.no_shorthand else True
-    print(shorthand)
     imports: Literal["yes", "h", "no"] = args.imports
 
     formatter = _get_formatter(args.format)
