@@ -5,7 +5,7 @@ import pytest
 from htpy.html2htpy import BlackFormatter, RuffFormatter, html2htpy
 
 
-def test_convert_default_shorthand_id_and_class():
+def test_convert_default_shorthand_id_and_class() -> None:
     input = """
         <div id="div-id" class="some-class other-class">
           <p>This is a paragraph.</p>
@@ -18,7 +18,7 @@ def test_convert_default_shorthand_id_and_class():
     assert actual == expected
 
 
-def test_convert_explicit_id_class_syntas():
+def test_convert_explicit_id_class_syntas() -> None:
     input = """
         <div id="div-id" class="some-class other-class">
           <p>This is a paragraph.</p>
@@ -39,7 +39,7 @@ nested_html = """
 """
 
 
-def test_convert_nested_element_without_formatting():
+def test_convert_nested_element_without_formatting() -> None:
     actual = html2htpy(nested_html, formatter=None)
 
     expected = (
@@ -52,7 +52,7 @@ def test_convert_nested_element_without_formatting():
     assert actual == expected
 
 
-def test_convert_nested_element_ruff_formatting():
+def test_convert_nested_element_ruff_formatting() -> None:
     actual = html2htpy(nested_html, formatter=RuffFormatter())
     assert actual == textwrap.dedent(
         """\
@@ -64,7 +64,7 @@ def test_convert_nested_element_ruff_formatting():
     )
 
 
-def test_convert_nested_element_black_formatting():
+def test_convert_nested_element_black_formatting() -> None:
     actual = html2htpy(nested_html, formatter=BlackFormatter())
     assert actual == textwrap.dedent(
         """\
@@ -76,7 +76,7 @@ def test_convert_nested_element_black_formatting():
     )
 
 
-def test_convert_self_closing_tags():
+def test_convert_self_closing_tags() -> None:
     input = """
         <img src="image.jpg" alt="An image" />
         <br />
@@ -88,13 +88,13 @@ def test_convert_self_closing_tags():
     assert actual == '[img(src="image.jpg",alt="An image"),br,input(type="text")]'
 
 
-def test_convert_attribute_with_special_characters():
+def test_convert_attribute_with_special_characters() -> None:
     input = """<img src="path/to/image.jpg" alt="A <test> & 'image'" />"""
     actual = html2htpy(input)
     assert actual == """img(src="path/to/image.jpg",alt="A <test> & 'image'")"""
 
 
-def test_convert_ignores_comments():
+def test_convert_ignores_comments() -> None:
     input = """
     <!-- This is a comment -->
     <div>Content <!-- Another comment --> inside</div>
@@ -103,7 +103,7 @@ def test_convert_ignores_comments():
     assert actual == 'div["Content "," inside"]'
 
 
-def test_convert_special_characters():
+def test_convert_special_characters() -> None:
     input = """
     <p>Special characters: &amp; &lt; &gt; &quot; &apos; &copy;</p>
     """
@@ -112,7 +112,7 @@ def test_convert_special_characters():
     assert actual == 'p["Special characters: & < > \\" \' ©"]'
 
 
-def test_convert_f_string_escaping():
+def test_convert_f_string_escaping() -> None:
     input = """
         <p>{{ variable }} is "a" { paragraph }.</p>
     """
@@ -123,7 +123,7 @@ def test_convert_f_string_escaping():
     assert actual == expected
 
 
-def test_convert_f_string_escaping_complex():
+def test_convert_f_string_escaping_complex() -> None:
     input = """
     <body>
       <h1>{{ heading }}</h1>
@@ -162,7 +162,7 @@ def test_convert_f_string_escaping_complex():
     assert actual == expected
 
 
-def test_convert_script_tag():
+def test_convert_script_tag() -> None:
     input = """
         <script type="text/javascript">alert('This is a script');</script>
     """
@@ -171,7 +171,7 @@ def test_convert_script_tag():
     assert actual == """script(type="text/javascript")["alert('This is a script');"]"""
 
 
-def test_convert_style_tag():
+def test_convert_style_tag() -> None:
     input = """
         <style>body { background-color: #fff; }</style>
     """
@@ -179,7 +179,7 @@ def test_convert_style_tag():
     assert actual == """style["body { background-color: #fff; }"]"""
 
 
-def test_convert_html_doctype():
+def test_convert_html_doctype() -> None:
     input = """
         <!DOCTYPE html>
         <html>
@@ -199,7 +199,7 @@ def test_convert_html_doctype():
     assert actual == expected
 
 
-def test_convert_empty_elements():
+def test_convert_empty_elements() -> None:
     input = """
         <div></div>
         <p></p>
@@ -210,7 +210,7 @@ def test_convert_empty_elements():
     assert actual == "[div,p,span]"
 
 
-def test_convert_custom_tag():
+def test_convert_custom_tag() -> None:
     input = """
         <custom-element attribute="value">Custom content</custom-element>
     """
@@ -219,7 +219,7 @@ def test_convert_custom_tag():
     assert actual == """custom_element(attribute="value")["Custom content"]"""
 
 
-def test_convert_malformed_html():
+def test_convert_malformed_html() -> None:
     input = """
         <div>
           <p>Paragraph without closing tag
@@ -233,7 +233,7 @@ def test_convert_malformed_html():
     assert "Closing tag p does not match the currently open tag (div)" in str(e.value)
 
 
-def test_convert_attributes_without_values():
+def test_convert_attributes_without_values() -> None:
     input = """
         <input type="checkbox" checked />
         <option selected>Option</option>
@@ -242,7 +242,7 @@ def test_convert_attributes_without_values():
     assert actual == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
 
 
-def test_convert_complex_section():
+def test_convert_complex_section() -> None:
     input = """
         <section class="hero is-fullheight is-link">
           <div class="hero-body">
@@ -271,7 +271,7 @@ def test_convert_complex_section():
     assert actual == expected
 
 
-def test_convert_complex_svg():
+def test_convert_complex_svg() -> None:
     path_d: str = (
         "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2"
         ".652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1"

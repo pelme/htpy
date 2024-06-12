@@ -22,7 +22,7 @@ class Tag:
         self.parent = parent
         self.children: list[Self | str] = []
 
-    def serialize(self, shorthand_id_class: bool = False):
+    def serialize(self, shorthand_id_class: bool = False) -> str:
         _type = self.type
         if "-" in _type:
             _type = _type.replace("-", "_")
@@ -131,12 +131,12 @@ class RuffFormatter(Formatter):
 
 
 class HTPYParser(HTMLParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self._collected: list[Tag | str] = []
         self._current: Tag | None = None
         super().__init__()
 
-    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]):
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         t = Tag(tag, attrs, parent=self._current)
 
         if not self._current:
@@ -146,7 +146,7 @@ class HTPYParser(HTMLParser):
 
         self._current = t
 
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]):
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         t = Tag(tag, attrs, parent=self._current)
 
         if not self._current:
@@ -154,7 +154,7 @@ class HTPYParser(HTMLParser):
         else:
             self._current.children.append(t)
 
-    def handle_endtag(self, tag: str):
+    def handle_endtag(self, tag: str) -> None:
         if not self._current:
             raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
 
@@ -166,7 +166,7 @@ class HTPYParser(HTMLParser):
 
         self._current = self._current.parent
 
-    def handle_data(self, data: str):
+    def handle_data(self, data: str) -> None:
         if not data.isspace():
             stringified_data = _convert_data_to_string(data)
 
@@ -177,7 +177,7 @@ class HTPYParser(HTMLParser):
 
     def serialize_python(
         self, shorthand_id_class: bool = False, formatter: Formatter | None = None
-    ):
+    ) -> str:
         o = ""
 
         if len(self._collected) == 1:
@@ -199,14 +199,14 @@ def html2htpy(
     html: str,
     shorthand_id_class: bool = True,
     formatter: Formatter | None = None,
-):
+) -> str:
     parser = HTPYParser()
     parser.feed(html)
 
     return parser.serialize_python(shorthand_id_class, formatter)
 
 
-def _convert_data_to_string(data: str):
+def _convert_data_to_string(data: str) -> str:
     _data = str(data)
 
     is_multiline = "\n" in _data
@@ -228,7 +228,7 @@ def _convert_data_to_string(data: str):
             r"(\{\{\s*[\w\.]+\s*\}\}|(?<![\{]){(?![\{])|(?<![\}])}(?![\}]))"
         )
 
-        def replacer(match: re.Match[str]):
+        def replacer(match: re.Match[str]) -> str:
             captured = match.group(1)
 
             if captured.startswith("{{"):
@@ -253,7 +253,7 @@ def _convert_data_to_string(data: str):
     return _data
 
 
-def _serialize(el: Tag | str, shorthand_id_class: bool):
+def _serialize(el: Tag | str, shorthand_id_class: bool) -> str:
     if isinstance(el, Tag):
         return el.serialize(shorthand_id_class=shorthand_id_class)
     else:
@@ -292,11 +292,11 @@ def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatte
     return None
 
 
-def _is_command_available(command: str):
+def _is_command_available(command: str) -> bool:
     return shutil.which(command) is not None
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(prog="html2htpy")
 
     parser.add_argument(
@@ -347,5 +347,5 @@ def main():
     print(html2htpy(input, shorthand, formatter))
 
 
-def _printerr(value: str):
+def _printerr(value: str) -> None:
     print(value, file=sys.stderr)
