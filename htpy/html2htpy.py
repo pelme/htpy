@@ -156,9 +156,7 @@ class HTPYParser(HTMLParser):
 
     def handle_endtag(self, tag: str) -> None:
         if not self._current:
-            raise Exception(
-                f"Error parsing html: Closing tag {tag} when not inside any other tag"
-            )
+            raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
 
         if not self._current.type == tag:
             raise Exception(
@@ -262,9 +260,7 @@ def _serialize(el: Tag | str, shorthand_id_class: bool) -> str:
         return str(el)
 
 
-def _get_formatter(
-    format: Literal["auto", "ruff", "black", "none"]
-) -> Formatter | None:
+def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatter | None:
     if format == "ruff":
         if _is_command_available("ruff"):
             return RuffFormatter()
