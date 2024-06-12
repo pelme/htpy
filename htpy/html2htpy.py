@@ -264,10 +264,9 @@ def _serialize(el: Tag | str, shorthand_id_class: bool):
 def _get_formatter(
     format: Literal["auto", "ruff", "black", "none"]
 ) -> Formatter | None:
-    formatter: Formatter | None = None
     if format == "ruff":
         if _is_command_available("ruff"):
-            formatter = RuffFormatter()
+            return RuffFormatter()
         else:
             _printerr(
                 "Selected formatter (ruff) is not installed.",
@@ -278,7 +277,7 @@ def _get_formatter(
 
     if format == "black":
         if _is_command_available("black"):
-            formatter = BlackFormatter()
+            return BlackFormatter()
         else:
             _printerr(
                 "Selected formatter (black) is not installed.",
@@ -289,11 +288,11 @@ def _get_formatter(
 
     elif format == "auto":
         if _is_command_available("ruff"):
-            formatter = RuffFormatter()
+            return RuffFormatter()
         elif _is_command_available("black"):
-            formatter = BlackFormatter()
+            return BlackFormatter()
 
-    return formatter
+    return None
 
 
 def _is_command_available(command: str):
