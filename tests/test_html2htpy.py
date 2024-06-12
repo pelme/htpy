@@ -274,18 +274,16 @@ def test_convert_complex_section() -> None:
         </section>
     """
 
-    actual = html2htpy(input, shorthand_id_class=False, formatter=BlackFormatter())
-    expected = textwrap.dedent(
-        """\
-        section(class_="hero is-fullheight is-link")[
-            div(class_="hero-body")[
-                div(class_="container")[
-                    p(class_="subtitle is-3 is-spaced")["Welcome"],
-                    p(class_="title is-1 is-spaced")[f"Student code: {student_code}"],
-                ]
-            ]
-        ]
-        """
+    actual = html2htpy(input, shorthand_id_class=False)
+    expected = (
+        'section(class_="hero is-fullheight is-link")['
+        'div(class_="hero-body")['
+        'div(class_="container")['
+        'p(class_="subtitle is-3 is-spaced")["Welcome"],'
+        'p(class_="title is-1 is-spaced")[f"Student code: {student_code}"]'
+        "]"
+        "]"
+        "]"
     )
 
     assert actual == expected
