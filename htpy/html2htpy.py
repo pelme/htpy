@@ -5,7 +5,7 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from html.parser import HTMLParser
-from typing import Literal, Self
+from typing import Any, Literal
 
 __all__ = ["html2htpy"]
 
@@ -15,12 +15,12 @@ class Tag:
         self,
         type: str,
         attrs: list[tuple[str, str | None]],
-        parent: Self | None = None,
+        parent: Any | None = None,
     ):
         self.type = type
         self.attrs = attrs
         self.parent = parent
-        self.children: list[Self | str] = []
+        self.children: list[Any | str] = []
 
     def serialize(self, shorthand_id_class: bool = False) -> str:
         _type = self.type
@@ -156,7 +156,9 @@ class HTPYParser(HTMLParser):
 
     def handle_endtag(self, tag: str) -> None:
         if not self._current:
-            raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
+            raise Exception(
+                f"Error parsing html: Closing tag {tag} when not inside any other tag"
+            )
 
         if not self._current.type == tag:
             raise Exception(
@@ -260,7 +262,9 @@ def _serialize(el: Tag | str, shorthand_id_class: bool) -> str:
         return str(el)
 
 
-def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatter | None:
+def _get_formatter(
+    format: Literal["auto", "ruff", "black", "none"]
+) -> Formatter | None:
     if format == "ruff":
         if _is_command_available("ruff"):
             return RuffFormatter()
