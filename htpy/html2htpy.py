@@ -266,7 +266,7 @@ def _get_formatter(
 ) -> Formatter | None:
     formatter: Formatter | None = None
     if format == "ruff":
-        if _is_package_installed("ruff"):
+        if _is_command_available("ruff"):
             formatter = RuffFormatter()
         else:
             _printerr(
@@ -277,7 +277,7 @@ def _get_formatter(
             sys.exit(1)
 
     if format == "black":
-        if _is_package_installed("black"):
+        if _is_command_available("black"):
             formatter = BlackFormatter()
         else:
             _printerr(
@@ -288,16 +288,16 @@ def _get_formatter(
             sys.exit(1)
 
     elif format == "auto":
-        if _is_package_installed("ruff"):
+        if _is_command_available("ruff"):
             formatter = RuffFormatter()
-        elif _is_package_installed("black"):
+        elif _is_command_available("black"):
             formatter = BlackFormatter()
 
     return formatter
 
 
-def _is_package_installed(package_name: str):
-    return shutil.which(package_name) is not None
+def _is_command_available(command: str):
+    return shutil.which(command) is not None
 
 
 def main():
