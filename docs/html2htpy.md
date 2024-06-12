@@ -2,19 +2,19 @@
 # Convert HTML to htpy code
 
 Maybe you already have a bunch of HTML, or templates that you would like to migrate to htpy. 
-We got you covered. The utility command `html2htpy` ships with htpy`, and can be used to transform existing 
+We got you covered. The utility command `html2htpy` ships with `htpy`, and can be used to transform existing 
 html into Python code (htpy!).
 
 ```
 $ html2htpy -h
-usage: html2htpy [-h] [-s] [-f {auto,ruff,black,none}] [input]
+usage: html2htpy [-h] [-e] [-f {auto,ruff,black,none}] [input]
 
 positional arguments:
   input                 input HTML from file or stdin
 
 options:
   -h, --help            show this help message and exit
-  -s, --shorthand       Use shorthand syntax for class and id attributes
+  -e, --explicit        Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax
   -f {auto,ruff,black,none}, --format {auto,ruff,black,none}
                         Select one of the following formatting options: auto, ruff, black or none
 ```
@@ -62,18 +62,14 @@ html(lang="en")[
         title["htpy Recipes"],
     ],
     body[
-        div(id="header")[
-            h1["Welcome to the cooking site"],
-            p["Your go-to place for delicious recipes!"],
+        div("#header")[
+            h1["Welcome to the cooking site"], p["Your go-to place for delicious recipes!"]
         ],
-        div(id="recipe-of-the-day", class_="section")[
-            h2[
-                "Recipe of the Day: ",
-                span(class_="highlight")["Spaghetti Carbonara"],
-            ],
+        div("#recipe-of-the-day.section")[
+            h2["Recipe of the Day: ", span(".highlight")["Spaghetti Carbonara"]],
             p["This classic Italian dish is quick and easy to make."],
         ],
-        div(id="footer")[p["© 2024 My Cooking Site. All rights reserved."]],
+        div("#footer")[p["© 2024 My Cooking Site. All rights reserved."]],
     ],
 ]
 ```
@@ -112,31 +108,30 @@ By default, the selection will be `auto`, formatting if it finds a formatter on 
 If no formatters are available on path, the output not be formatted.
 
 
-## Shorthand syntax
-
-If you prefer the htpy "shorthand" syntax for the id and class properties, you can get it by passing the `-s`/`--shorthand` flag
+## Explicit id and class kwargs
 
 
-```html title="shorthand.html"
-<section class="hero is-fullheight is-link">
-  <div class="hero-body">
-    <div class='container'>
-      <p class="subtitle is-3 is-spaced">Welcome</p>
-    </div>
-  </div>
+If you prefer the explicit `id="id", class_="class"` kwargs syntax over the default htpy shorthand `#id.class` syntax, you can get it by passing the `-e`/`--explicit` flag.
+
+```html title="example.html"
+<section id="main-section" class="hero is-link">
+    <p class="subtitle is-3 is-spaced">Welcome</p>
 </section>
 ```
 
-...becomes:
-
+#### Default shorthand `#id.class`
 ```py
-$ html2htpy -f -s example.html
-section(".hero.is-fullheight.is-link")[
-    div(".hero-body")[
-        div(".container")[
-            p(".subtitle.is-3.is-spaced")["Welcome"],
-        ]
-    ]
+$ html2htpy example.html
+section("#main-section.hero.is-link")[
+    p(".subtitle.is-3.is-spaced")["Welcome"]
+]
+```
+
+#### Explicit kwargs `id`, `class_`
+```py
+$ html2htpy --explicit example.html
+section(id="main-section", class_="hero is-link")[
+    p(class_="subtitle is-3 is-spaced")["Welcome"]
 ]
 ```
 
@@ -170,8 +165,7 @@ See the example below:
 </body>
 ```
 
-```py
-$ html2htpy -s jinja.html
+```py title="$ html2htpy jinja.html"
 body[
     h1[f"{ heading }"],
     p[f"Welcome to our cooking site, { user.name }!"],
