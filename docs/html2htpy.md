@@ -7,7 +7,7 @@ html into Python code (htpy!).
 
 ```
 $ html2htpy -h
-usage: html2htpy [-h] [-e] [-f {auto,ruff,black,none}] [input]
+usage: html2htpy [-h] [-e] [-f {auto,ruff,black,none}] [-i] [input]
 
 positional arguments:
   input                 input HTML from file or stdin
@@ -17,6 +17,7 @@ options:
   -e, --explicit        Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax
   -f {auto,ruff,black,none}, --format {auto,ruff,black,none}
                         Select one of the following formatting options: auto, ruff, black or none
+  -i, --imports         Output imports for htpy elements found
 ```
 
 
@@ -120,20 +121,33 @@ If you prefer the explicit `id="id", class_="class"` kwargs syntax over the defa
 ```
 
 #### Default shorthand `#id.class`
-```py
-$ html2htpy example.html
+```py title="$ html2htpy example.html"
 section("#main-section.hero.is-link")[
     p(".subtitle.is-3.is-spaced")["Welcome"]
 ]
 ```
 
 #### Explicit kwargs `id`, `class_`
-```py
-$ html2htpy --explicit example.html
+```py title="$ html2htpy --explicit example.html"
 section(id="main-section", class_="hero is-link")[
     p(class_="subtitle is-3 is-spaced")["Welcome"]
 ]
 ```
+
+## Detect htpy imports
+
+If you pass the `-i`/`--imports` flag, htpy elements detected will be included as 
+imports in the output. For example:
+
+```py title="$ html2htpy --imports example.html"
+from htpy import p, section
+
+section("#main-section.hero.is-link")[
+    p(".subtitle.is-3.is-spaced")["Welcome"]
+]
+```
+
+
 
 ## Template interpolation to f-strings
 

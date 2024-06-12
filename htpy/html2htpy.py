@@ -17,16 +17,16 @@ class Tag:
         attrs: list[tuple[str, str | None]],
         parent: Any | None = None,
     ):
-        self.type = type
+        self.html_type = type
+        self.python_type = type
+        if "-" in self.python_type:
+            self.python_type = self.python_type.replace("-", "_")
+
         self.attrs = attrs
         self.parent = parent
         self.children: list[Any | str] = []
 
     def serialize(self, shorthand_id_class: bool = False) -> str:
-        _type = self.type
-        if "-" in _type:
-            _type = _type.replace("-", "_")
-
         _positional_attrs: dict[str, str | None] = {}
         _attrs = ""
         _kwattrs: list[tuple[str, str | None]] = []
@@ -101,7 +101,7 @@ class Tag:
 
             _children = _children[:-1] + "]"
 
-        return f"{_type}{_attrs}{_children}"
+        return f"{self.python_type}{_attrs}{_children}"
 
 
 class Formatter(ABC):
@@ -158,10 +158,10 @@ class HTPYParser(HTMLParser):
         if not self._current:
             raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
 
-        if not self._current.type == tag:
+        if not self._current.html_type == tag:
             raise Exception(
                 f"Error parsing html: Closing tag {tag} does not match the "
-                f"currently open tag ({self._current.type})"
+                f"currently open tag ({self._current.html_type})"
             )
 
         self._current = self._current.parent
@@ -176,9 +176,31 @@ class HTPYParser(HTMLParser):
                 self._collected.append(stringified_data)
 
     def serialize_python(
-        self, shorthand_id_class: bool = False, formatter: Formatter | None = None
+        self,
+        shorthand_id_class: bool = False,
+        include_imports: bool = False,
+        formatter: Formatter | None = None,
     ) -> str:
         o = ""
+
+        if include_imports:
+            unique_tags: set[str] = set()
+
+            def _tags_from_children(parent: Tag) -> None:
+                for c in parent.children:
+                    if isinstance(c, Tag):
+                        unique_tags.add(c.python_type)
+                        _tags_from_children(c)
+
+            for t in self._collected:
+                if isinstance(t, Tag):
+                    unique_tags.add(t.python_type)
+                    _tags_from_children(t)
+
+            sorted_tags = list(unique_tags)
+            sorted_tags.sort()
+
+            o += f'from htpy import {", ".join(sorted_tags)}\n'
 
         if len(self._collected) == 1:
             o += _serialize(self._collected[0], shorthand_id_class)
@@ -198,12 +220,13 @@ class HTPYParser(HTMLParser):
 def html2htpy(
     html: str,
     shorthand_id_class: bool = True,
+    include_imports: bool = False,
     formatter: Formatter | None = None,
 ) -> str:
     parser = HTPYParser()
     parser.feed(html)
 
-    return parser.serialize_python(shorthand_id_class, formatter)
+    return parser.serialize_python(shorthand_id_class, include_imports, formatter)
 
 
 def _convert_data_to_string(data: str) -> str:
@@ -313,6 +336,12 @@ def main() -> None:
         help="Select one of the following formatting options: auto, ruff, black or none",
     )
     parser.add_argument(
+        "-i",
+        "--imports",
+        help="Output imports for htpy elements found",
+        action="store_true",
+    )
+    parser.add_argument(
         "input",
         type=argparse.FileType("r"),
         nargs="?",
@@ -341,10 +370,11 @@ def main() -> None:
         sys.exit(1)
 
     shorthand: bool = False if args.explicit else True
+    imports: bool = args.imports
 
     formatter = _get_formatter(args.format)
 
-    print(html2htpy(input, shorthand, formatter))
+    print(html2htpy(input, shorthand, imports, formatter))
 
 
 def _printerr(value: str) -> None:

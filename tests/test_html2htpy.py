@@ -76,6 +76,26 @@ def test_convert_nested_element_black_formatting() -> None:
     )
 
 
+def test_convert_nested_element_include_imports() -> None:
+    actual = html2htpy(nested_html, include_imports=True)
+    assert actual == (
+        "from htpy import a, div, p, span, strong\n"
+        "div["
+        'p["This is a ",span["nested"]," element."],'
+        'p["Another ",a(href="#")["nested ",strong["tag"]],"."]'
+        "]"
+    )
+
+
+def test_convert_custom_element_include_imports() -> None:
+    input = '<custom-element attribute="value">Custom content</custom-element>'
+    actual = html2htpy(input, include_imports=True)
+
+    assert actual == (
+        "from htpy import custom_element\n" 'custom_element(attribute="value")["Custom content"]'
+    )
+
+
 def test_convert_self_closing_tags() -> None:
     input = """
         <img src="image.jpg" alt="An image" />
