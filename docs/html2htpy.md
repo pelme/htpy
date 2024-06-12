@@ -151,7 +151,7 @@ section("#main-section.hero.is-link")[
 ```
 
 #### No shorthand yields kwargs `id`, `class_`
-```py title="$ html2htpy --explicit example.html"
+```py title="$ html2htpy --no-shorthand example.html"
 from htpy import p, section
 
 section(id="main-section", class_="hero is-link")[
