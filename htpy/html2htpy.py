@@ -352,7 +352,3 @@ def main():
 
 def _printerr(value: str):
     print(value, file=sys.stderr)
-
-
-if __name__ == "__main__":
-    main()
