@@ -82,7 +82,7 @@ html(lang="en")[
 
 You can also pipe input to htpy, for example `cat demo.html | html2htpy`.
 
-This can be combinded with other workflows in the way that you find most suitable. 
+This can be combined with other workflows in the way that you find most suitable. 
 For example, you might pipe from your clipboard to htpy, and optionally direct the output to a file.
 
 #### Linux 
