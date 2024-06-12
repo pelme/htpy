@@ -7,20 +7,18 @@ html into Python code (htpy!).
 
 ```
 $ html2htpy -h
-usage: html2htpy [-h] [-e] [-f {auto,ruff,black,none}] [-i {yes,h,no}] [input]
+usage: html2htpy [-h] [-f {auto,ruff,black,none}] [-i {yes,h,no}] [--no-shorthand] [input]
 
 positional arguments:
   input                 input HTML from file or stdin
 
 options:
   -h, --help            show this help message and exit
-  -e, --explicit        Use explicit `id` and `class_` kwargs instead of the shorthand
-                        #id.class syntax
   -f {auto,ruff,black,none}, --format {auto,ruff,black,none}
-                        Select one of the following formatting options: auto, ruff, black
-                        or none
+                        Select one of the following formatting options: auto, ruff, black or none
   -i {yes,h,no}, --imports {yes,h,no}
                         Output mode for imports of found htpy elements
+  --no-shorthand        Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax
 ```
 
 
@@ -114,35 +112,6 @@ By default, the selection will be `auto`, formatting if it finds a formatter on 
 If no formatters are available on path, the output will not be formatted.
 
 
-## Explicit id and class kwargs
-
-
-If you prefer the explicit `id="id", class_="class"` kwargs syntax over the default htpy shorthand `#id.class` syntax, you can get it by passing the `-e`/`--explicit` flag.
-
-```html title="example.html"
-<section id="main-section" class="hero is-link">
-    <p class="subtitle is-3 is-spaced">Welcome</p>
-</section>
-```
-
-#### Default shorthand `#id.class`
-```py title="$ html2htpy example.html"
-from htpy import p, section
-
-section("#main-section.hero.is-link")[
-    p(".subtitle.is-3.is-spaced")["Welcome"]
-]
-```
-
-#### Explicit kwargs `id`, `class_`
-```py title="$ html2htpy --explicit example.html"
-from htpy import p, section
-
-section(id="main-section", class_="hero is-link")[
-    p(class_="subtitle is-3 is-spaced")["Welcome"]
-]
-```
-
 ## Import options
 
 You have a couple of options regarding imports with the `-i`/`--imports` flag. 
@@ -158,6 +127,35 @@ import htpy as h
 
 h.section("#main-section.hero.is-link")[
     h.p(".subtitle.is-3.is-spaced")["Welcome"]
+]
+```
+
+## Explicit id and class kwargs
+
+
+If you prefer the explicit `id="id", class_="class"` kwargs syntax over the default htpy shorthand `#id.class` syntax, you can get it by passing the `--no-shorthand` flag.
+
+```html title="example.html"
+<section id="main-section" class="hero is-link">
+    <p class="subtitle is-3 is-spaced">Welcome</p>
+</section>
+```
+
+#### Default shorthand yield `#id.class`
+```py title="$ html2htpy example.html"
+from htpy import p, section
+
+section("#main-section.hero.is-link")[
+    p(".subtitle.is-3.is-spaced")["Welcome"]
+]
+```
+
+#### No shorthand yields kwargs `id`, `class_`
+```py title="$ html2htpy --explicit example.html"
+from htpy import p, section
+
+section(id="main-section", class_="hero is-link")[
+    p(class_="subtitle is-3 is-spaced")["Welcome"]
 ]
 ```
 

@@ -350,12 +350,6 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog="html2htpy")
 
     parser.add_argument(
-        "-e",
-        "--explicit",
-        help="Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax",
-        action="store_true",
-    )
-    parser.add_argument(
         "-f",
         "--format",
         choices=["auto", "ruff", "black", "none"],
@@ -368,6 +362,11 @@ def main() -> None:
         choices=["yes", "h", "no"],
         help="Output mode for imports of found htpy elements",
         default="yes",
+    )
+    parser.add_argument(
+        "--no-shorthand",
+        help="Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax",
+        action="store_true",
     )
     parser.add_argument(
         "input",
@@ -397,7 +396,8 @@ def main() -> None:
         )
         sys.exit(1)
 
-    shorthand: bool = False if args.explicit else True
+    shorthand: bool = False if args.no_shorthand else True
+    print(shorthand)
     imports: Literal["yes", "h", "no"] = args.imports
 
     formatter = _get_formatter(args.format)
