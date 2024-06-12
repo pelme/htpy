@@ -26,6 +26,7 @@ optional-dependencies.dev = [
     "mypy",
     "pyright",
     "pytest",
+    "black",
     "ruff",
     "django",
     "django-stubs",
