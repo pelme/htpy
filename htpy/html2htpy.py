@@ -4,7 +4,6 @@ import re
 import subprocess
 import argparse
 import shutil
-from dataclasses import dataclass
 from typing import Literal, Self
 from html.parser import HTMLParser
 
@@ -199,7 +198,7 @@ class HTPYParser(HTMLParser):
 
 def html2htpy(
     html: str,
-    shorthand_id_class: bool = False,
+    shorthand_id_class: bool = True,
     formatter: Formatter | None = None,
 ):
     parser = HTPYParser()
@@ -301,19 +300,13 @@ def _is_package_installed(package_name: str):
     return shutil.which(package_name) is not None
 
 
-@dataclass
-class ConvertArgs:
-    shorthand: bool
-    format: bool
-
-
 def main():
     parser = argparse.ArgumentParser(prog="html2htpy")
 
     parser.add_argument(
-        "-s",
-        "--shorthand",
-        help="Use shorthand syntax for class and id attributes",
+        "-e",
+        "--explicit",
+        help="Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax",
         action="store_true",
     )
     parser.add_argument(
@@ -351,7 +344,7 @@ def main():
         )
         sys.exit(1)
 
-    shorthand: bool = args.shorthand
+    shorthand: bool = False if args.explicit else True
 
     formatter = _get_formatter(args.format)
 
