@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
-import sys
-import re
-import subprocess
 import argparse
+import re
 import shutil
-from typing import Literal, Self
+import subprocess
+import sys
+from abc import ABC, abstractmethod
 from html.parser import HTMLParser
+from typing import Literal, Self
 
 __all__ = ["html2htpy"]
 
@@ -53,13 +53,13 @@ class Tag:
         if _positional_attrs:
             arg0 = ""
             if "id" in _positional_attrs:
-                if _positional_attrs["id"] == None:
+                if _positional_attrs["id"] is None:
                     raise Exception("Id attribute cannot be none")
 
                 arg0 += "#" + _positional_attrs["id"]
 
             if "class" in _positional_attrs:
-                if _positional_attrs["class"] == None:
+                if _positional_attrs["class"] is None:
                     raise Exception("Class attribute cannot be none")
 
                 classes = ".".join(_positional_attrs["class"].split(" "))
@@ -156,13 +156,12 @@ class HTPYParser(HTMLParser):
 
     def handle_endtag(self, tag: str):
         if not self._current:
-            raise Exception(
-                f"Error parsing html: Closing tag {tag} when not inside any other tag"
-            )
+            raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
 
         if not self._current.type == tag:
             raise Exception(
-                f"Error parsing html: Closing tag {tag} does not match the currently open tag ({self._current.type})"
+                f"Error parsing html: Closing tag {tag} does not match the "
+                f"currently open tag ({self._current.type})"
             )
 
         self._current = self._current.parent
@@ -261,9 +260,7 @@ def _serialize(el: Tag | str, shorthand_id_class: bool):
         return str(el)
 
 
-def _get_formatter(
-    format: Literal["auto", "ruff", "black", "none"]
-) -> Formatter | None:
+def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatter | None:
     if format == "ruff":
         if _is_command_available("ruff"):
             return RuffFormatter()

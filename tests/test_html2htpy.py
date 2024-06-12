@@ -1,5 +1,7 @@
 import textwrap
+
 import pytest
+
 from htpy.html2htpy import BlackFormatter, RuffFormatter, html2htpy
 
 
@@ -24,9 +26,7 @@ def test_convert_explicit_id_class_syntas():
     """
 
     actual = html2htpy(input, shorthand_id_class=False)
-    expected = (
-        'div(id="div-id",class_="some-class other-class")[p["This is a paragraph."]]'
-    )
+    expected = 'div(id="div-id",class_="some-class other-class")[p["This is a paragraph."]]'
 
     assert actual == expected
 
@@ -42,7 +42,12 @@ nested_html = """
 def test_convert_nested_element_without_formatting():
     actual = html2htpy(nested_html, formatter=None)
 
-    expected = 'div[p["This is a ",span["nested"]," element."],p["Another ",a(href="#")["nested ",strong["tag"]],"."]]'
+    expected = (
+        "div["
+        'p["This is a ",span["nested"]," element."],'
+        'p["Another ",a(href="#")["nested ",strong["tag"]],"."]'
+        "]"
+    )
 
     assert actual == expected
 
@@ -189,9 +194,7 @@ def test_convert_html_doctype():
     """
 
     actual = html2htpy(input)
-    expected = (
-        """html[head[title["Test Document"]],body[h1["Header"],p["Paragraph"]]]"""
-    )
+    expected = """html[head[title["Test Document"]],body[h1["Header"],p["Paragraph"]]]"""
 
     assert actual == expected
 
@@ -236,10 +239,7 @@ def test_convert_attributes_without_values():
         <option selected>Option</option>
     """
     actual = html2htpy(input)
-    assert (
-        actual
-        == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
-    )
+    assert actual == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
 
 
 def test_convert_complex_section():
@@ -272,16 +272,34 @@ def test_convert_complex_section():
 
 
 def test_convert_complex_svg():
-    input = """
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+    path_d: str = (
+        "m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2"
+        ".652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1"
+        ".13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8."
+        "932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.2"
+        "5 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75"
+        "V8.25A2.25 2.25 0 0 1 5.25 6H10"
+    )
+
+    input = f"""
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="{path_d}"
+            />
         </svg>
     """
 
     actual_output = html2htpy(input, formatter=BlackFormatter())
 
     expected_output = textwrap.dedent(
-        """\
+        f"""\
             svg(
                 ".w-6.h-6",
                 xmlns="http://www.w3.org/2000/svg",
@@ -293,7 +311,7 @@ def test_convert_complex_svg():
                 path(
                     stroke_linecap="round",
                     stroke_linejoin="round",
-                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10",
+                    d="{path_d}",
                 )
             ]
         """
