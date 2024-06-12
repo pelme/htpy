@@ -292,12 +292,12 @@ def test_convert_html_to_htpy_svg():
     expected_output = textwrap.dedent(
         """\
             svg(
+                ".w-6.h-6",
                 xmlns="http://www.w3.org/2000/svg",
                 fill="none",
                 viewbox="0 0 24 24",
                 stroke_width="1.5",
                 stroke="currentColor",
-                class_="w-6 h-6",
             )[
                 path(
                     stroke_linecap="round",
