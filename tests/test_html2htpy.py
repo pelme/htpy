@@ -230,6 +230,23 @@ def test_convert_empty_elements() -> None:
     assert actual == "[div,p,span]"
 
 
+def test_convert_void_elements() -> None:
+    input = """
+      <div>
+        <div>
+          <input type="text" />
+        </div>
+
+        <div>
+          <input type="text">
+        </div>
+      </div>
+    """
+
+    actual = html2htpy(input)
+    assert actual == 'div[div[input(type="text")],div[input(type="text")]]'
+
+
 def test_convert_custom_tag() -> None:
     input = """
         <custom-element attribute="value">Custom content</custom-element>

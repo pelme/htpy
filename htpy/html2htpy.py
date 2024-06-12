@@ -9,6 +9,23 @@ from typing import Any, Literal
 
 __all__ = ["html2htpy"]
 
+_void_elements = [
+    "area",
+    "base",
+    "br",
+    "col",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr",
+]
+
 
 class Tag:
     def __init__(
@@ -144,7 +161,8 @@ class HTPYParser(HTMLParser):
         else:
             self._current.children.append(t)
 
-        self._current = t
+        if tag not in _void_elements:
+            self._current = t
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         t = Tag(tag, attrs, parent=self._current)
