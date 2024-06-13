@@ -102,5 +102,6 @@ The full documentation is available at [https://htpy.dev](https://htpy.dev):
  - [Static typing](https://htpy.dev/static-typing/)
  - [Usage with Django](https://htpy.dev/django/)
  - [Streaming of contents](https://htpy.dev/streaming/)
+ - [Convert HTML to htpy code](https://htpy.dev/html2htpy/)
  - [FAQ](https://htpy.dev/faq/)
  - [References](https://htpy.dev/references/)
