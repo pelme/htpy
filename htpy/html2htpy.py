@@ -334,10 +334,10 @@ def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatte
             sys.exit(1)
 
     elif format == "auto":
+        if _is_command_available("black"):
+            return BlackFormatter()
         if _is_command_available("ruff"):
             return RuffFormatter()
-        elif _is_command_available("black"):
-            return BlackFormatter()
 
     return None
 
@@ -386,7 +386,7 @@ def main() -> None:
         )
         sys.exit(1)
 
-    shorthand: bool = False if args.no_shorthand else True
+    shorthand = not args.no_shorthand
     imports: Literal["yes", "h", "no"] = args.imports
 
     formatter = _get_formatter(args.format)
