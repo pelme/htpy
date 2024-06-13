@@ -379,17 +379,7 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        if args.input == sys.stdin:
-            input = args.input.read()
-        elif args.input != sys.stdin:
-            input = args.input.read()
-        else:
-            _printerr(
-                "No input provided. Please supply an input file or stream.",
-            )
-            _printerr("Example usage: `cat index.html | html2htpy`")
-            _printerr("`html2htpy -h` for help")
-            sys.exit(1)
+        input = args.input.read()
     except KeyboardInterrupt:
         _printerr(
             "\nInterrupted",
