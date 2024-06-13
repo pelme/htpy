@@ -16,6 +16,7 @@ nav:
   - static-typing.md
   - django.md
   - streaming.md
+  - html2htpy.md
   - faq.md
   - references.md
 markdown_extensions:
