@@ -97,6 +97,7 @@ pip install htpy
 
 ## Documentation
 The full documentation is available at [https://htpy.dev](https://htpy.dev):
+
  - [Usage](https://htpy.dev/usage/)
  - [Common patterns](https://htpy.dev/common-patterns/)
  - [Static typing](https://htpy.dev/static-typing/)
