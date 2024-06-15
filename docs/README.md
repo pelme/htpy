@@ -85,7 +85,7 @@ that you can build upon yourself.
 ## The syntax
 Child elements are specified using the `[]` syntax. This may look strange at
 first but it has some nice benefits. This clearly separates attributes from
-children elements and makes the code more readable. It is implemented using the
+child elements and makes the code more readable. It is implemented using the
 `__getitem__` method, just like lists or dicts.
 
 ## Installation
