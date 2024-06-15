@@ -61,6 +61,9 @@ class Tag:
                     _positional_attrs[key] = a[1]
                 else:
                     _kwattrs.append(a)
+            elif any(s in key for s in ["@", ":"]):
+                _positional_attrs[key] = a[1]
+                pass
             else:
                 _kwattrs.append(a)
 
@@ -74,6 +77,7 @@ class Tag:
                     raise Exception("Id attribute cannot be none")
 
                 arg0 += "#" + _positional_attrs["id"]
+                del _positional_attrs["id"]
 
             if "class" in _positional_attrs:
                 if _positional_attrs["class"] is None:
@@ -81,8 +85,23 @@ class Tag:
 
                 classes = ".".join(_positional_attrs["class"].split(" "))
                 arg0 += "." + classes
+                del _positional_attrs["class"]
 
             _attrs += '"' + arg0 + '",'
+
+            if _positional_attrs:
+                _attrs += "{"
+                for key in _positional_attrs:
+                    val = _positional_attrs[key]
+                    if not val:
+                        _attrs += f'"{key}":True,'
+                    else:
+                        val = _convert_data_to_string(val)
+                        _attrs += f'"{key}":{val},'
+
+                _attrs = _attrs[:-1]
+
+                _attrs += "},"
 
         if _kwattrs:
             for a in _kwattrs:
@@ -98,11 +117,11 @@ class Tag:
                 val = a[1]
                 if not val:
                     _attrs += f"{key}=True,"
-
                 else:
+                    val = val
                     _attrs += f'{key}="{val}",'
 
-        if _positional_attrs or _kwattrs:
+        if _attrs:
             _attrs = _attrs[:-1] + ")"
 
         _children: str = ""

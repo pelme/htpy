@@ -154,6 +154,22 @@ def test_convert_f_string_escaping() -> None:
     assert actual == expected
 
 
+def test_convert_vueish_attrs() -> None:
+    input = """
+      <button id="btn-id" @click="doSomething" type="submit">Submit</button>
+      <img id="img-id" :src="imageSrc" />
+    """
+
+    actual = html2htpy(input, import_mode="no")
+
+    assert actual == (
+        "["
+        'button("#btn-id",{"@click":"doSomething"},type="submit")["Submit"],'
+        'img("#img-id",{":src":"imageSrc"})'
+        "]"
+    )
+
+
 def test_convert_f_string_escaping_complex() -> None:
     input = """
     <body>
