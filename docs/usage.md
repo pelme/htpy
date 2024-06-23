@@ -261,6 +261,35 @@ Attributes via id/class shorthand, keyword arguments and dictionary can be combi
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
 ```
 
+### Escaping of Attributes
+
+Attributes are always escaped. This makes it possible to pass arbitrary HTML
+fragments or scripts as attributes. The output may look a bit obfuscated since
+all unsafe characters are escaped but the browser will interpret it correctly:
+
+```pycon
+>>> from htpy import button
+>>> print(button(id="example", onclick="let name = 'andreas'; alert('hi' + name);")["Say hi"])
+<button onclick="let name = &#39;andreas&#39;; alert(&#39;hi&#39; + name);">Say hi</button>
+```
+
+In the browser, the parsed attribute as returned by
+`document.getElementById("example").getAttribute("onclick")` will be the
+original string `let name = 'andreas'; alert('hi' + name);`.
+
+Escaping will happen whether or not the value is wrapped in `markupsafe.Markup`
+or not. This may seem confusing at first but is useful when embedding HTML
+snippets as attributes:
+
+```pycon title="Escaping of Markup"
+>>> from htpy import ul
+>>> from markupsafe import Markup
+>>> # This markup may come from another library/template engine
+>>> some_markup = Markup("""<li class="bar"></li>""")
+>>> print(ul(data_li_template=some_markup))
+<ul data-li-template="&lt;li class=&#34;bar&#34;&gt;&lt;/li&gt;"></ul>
+```
+
 ## Iterating of the Output
 
 Iterating over a htpy element will yield the resulting contents in chunks as
