@@ -74,23 +74,20 @@ class Tag:
 
             _attrs += '"' + arg0 + '",'
 
-        if _kwattrs:
-            for a in _kwattrs:
-                key = a[0]
-                if "-" in key:
-                    key = key.replace("-", "_")
+        for key, value in _kwattrs:
+            if "-" in key:
+                key = key.replace("-", "_")
 
-                if key == "class":
-                    key = "class_"
-                elif key == "for":
-                    key = "for_"
+            if key == "class":
+                key = "class_"
+            elif key == "for":
+                key = "for_"
 
-                val = a[1]
-                if not val:
-                    _attrs += f"{key}=True,"
+            if not value:
+                _attrs += f"{key}=True,"
 
-                else:
-                    _attrs += f'{key}="{val}",'
+            else:
+                _attrs += f'{key}="{value}",'
 
         if _positional_attrs or _kwattrs:
             _attrs = _attrs[:-1] + ")"
