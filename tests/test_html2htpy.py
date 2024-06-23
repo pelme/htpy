@@ -8,7 +8,7 @@ from htpy.html2htpy import BlackFormatter, RuffFormatter, html2htpy
 def test_convert_default_shorthand_id_and_class() -> None:
     input = """
         <div id="div-id" class="some-class other-class">
-          <p>This is a paragraph.</p>
+            <p>This is a paragraph.</p>
         </div>
     """
 
@@ -21,7 +21,7 @@ def test_convert_default_shorthand_id_and_class() -> None:
 def test_convert_explicit_id_class_syntas() -> None:
     input = """
         <div id="div-id" class="some-class other-class">
-          <p>This is a paragraph.</p>
+            <p>This is a paragraph.</p>
         </div>
     """
 
@@ -33,8 +33,8 @@ def test_convert_explicit_id_class_syntas() -> None:
 
 nested_html = """
     <div>
-      <p>This is a <span>nested</span> element.</p>
-      <p>Another <a href="#">nested <strong>tag</strong></a>.</p>
+        <p>This is a <span>nested</span> element.</p>
+        <p>Another <a href="#">nested <strong>tag</strong></a>.</p>
     </div>
 """
 
@@ -157,18 +157,18 @@ def test_convert_f_string_escaping() -> None:
 def test_convert_f_string_escaping_complex() -> None:
     input = """
     <body>
-      <h1>{{ heading }}</h1>
-      <p>Welcome to our cooking site, {{ user.name }}!</p>
+        <h1>{{ heading }}</h1>
+        <p>Welcome to our cooking site, {{ user.name }}!</p>
 
-      <h2>Recipe of the Day: {{ recipe.name }}</h2>
-      <p>{{ recipe.description }}</p>
+        <h2>Recipe of the Day: {{ recipe.name }}</h2>
+        <p>{{ recipe.description }}</p>
 
-      <h3>Instructions:</h3>
-      <ol>
-          {% for step in recipe.steps %}
-          <li>{{ step }}</li>
-          {% endfor %}
-      </ol>
+        <h3>Instructions:</h3>
+        <ol>
+            {% for step in recipe.steps %}
+            <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
     </body>
     """
 
@@ -182,9 +182,9 @@ def test_convert_f_string_escaping_complex() -> None:
             p[f"{ recipe.description }"],
             h3["Instructions:"],
             ol[
-                \"\"\"          {% for step in recipe.steps %}          \"\"\",
+                \"\"\"            {% for step in recipe.steps %}            \"\"\",
                 li[f"{ step }"],
-                \"\"\"          {% endfor %}      \"\"\",
+                \"\"\"            {% endfor %}        \"\"\",
             ],
         ]
     """
@@ -215,11 +215,11 @@ def test_convert_html_doctype() -> None:
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Test Document</title>
+            <title>Test Document</title>
         </head>
         <body>
-          <h1>Header</h1>
-          <p>Paragraph</p>
+            <h1>Header</h1>
+            <p>Paragraph</p>
         </body>
         </html>
     """
@@ -243,15 +243,15 @@ def test_convert_empty_elements() -> None:
 
 def test_convert_void_elements() -> None:
     input = """
-      <div>
         <div>
-          <input type="text" />
+        <div>
+            <input type="text" />
         </div>
 
         <div>
-          <input type="text">
+            <input type="text">
         </div>
-      </div>
+    </div>
     """
 
     actual = html2htpy(input, import_mode="no")
@@ -270,8 +270,8 @@ def test_convert_custom_tag() -> None:
 def test_convert_malformed_html() -> None:
     input = """
         <div>
-          <p>Paragraph without closing tag
-          <div>Another div</p>
+            <p>Paragraph without closing tag
+            <div>Another div</p>
         </div>
     """
 
@@ -293,12 +293,12 @@ def test_convert_attributes_without_values() -> None:
 def test_convert_complex_section() -> None:
     input = """
         <section class="hero is-fullheight is-link">
-          <div class="hero-body">
-            <div class='container'>
-              <p class="subtitle is-3 is-spaced">Welcome</p>
-              <p class="title is-1 is-spaced">Student code: {{student_code}}</p>
+            <div class="hero-body">
+                <div class='container'>
+                    <p class="subtitle is-3 is-spaced">Welcome</p>
+                    <p class="title is-1 is-spaced">Student code: {{student_code}}</p>
+                </div>
             </div>
-          </div>
         </section>
     """
 
@@ -329,15 +329,15 @@ def test_convert_complex_svg() -> None:
 
     input = f"""
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6">
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6">
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="{path_d}"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="{path_d}"
             />
         </svg>
     """
