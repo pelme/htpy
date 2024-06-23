@@ -204,10 +204,10 @@ attributes that are reserved Python keywords (like `for` or `class`), when the
 attribute name contains a dash (`-`) or when you want to define attributes
 dynamically.
 
-```pycon title="Using an attribute with a dash"
->>> from htpy import div
->>> print(div({"data-foo": "bar"}))
-<div data-foo="bar"></div>
+```pycon title="Using Alpine.js with @-syntax (shorthand for x-on)"
+>>> from htpy import button
+>>> print(button({"@click.shift": "addToSelection()"}))
+<button @click.shift="addToSelection()"></button>
 ```
 
 ```pycon title="Using an attribute with a reserved keyword"
