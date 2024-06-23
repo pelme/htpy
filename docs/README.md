@@ -25,7 +25,7 @@ print(
 )
 ```
 
-**And get HTML:**
+**And Get HTML:**
 
 ```html
 <!DOCTYPE html>
@@ -44,14 +44,14 @@ print(
 </html>
 ```
 
-## Motivation for this project
+## Motivation for This Project
 
 At [Personalkollen](https://personalkollen.se/start/), where htpy was originally
 developed we often found ourselves hitting walls when using classic templates.
 htpy was created to improve the productiveness and experience of generating HTML
 from a Python backend.
 
-## Key features
+## Key Features
 
 - **Leverage static types:** Use [mypy](https://mypy.readthedocs.io/en/stable/) or [pyright](https://github.com/microsoft/pyright) to type check your code.
 
@@ -84,7 +84,7 @@ scale from a single small Flask project to bigger applications.
 [Common patterns](https://htpy.dev/common-patterns/) can give you some ideas
 that you can build upon yourself.
 
-## The syntax
+## The Syntax
 
 Child elements are specified using the `[]` syntax. This may look strange at
 first but it has some nice benefits. This clearly separates attributes from

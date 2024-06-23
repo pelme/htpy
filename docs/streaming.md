@@ -1,4 +1,4 @@
-# Streaming of contents
+# Streaming of Contents
 
 Internally, htpy is built with generators. Most of the time, you would render
 the full page with `str()`, but htpy can also incrementally generate pages which
@@ -26,7 +26,7 @@ CSS files in the `<head>` tag before dynamic content, the browser can start
 working on loading the CSS and styling the page while the server keeps
 generating the rest of the page.
 
-## Using generators and callables as children
+## Using Generators and Callables as Children
 
 Django's querysets are [lazily
 evaluated](https://docs.djangoproject.com/en/5.0/topics/db/queries/#querysets-are-lazy).
@@ -47,7 +47,7 @@ def article_list(request):
     ])
 ```
 
-## Using callables to delay evalutation
+## Using Callables to Delay Evalutation
 
 Pass a callable that does not accept any arguements as child to delay the
 evaluation.

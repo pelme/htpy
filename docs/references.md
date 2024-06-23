@@ -1,10 +1,10 @@
 # References
 
-## Projects that use htpy
+## Projects That Use htpy
 
 - [voterbowl.org](https://voterbowl.org) - College students win prizes by checking if they are registered to vote: [Github repository](https://github.com/front-seat/voterbowl/tree/main/server/vb/components).
 
-## Similar libraries and tools
+## Similar Libraries and Tools
 
 htpy was heavily inspired by many other libraries that came before it.
 
@@ -18,7 +18,7 @@ htpy was heavily inspired by many other libraries that came before it.
 - [h by Adam Johnson](https://github.com/adamchainz/h) - Similar to htpy, uses call syntax (`()`) for attributes and getitem (`[]`) for children.
 - [lxml.builder](https://lxml.de/apidoc/lxml.builder.html) - lxml's `E` allows creating XML/XHTML documents from Python.
 
-## Articles about HTML generation without templates
+## Articles About HTML Generation Without Templates
 
 - [Jeff Atwood - You're Doing It Wrong](https://blog.codinghorror.com/youre-doing-it-wrong/) - Stack Overflow co-founder Jeff Atwood
 - [Tavis Rudd - Throw out your templates](https://github.com/tavisrudd/throw_out_your_templates) - Tavis Rudd, creator of Python template language "Cheetah" argues for creating HTML without templates.

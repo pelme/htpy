@@ -20,7 +20,7 @@ Elements can be arbitrarily nested:
 <section><article><p>Lorem ipsum</p></article></section>
 ```
 
-### Text/strings
+### Text/Strings
 
 It is possible to pass a string directly:
 
@@ -41,7 +41,7 @@ and safe to directly insert variable data via f-strings:
 <h1>hello bobby &lt;/h1&gt;</h1>
 ```
 
-### Conditional rendering
+### Conditional Rendering
 
 `None` will not render anything. This can be useful to conditionally render some content.
 
@@ -63,7 +63,7 @@ and safe to directly insert variable data via f-strings:
 <div><b>Enter a valid email address.</b></div>
 ```
 
-### Loops / iterating over children
+### Loops / Iterating Over Children
 
 You can pass a list, tuple or generator to generate multiple children:
 
@@ -88,7 +88,7 @@ A `list` can be used similar to a [JSX fragment](https://react.dev/reference/rea
 <div><img src="a.jpg"><img src="b.jpg"></div>
 ```
 
-### Custom elements / web components
+### Custom Elements / Web Components
 
 [Custom elements / web
 components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)
@@ -101,7 +101,7 @@ used in Python identifiers, use underscore (`_`) instead:
 <my-custom-element>hi!</my-custom-element>
 ```
 
-### Injecting markup
+### Injecting Markup
 
 If you have HTML markup that you want to insert without further escaping, wrap
 it in `Markup` from the [markupsafe](https://markupsafe.palletsprojects.com/)
@@ -138,7 +138,7 @@ The [HTML doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) is
 
 HTML attributes are defined by calling the element. They can be specified in a couple of different ways.
 
-### Elements without attributes
+### Elements Without Attributes
 
 Some elements do not have attributes, they can be specified by just the element itself:
 
@@ -148,7 +148,7 @@ Some elements do not have attributes, they can be specified by just the element 
 <hr>
 ```
 
-### Keyword arguments
+### Keyword Arguments
 
 Attributes can be specified via keyword arguments:
 
@@ -174,7 +174,7 @@ Attributes that contains dashes `-` can be specified using underscores:
 <form hx-post="/foo"></form>
 ```
 
-### id/class shorthand
+### Id/Class Shorthand
 
 Defining `id` and `class` attributes is common when writing HTML. A string shorthand
 that looks like a CSS selector can be used to quickly define id and classes:
@@ -197,7 +197,7 @@ that looks like a CSS selector can be used to quickly define id and classes:
 <div id="myid" class="foo bar"></div>
 ```
 
-### Attributes as dict
+### Attributes as Dict
 
 Attributes can also be specified as a `dict`. This is useful when using
 attributes that are reserved Python keywords (like `for` or `class`), when the
@@ -216,7 +216,7 @@ dynamically.
 <label for="myfield"></label>
 ```
 
-### Boolean attributes
+### Boolean Attributes
 
 In HTML, boolean attributes such as `disabled` are considered "true" when they
 exist. Specifying an attribute as `True` will make it appear (without a value).
@@ -235,7 +235,7 @@ HTML.
 <button></button>
 ```
 
-### Conditionally mixing CSS classes
+### Conditionally Mixing CSS Classes
 
 To make it easier to mix CSS classes, the `class` attribute
 accepts a list of class names or a dict. Falsey values will be ignored.
@@ -251,7 +251,7 @@ accepts a list of class names or a dict. Falsey values will be ignored.
 >>>
 ```
 
-### Combining modes
+### Combining Modes
 
 Attributes via id/class shorthand, keyword arguments and dictionary can be combined:
 
@@ -261,7 +261,7 @@ Attributes via id/class shorthand, keyword arguments and dictionary can be combi
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
 ```
 
-## Iterating of the output
+## Iterating of the Output
 
 Iterating over a htpy element will yield the resulting contents in chunks as
 they are rendered:

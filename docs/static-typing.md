@@ -1,4 +1,4 @@
-# Static typing
+# Static Typing
 
 htpy was designed to be used with static typing. Since you define all your own
 data/components with regular Python, a static type checker like mypy will catch
@@ -17,13 +17,13 @@ def greeting(user: User) -> Element:
 # mypy: error: "User" has no attribute "first_name"  [attr-defined]
 ```
 
-## Autocompletion of HTML elements
+## Autocompletion of HTML Elements
 
 htpy ships with type annotations for all HTML elements. If your editor supports it, it will show you useful auto completions:
 
 ![Screenshot of autocomplete in VS Code.](assets/autocomplete.webp "Using autocomplete in VS Code.")
 
-## `Element` and `VoidElement` classes
+## `Element` and `VoidElement` Classes
 
 The base types/classes in htpy are `Element` and `VoidElement`. `Element` are
 all regular HTML elements that can have children such as `<div>`, `<span>` and

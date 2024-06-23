@@ -1,4 +1,4 @@
-# Common patterns
+# Common Patterns
 
 htpy itself is a library that does not impose any particular structure for your
 code. You have the full power of Python
@@ -9,7 +9,7 @@ General programming practices on how to structure modules, functions and classes
 This page describes common scenarios and patterns that may help you structure
 your own project in a good way.
 
-## File/module structure
+## File/Module Structure
 
 It is generally a good idea to keep your HTML pages/components separate from HTTP request handling and "business logic".
 
@@ -41,7 +41,7 @@ def greeting_page(*, name: str) -> Element:
     return html[body[h1[f"hi {name}!"]]]
 ```
 
-## Using a base layout
+## Using a Base Layout
 
 A common feature of template languages is to "extend" a base/parent template and specify placeholders. This can be achieved with a `base_layout` function:
 
@@ -88,7 +88,7 @@ def about_page() -> Element:
 
 ```
 
-## UI components
+## UI Components
 
 Creating higher level wrappers for common UI components can be a good idea to reduce repetition.
 
