@@ -8,6 +8,7 @@ htpy is a library that makes writing HTML in plain Python fun and efficient,
 without a template language.
 
 **Define HTML in Python:**
+
 ```python
 from htpy import body, h1, head, html, li, title, ul
 
@@ -25,6 +26,7 @@ print(
 ```
 
 **And get HTML:**
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -40,10 +42,10 @@ print(
     </ul>
   </body>
 </html>
-
 ```
 
 ## Motivation for this project
+
 At [Personalkollen](https://personalkollen.se/start/), where htpy was originally
 developed we often found ourselves hitting walls when using classic templates.
 htpy was created to improve the productiveness and experience of generating HTML
@@ -83,6 +85,7 @@ scale from a single small Flask project to bigger applications.
 that you can build upon yourself.
 
 ## The syntax
+
 Child elements are specified using the `[]` syntax. This may look strange at
 first but it has some nice benefits. This clearly separates attributes from
 child elements and makes the code more readable. It is implemented using the
@@ -91,18 +94,20 @@ child elements and makes the code more readable. It is implemented using the
 ## Installation
 
 [htpy is available on PyPI](https://pypi.org/project/htpy/). You may install the latest version using pip:
+
 ```
 pip install htpy
 ```
 
 ## Documentation
+
 The full documentation is available at [https://htpy.dev](https://htpy.dev):
 
- - [Usage](https://htpy.dev/usage/)
- - [Common patterns](https://htpy.dev/common-patterns/)
- - [Static typing](https://htpy.dev/static-typing/)
- - [Usage with Django](https://htpy.dev/django/)
- - [Streaming of contents](https://htpy.dev/streaming/)
- - [Convert HTML to htpy code](https://htpy.dev/html2htpy/)
- - [FAQ](https://htpy.dev/faq/)
- - [References](https://htpy.dev/references/)
+- [Usage](https://htpy.dev/usage/)
+- [Common patterns](https://htpy.dev/common-patterns/)
+- [Static typing](https://htpy.dev/static-typing/)
+- [Usage with Django](https://htpy.dev/django/)
+- [Streaming of contents](https://htpy.dev/streaming/)
+- [Convert HTML to htpy code](https://htpy.dev/html2htpy/)
+- [FAQ](https://htpy.dev/faq/)
+- [References](https://htpy.dev/references/)

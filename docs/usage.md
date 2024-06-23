@@ -1,4 +1,3 @@
-
 # Usage
 
 Elements are imported directly from the `htpy` module as their name. HTML attributes are specified by parenthesis (`()` / "call"). Children are specified using square brackets (`[]` / "getitem").
@@ -10,9 +9,11 @@ Elements are imported directly from the `htpy` module as their name. HTML attrib
 ```
 
 ## Elements
+
 Children can be strings, markup, other elements or lists/iterators.
 
 Elements can be arbitrarily nested:
+
 ```pycon title="Nested elements"
 >>> from htpy import article, section, p
 >>> print(section[article[p["Lorem ipsum"]]])
@@ -22,6 +23,7 @@ Elements can be arbitrarily nested:
 ### Text/strings
 
 It is possible to pass a string directly:
+
 ```pycon title="Using a string as children"
 >>> from htpy import h1
 >>> print(h1["Welcome to my site!"])
@@ -113,6 +115,7 @@ library. markupsafe is a dependency of htpy and is automatically installed:
 ```
 
 If you are generate [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, use `Markup`:
+
 ```pycon title="Injecting generated markdown"
 >>> from markdown import markdown
 >>> from markupsafe import Markup
@@ -122,6 +125,7 @@ If you are generate [Markdown](https://pypi.org/project/Markdown/) and want to i
 ```
 
 ### HTML Doctype
+
 The [HTML doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) is automatically prepended to the `<html>` tag:
 
 ```pycon
@@ -163,12 +167,12 @@ In Python, `class` and `for` cannot be used as keyword arguments. Instead, they 
 ```
 
 Attributes that contains dashes `-` can be specified using underscores:
+
 ```pycon
 >>> from htpy import form
 >>> print(form(hx_post="/foo"))
 <form hx-post="/foo"></form>
 ```
-
 
 ### id/class shorthand
 
@@ -213,6 +217,7 @@ dynamically.
 ```
 
 ### Boolean attributes
+
 In HTML, boolean attributes such as `disabled` are considered "true" when they
 exist. Specifying an attribute as `True` will make it appear (without a value).
 `False` will make it hidden. This is useful and brings the semantics of `bool` to

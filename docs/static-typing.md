@@ -18,11 +18,13 @@ def greeting(user: User) -> Element:
 ```
 
 ## Autocompletion of HTML elements
+
 htpy ships with type annotations for all HTML elements. If your editor supports it, it will show you useful auto completions:
 
 ![Screenshot of autocomplete in VS Code.](assets/autocomplete.webp "Using autocomplete in VS Code.")
 
 ## `Element` and `VoidElement` classes
+
 The base types/classes in htpy are `Element` and `VoidElement`. `Element` are
 all regular HTML elements that can have children such as `<div>`, `<span>` and
 `<table>`. `VoidElement` are [HTML void
@@ -46,6 +48,7 @@ def bootstrap_badge(
 ```
 
 ## Node
+
 `Node` is a type alias for all possible objects that can be used as a child
 node. [See the source for the exact
 definition](https://github.com/pelme/htpy/blob/28ec3b3d469e11192079378598d549305709999c/htpy/__init__.py#L226C1-L226C5)
