@@ -1,8 +1,7 @@
-
 # Convert HTML to htpy code
 
-Maybe you already have a bunch of HTML, or templates that you would like to migrate to htpy. 
-We got you covered. The utility command `html2htpy` ships with `htpy`, and can be used to transform existing 
+Maybe you already have a bunch of HTML, or templates that you would like to migrate to htpy.
+We got you covered. The utility command `html2htpy` ships with `htpy`, and can be used to transform existing
 html into Python code (htpy!).
 
 ```
@@ -21,32 +20,33 @@ options:
   --no-shorthand        Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax
 ```
 
-
 Lets say you have an existing HTML file:
 
 ```html title="index.html"
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>htpy Recipes</title>
-</head>
-<body>
+  </head>
+  <body>
     <div id="header">
-        <h1>Welcome to the cooking site</h1>
-        <p>Your go-to place for delicious recipes!</p>
+      <h1>Welcome to the cooking site</h1>
+      <p>Your go-to place for delicious recipes!</p>
     </div>
 
     <div id="recipe-of-the-day" class="section">
-        <h2>Recipe of the Day: <span class="highlight">Spaghetti Carbonara</span></h2>
-        <p>This classic Italian dish is quick and easy to make.</p>
+      <h2>
+        Recipe of the Day: <span class="highlight">Spaghetti Carbonara</span>
+      </h2>
+      <p>This classic Italian dish is quick and easy to make.</p>
     </div>
 
     <div id="footer">
-        <p>&copy; 2024 My Cooking Site. All rights reserved.</p>
+      <p>&copy; 2024 My Cooking Site. All rights reserved.</p>
     </div>
-</body>
+  </body>
 </html>
 ```
 
@@ -82,16 +82,16 @@ html(lang="en")[
 
 You can also pipe input to htpy, for example `cat demo.html | html2htpy`.
 
-This can be combined with other workflows in the way that you find most suitable. 
+This can be combined with other workflows in the way that you find most suitable.
 For example, you might pipe from your clipboard to htpy, and optionally direct the output to a file.
 
-#### Linux 
+#### Linux
 
 ```
 xclip -o -selection clipboard | html2htpy > output.py
 ```
 
-#### Mac 
+#### Mac
 
 ```
 pbpaste | html2htpy > output.py
@@ -103,19 +103,18 @@ pbpaste | html2htpy > output.py
 powershell Get-Clipboard | html2htpy > output.py
 ```
 
-
 ## Formatting the output
+
 `html2htpy` can format the output Python code using `black` or `ruff`.
 Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`, `ruff`, `black` and `none`.
 
 By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `ruff` if it's available.
 If no formatters are available on path, the output will not be formatted.
 
-
 ## Import options
 
-You have a couple of options regarding imports with the `-i`/`--imports` flag. 
-Options are `yes` (default), `h`, `no`. 
+You have a couple of options regarding imports with the `-i`/`--imports` flag.
+Options are `yes` (default), `h`, `no`.
 
 #### Module import of htpy: `--imports=h`
 
@@ -132,16 +131,16 @@ h.section("#main-section.hero.is-link")[
 
 ## Explicit id and class kwargs
 
-
 If you prefer the explicit `id="id", class_="class"` kwargs syntax over the default htpy shorthand `#id.class` syntax, you can get it by passing the `--no-shorthand` flag.
 
 ```html title="example.html"
 <section id="main-section" class="hero is-link">
-    <p class="subtitle is-3 is-spaced">Welcome</p>
+  <p class="subtitle is-3 is-spaced">Welcome</p>
 </section>
 ```
 
 #### Default shorthand yield `#id.class`
+
 ```py title="$ html2htpy example.html"
 from htpy import p, section
 
@@ -151,6 +150,7 @@ section("#main-section.hero.is-link")[
 ```
 
 #### No shorthand yields kwargs `id`, `class_`
+
 ```py title="$ html2htpy --no-shorthand example.html"
 from htpy import p, section
 
@@ -159,32 +159,31 @@ section(id="main-section", class_="hero is-link")[
 ]
 ```
 
-
 ## Template interpolation to f-strings
 
 `html2htpy` will try to convert template variables to pythonic f-strings:
 
 `template {{ variables }}` -> `f"template { variables }"`
 
-Note that other typical template syntax, such as loops `{% for x in y %}`, can not be transformed this way, 
+Note that other typical template syntax, such as loops `{% for x in y %}`, can not be transformed this way,
 so you will often have to clean up a bit after `html2htpy` is done with its thing.
 
 See the example below:
 
 ```html title="jinja.html"
 <body>
-    <h1>{{ heading }}</h1>
-    <p>Welcome to our cooking site, {{ user.name }}!</p>
+  <h1>{{ heading }}</h1>
+  <p>Welcome to our cooking site, {{ user.name }}!</p>
 
-    <h2>Recipe of the Day: {{ recipe.name }}</h2>
-    <p>{{ recipe.description }}</p>
+  <h2>Recipe of the Day: {{ recipe.name }}</h2>
+  <p>{{ recipe.description }}</p>
 
-    <h3>Instructions:</h3>
-    <ol>
-        {% for step in recipe.steps %}
-        <li>{{ step }}</li>
-        {% endfor %}
-    </ol>
+  <h3>Instructions:</h3>
+  <ol>
+    {% for step in recipe.steps %}
+    <li>{{ step }}</li>
+    {% endfor %}
+  </ol>
 </body>
 ```
 
@@ -204,4 +203,3 @@ body[
     ],
 ]
 ```
-

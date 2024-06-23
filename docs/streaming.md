@@ -16,6 +16,7 @@ client while the page is being generated.
 
 This video shows what it looks like in the browser to generate a HTML table with [Django StreamingHttpResponse](https://docs.djangoproject.com/en/5.0/ref/request-response/#django.http.StreamingHttpResponse) ([source code](https://github.com/pelme/htpy/blob/main/examples/djangoproject/stream/views.py)):
 <video width="500" controls loop >
+
   <source src="/assets/stream.webm" type="video/webm">
 </video>
 
@@ -33,6 +34,7 @@ They will not execute a database query before their value is actually needed.
 
 This example shows how this property of Django querysets can be used to create a
 page that streams objects:
+
 ```python
 from django.http import StreamingHttpResponse
 from htpy import ul, li
@@ -44,7 +46,6 @@ def article_list(request):
         (li[article.title] for article in Article.objects.all())
     ])
 ```
-
 
 ## Using callables to delay evalutation
 
@@ -74,6 +75,7 @@ for chunk in element:
 ```
 
 Output:
+
 ```
 <div>
 <h1>
@@ -109,4 +111,3 @@ print(
 # output: <div><h1>Fibonacci!</h1>fib(12)=6765</div>
 
 ```
-

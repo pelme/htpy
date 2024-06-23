@@ -94,7 +94,6 @@ Creating higher level wrappers for common UI components can be a good idea to re
 
 Wrapping [Bootstrap Modal](https://getbootstrap.com/docs/4.0/components/modal/) could be achieved with a function like this:
 
-
 ```py title="Creating wrapper for Bootstrap Modal"
 from markupsafe import Markup
 
@@ -124,6 +123,7 @@ def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> El
 ```
 
 You would then use it like this:
+
 ```py
 from htpy import button, p
 
