@@ -48,21 +48,11 @@ class Tag:
         _attrs = ""
         _kwattrs: list[tuple[str, str | None]] = []
 
-        for a in self.attrs:
-            key = a[0]
-            if key == "class":
-                if shorthand_id_class:
-                    _positional_attrs[key] = a[1]
-                else:
-                    _kwattrs.append(a)
-
-            elif key == "id":
-                if shorthand_id_class:
-                    _positional_attrs[key] = a[1]
-                else:
-                    _kwattrs.append(a)
+        for key, value in self.attrs:
+            if key in ("id", "class") and shorthand_id_class:
+                _positional_attrs[key] = value
             else:
-                _kwattrs.append(a)
+                _kwattrs.append((key, value))
 
         if _positional_attrs or _kwattrs:
             _attrs += "("
