@@ -1,4 +1,5 @@
 import argparse
+import keyword
 import re
 import shutil
 import subprocess
@@ -78,10 +79,8 @@ class Tag:
             if "-" in key:
                 key = key.replace("-", "_")
 
-            if key == "class":
-                key = "class_"
-            elif key == "for":
-                key = "for_"
+            if keyword.iskeyword(key):
+                key += "_"
 
             if not value:
                 _attrs += f"{key}=True,"
