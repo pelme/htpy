@@ -1,4 +1,4 @@
-# Convert HTML to htpy code
+# Convert HTML to htpy Code
 
 Maybe you already have a bunch of HTML, or templates that you would like to migrate to htpy.
 We got you covered. The utility command `html2htpy` ships with `htpy`, and can be used to transform existing
@@ -78,7 +78,7 @@ html(lang="en")[
 ]
 ```
 
-## Piping input/stdin stream
+## Piping Input/Stdin Stream
 
 You can also pipe input to htpy, for example `cat demo.html | html2htpy`.
 
@@ -103,7 +103,7 @@ pbpaste | html2htpy > output.py
 powershell Get-Clipboard | html2htpy > output.py
 ```
 
-## Formatting the output
+## Formatting the Output
 
 `html2htpy` can format the output Python code using `black` or `ruff`.
 Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`, `ruff`, `black` and `none`.
@@ -111,7 +111,7 @@ Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`
 By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `ruff` if it's available.
 If no formatters are available on path, the output will not be formatted.
 
-## Import options
+## Import Options
 
 You have a couple of options regarding imports with the `-i`/`--imports` flag.
 Options are `yes` (default), `h`, `no`.
@@ -129,7 +129,7 @@ h.section("#main-section.hero.is-link")[
 ]
 ```
 
-## Explicit id and class kwargs
+## Explicit ID and Class Kwargs
 
 If you prefer the explicit `id="id", class_="class"` kwargs syntax over the default htpy shorthand `#id.class` syntax, you can get it by passing the `--no-shorthand` flag.
 
@@ -139,7 +139,7 @@ If you prefer the explicit `id="id", class_="class"` kwargs syntax over the defa
 </section>
 ```
 
-#### Default shorthand yield `#id.class`
+#### Default Shorthand Yield `#id.class`
 
 ```py title="$ html2htpy example.html"
 from htpy import p, section
@@ -149,7 +149,7 @@ section("#main-section.hero.is-link")[
 ]
 ```
 
-#### No shorthand yields kwargs `id`, `class_`
+#### No Shorthand Yields Kwargs `id`, `class_`
 
 ```py title="$ html2htpy --no-shorthand example.html"
 from htpy import p, section
@@ -159,7 +159,7 @@ section(id="main-section", class_="hero is-link")[
 ]
 ```
 
-## Template interpolation to f-strings
+## Template Interpolation to f-strings
 
 `html2htpy` will try to convert template variables to pythonic f-strings:
 
