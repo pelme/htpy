@@ -366,7 +366,7 @@ def test_convert_complex_svg() -> None:
     assert expected_output == actual_output
 
 
-def test_reserved_keyword_attributes():
+def test_reserved_keyword_attributes() -> None:
     actual = html2htpy('<img class="foo" del="x">', shorthand_id_class=False, import_mode="no")
     expected = 'img(class_="foo",del_="x")'
 
