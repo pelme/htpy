@@ -216,7 +216,7 @@ dynamically.
 <label for="myfield"></label>
 ```
 
-### Boolean Attributes
+### Boolean/Empty Attributes
 
 In HTML, boolean attributes such as `disabled` are considered "true" when they
 exist. Specifying an attribute as `True` will make it appear (without a value).
