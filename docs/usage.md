@@ -290,6 +290,19 @@ snippets as attributes:
 <ul data-li-template="&lt;li class=&#34;bar&#34;&gt;&lt;/li&gt;"></ul>
 ```
 
+## Render elements without a parent (orphans)
+
+In some cases such as returning partial content it is useful to render elements
+without a parent element. This is useful in HTMX partial responses.
+
+You may use `render_orphans` to achieve this:
+
+```pycon title="Render orphan elements without a parent"
+>>> from htpy import render_orphans, tr
+>>> print(render_orphans([tr["a"], tr["b"]]))
+<tr>a</tr><tr>b</tr>
+```
+
 ## Iterating of the Output
 
 Iterating over a htpy element will yield the resulting contents in chunks as

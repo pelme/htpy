@@ -217,6 +217,10 @@ class VoidElement(BaseElement):
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
 
 
+def render_orphans(orhpans: Iterable[BaseElement]) -> _Markup:
+    return _Markup("".join(_iter_children(orhpans)))
+
+
 class _HasHtml(Protocol):
     def __html__(self) -> str: ...
 
