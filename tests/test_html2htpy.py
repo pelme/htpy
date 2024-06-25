@@ -26,7 +26,7 @@ def test_convert_explicit_id_class_syntas() -> None:
     """
 
     actual = html2htpy(input, shorthand_id_class=False, import_mode="no")
-    expected = 'div(id="div-id",class_="some-class other-class")[p["This is a paragraph."]]'
+    expected = 'div(id="div-id", class_="some-class other-class")[p["This is a paragraph."]]'
 
     assert actual == expected
 
@@ -44,8 +44,8 @@ def test_convert_nested_element_without_formatting() -> None:
 
     expected = (
         "div["
-        'p["This is a ",span["nested"]," element."],'
-        'p["Another ",a(href="#")["nested ",strong["tag"]],"."]'
+        'p["This is a ", span["nested"], " element."], '
+        'p["Another ", a(href="#")["nested ", strong["tag"]], "."]'
         "]"
     )
 
@@ -81,8 +81,8 @@ def test_convert_nested_element___import_mode_yes() -> None:
     assert actual == (
         "from htpy import a, div, p, span, strong\n"
         "div["
-        'p["This is a ",span["nested"]," element."],'
-        'p["Another ",a(href="#")["nested ",strong["tag"]],"."]'
+        'p["This is a ", span["nested"], " element."], '
+        'p["Another ", a(href="#")["nested ", strong["tag"]], "."]'
         "]"
     )
 
@@ -92,8 +92,8 @@ def test_convert_nested_element___import_mode_h() -> None:
     assert actual == (
         "import htpy as h\n"
         "h.div["
-        'h.p["This is a ",h.span["nested"]," element."],'
-        'h.p["Another ",h.a(href="#")["nested ",h.strong["tag"]],"."]'
+        'h.p["This is a ", h.span["nested"], " element."], '
+        'h.p["Another ", h.a(href="#")["nested ", h.strong["tag"]], "."]'
         "]"
     )
 
@@ -116,13 +116,13 @@ def test_convert_self_closing_tags() -> None:
 
     actual = html2htpy(input, import_mode="no")
 
-    assert actual == '[img(src="image.jpg",alt="An image"),br,input(type="text")]'
+    assert actual == '[img(src="image.jpg", alt="An image"),br,input(type="text")]'
 
 
 def test_convert_attribute_with_special_characters() -> None:
     input = """<img src="path/to/image.jpg" alt="A <test> & 'image'" />"""
     actual = html2htpy(input, import_mode="no")
-    assert actual == """img(src="path/to/image.jpg",alt="A <test> & 'image'")"""
+    assert actual == """img(src="path/to/image.jpg", alt="A <test> & 'image'")"""
 
 
 def test_convert_ignores_comments() -> None:
@@ -131,7 +131,7 @@ def test_convert_ignores_comments() -> None:
     <div>Content <!-- Another comment --> inside</div>
     """
     actual = html2htpy(input, import_mode="no")
-    assert actual == 'div["Content "," inside"]'
+    assert actual == 'div["Content ", " inside"]'
 
 
 def test_convert_special_characters() -> None:
@@ -225,7 +225,7 @@ def test_convert_html_doctype() -> None:
     """
 
     actual = html2htpy(input, import_mode="no")
-    expected = """html[head[title["Test Document"]],body[h1["Header"],p["Paragraph"]]]"""
+    expected = """html[head[title["Test Document"]], body[h1["Header"], p["Paragraph"]]]"""
 
     assert actual == expected
 
@@ -255,7 +255,7 @@ def test_convert_void_elements() -> None:
     """
 
     actual = html2htpy(input, import_mode="no")
-    assert actual == 'div[div[input(type="text")],div[input(type="text")]]'
+    assert actual == 'div[div[input(type="text")], div[input(type="text")]]'
 
 
 def test_convert_custom_tag() -> None:
@@ -287,7 +287,7 @@ def test_convert_attributes_without_values() -> None:
         <option selected>Option</option>
     """
     actual = html2htpy(input, import_mode="no")
-    assert actual == """[input(type="checkbox",checked=True),option(selected=True)["Option"]]"""
+    assert actual == """[input(type="checkbox", checked=True),option(selected=True)["Option"]]"""
 
 
 def test_convert_complex_section() -> None:
@@ -307,7 +307,7 @@ def test_convert_complex_section() -> None:
         'section(class_="hero is-fullheight is-link")['
         'div(class_="hero-body")['
         'div(class_="container")['
-        'p(class_="subtitle is-3 is-spaced")["Welcome"],'
+        'p(class_="subtitle is-3 is-spaced")["Welcome"], '
         'p(class_="title is-1 is-spaced")[f"Student code: {student_code}"]'
         "]"
         "]"
@@ -368,6 +368,17 @@ def test_convert_complex_svg() -> None:
 
 def test_reserved_keyword_attributes() -> None:
     actual = html2htpy('<img class="foo" del="x">', shorthand_id_class=False, import_mode="no")
-    expected = 'img(class_="foo",del_="x")'
+    expected = 'img(class_="foo", del_="x")'
+
+    assert actual == expected
+
+
+def test_dict_attributes() -> None:
+    actual = html2htpy(
+        '<img src="bar.gif" @a-b="c" @d>',
+        shorthand_id_class=False,
+        import_mode="no",
+    )
+    expected = 'img(src="bar.gif", {"@a-b": "c", "@d": True})'
 
     assert actual == expected

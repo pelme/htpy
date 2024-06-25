@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import argparse
 import keyword
 import re
@@ -6,7 +8,7 @@ import subprocess
 import sys
 from abc import ABC, abstractmethod
 from html.parser import HTMLParser
-from typing import Any, Literal
+from typing import Literal
 
 __all__ = ["html2htpy"]
 
@@ -28,86 +30,136 @@ _void_elements = [
 ]
 
 
+def _quote(x: str) -> str:
+    if '"' in x:
+        return f"'{x}'"
+
+    return f'"{x}"'
+
+
+def _format_value(value: str | None) -> str:
+    if value is None:
+        return "True"
+
+    return _quote(value)
+
+
+def _format_id_class_shorthand_attrs(id_: str, class_: str) -> str:
+    classes = class_.split(" ") if class_ else []
+    result = (f"#{id_}" if id_ else "") + (("." + ".".join(classes)) if classes else "")
+
+    if result:
+        return f'"{result}"'
+
+    return ""
+
+
+def _format_keyword_attrs(attrs: dict[str, str | None]) -> str:
+    if not attrs:
+        return ""
+
+    return ", ".join(f"{key}={_format_value(value)}" for key, value in attrs.items())
+
+
+def _format_dict_attrs(attrs: dict[str, str | None]) -> str:
+    if not attrs:
+        return ""
+
+    return (
+        "{"
+        + ", ".join(f"{_quote(key)}: {_format_value(value)}" for key, value in attrs.items())
+        + "}"
+    )
+
+
+def _format_attrs(attrs: dict[str, str | None], shorthand_id_class: bool) -> str:
+    keyword_attrs: dict[str, str | None] = {}
+    dict_attrs: dict[str, str | None] = {}
+
+    shorthand_id_class_str = (
+        _format_id_class_shorthand_attrs(attrs.pop("id", "") or "", attrs.pop("class", "") or "")
+        if shorthand_id_class
+        else ""
+    )
+
+    for key, value in attrs.items():
+        potential_keyword_key = key.replace("-", "_")
+        if potential_keyword_key.isidentifier():
+            if keyword.iskeyword(potential_keyword_key):
+                keyword_attrs[potential_keyword_key + "_"] = value
+            else:
+                keyword_attrs[potential_keyword_key] = value
+        else:
+            dict_attrs[key] = value
+
+    _attrs = ", ".join(
+        x
+        for x in [
+            shorthand_id_class_str,
+            _format_keyword_attrs(keyword_attrs),
+            _format_dict_attrs(dict_attrs),
+        ]
+        if x
+    )
+
+    if not _attrs:
+        return ""
+
+    return f"({_attrs})"
+
+
+def _format_element(python_element_name: str, use_h_prefix: bool) -> str:
+    if use_h_prefix:
+        return f"h.{python_element_name}"
+    return python_element_name
+
+
+def _format_child(child: Tag | str, *, shorthand_id_class: bool, use_h_prefix: bool) -> str:
+    if isinstance(child, Tag):
+        return child.serialize(shorthand_id_class=shorthand_id_class, use_h_prefix=use_h_prefix)
+    else:
+        return str(child)
+
+
+def _format_children(
+    children: list[Tag | str], *, shorthand_id_class: bool, use_u_prefix: bool
+) -> str:
+    if not children:
+        return ""
+    return (
+        "["
+        + ", ".join(
+            _format_child(child, shorthand_id_class=shorthand_id_class, use_h_prefix=use_u_prefix)
+            for child in children
+        )
+        + "]"
+    )
+
+
 class Tag:
     def __init__(
         self,
-        type: str,
-        attrs: list[tuple[str, str | None]],
-        parent: Any | None = None,
+        html_tag: str,
+        attrs: dict[str, str | None],
+        parent: Tag | None,
     ):
-        self.html_type = type
-        self.python_type = type
-        if "-" in self.python_type:
-            self.python_type = self.python_type.replace("-", "_")
-
+        self.html_tag = html_tag
         self.attrs = attrs
+        self.children: list[Tag | str] = []
         self.parent = parent
-        self.children: list[Any | str] = []
 
-    def serialize(self, shorthand_id_class: bool, use_h_prefix: bool) -> str:
-        _positional_attrs: dict[str, str | None] = {}
-        _attrs = ""
-        _kwattrs: list[tuple[str, str | None]] = []
+    @property
+    def python_element_name(self) -> str:
+        return self.html_tag.replace("-", "_")
 
-        for key, value in self.attrs:
-            if key in ("id", "class") and shorthand_id_class:
-                _positional_attrs[key] = value
-            else:
-                _kwattrs.append((key, value))
-
-        if _positional_attrs or _kwattrs:
-            _attrs += "("
-
-        if _positional_attrs:
-            arg0 = ""
-            if "id" in _positional_attrs:
-                if _positional_attrs["id"] is None:
-                    raise Exception("Id attribute cannot be none")
-
-                arg0 += "#" + _positional_attrs["id"]
-
-            if "class" in _positional_attrs:
-                if _positional_attrs["class"] is None:
-                    raise Exception("Class attribute cannot be none")
-
-                classes = ".".join(_positional_attrs["class"].split(" "))
-                arg0 += "." + classes
-
-            _attrs += '"' + arg0 + '",'
-
-        for key, value in _kwattrs:
-            if "-" in key:
-                key = key.replace("-", "_")
-
-            if keyword.iskeyword(key):
-                key += "_"
-
-            if not value:
-                _attrs += f"{key}=True,"
-
-            else:
-                _attrs += f'{key}="{value}",'
-
-        if _positional_attrs or _kwattrs:
-            _attrs = _attrs[:-1] + ")"
-
-        _children: str = ""
-        if self.children:
-            _children += "["
-            for c in self.children:
-                if isinstance(c, Tag):
-                    _children += c.serialize(shorthand_id_class, use_h_prefix)
-                else:
-                    _children += str(c)
-
-                _children += ","
-
-            _children = _children[:-1] + "]"
-
-        if use_h_prefix:
-            return f"h.{self.python_type}{_attrs}{_children}"
-
-        return f"{self.python_type}{_attrs}{_children}"
+    def serialize(self, *, shorthand_id_class: bool, use_h_prefix: bool) -> str:
+        return (
+            _format_element(self.python_element_name, use_h_prefix)
+            + _format_attrs(dict(self.attrs), shorthand_id_class)
+            + _format_children(
+                self.children, shorthand_id_class=shorthand_id_class, use_u_prefix=use_h_prefix
+            )
+        )
 
 
 class Formatter(ABC):
@@ -143,7 +195,7 @@ class HTPYParser(HTMLParser):
         super().__init__()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        t = Tag(tag, attrs, parent=self._current)
+        t = Tag(tag, dict(attrs), parent=self._current)
 
         if not self._current:
             self._collected.append(t)
@@ -154,7 +206,7 @@ class HTPYParser(HTMLParser):
             self._current = t
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        t = Tag(tag, attrs, parent=self._current)
+        t = Tag(tag, dict(attrs), parent=self._current)
 
         if not self._current:
             self._collected.append(t)
@@ -165,10 +217,10 @@ class HTPYParser(HTMLParser):
         if not self._current:
             raise Exception(f"Error parsing html: Closing tag {tag} when not inside any other tag")
 
-        if not self._current.html_type == tag:
+        if not self._current.html_tag == tag:
             raise Exception(
                 f"Error parsing html: Closing tag {tag} does not match the "
-                f"currently open tag ({self._current.html_type})"
+                f"currently open tag ({self._current.html_tag})"
             )
 
         self._current = self._current.parent
@@ -198,12 +250,12 @@ class HTPYParser(HTMLParser):
             def _tags_from_children(parent: Tag) -> None:
                 for c in parent.children:
                     if isinstance(c, Tag):
-                        unique_tags.add(c.python_type)
+                        unique_tags.add(c.python_element_name)
                         _tags_from_children(c)
 
             for t in self._collected:
                 if isinstance(t, Tag):
-                    unique_tags.add(t.python_type)
+                    unique_tags.add(t.python_element_name)
                     _tags_from_children(t)
 
             sorted_tags = list(unique_tags)
@@ -291,7 +343,7 @@ def _convert_data_to_string(data: str) -> str:
 
 def _serialize(el: Tag | str, shorthand_id_class: bool, use_h_prefix: bool) -> str:
     if isinstance(el, Tag):
-        return el.serialize(shorthand_id_class, use_h_prefix)
+        return el.serialize(shorthand_id_class=shorthand_id_class, use_h_prefix=use_h_prefix)
     else:
         return str(el)
 
