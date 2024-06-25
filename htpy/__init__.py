@@ -103,7 +103,7 @@ def _attrs_string(attrs: dict[str, Attribute]) -> str:
     return " " + result
 
 
-def _iter_children(x: Node) -> Iterator[str]:
+def iter_node(x: Node) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
@@ -116,7 +116,7 @@ def _iter_children(x: Node) -> Iterator[str]:
         yield str(_escape(x))
     elif isinstance(x, Iterable):
         for child in x:
-            yield from _iter_children(child)
+            yield from iter_node(child)
     else:
         raise ValueError(f"{x!r} is not a valid child element")
 
@@ -188,7 +188,7 @@ class BaseElement:
 
     def __iter__(self) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
-        yield from _iter_children(self._children)
+        yield from iter_node(self._children)
         yield f"</{self._name}>"
 
     def __repr__(self) -> str:
@@ -215,6 +215,10 @@ class HTMLElement(Element):
 class VoidElement(BaseElement):
     def __iter__(self) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
+
+
+def render_node(node: Node) -> _Markup:
+    return _Markup("".join(iter_node(node)))
 
 
 class _HasHtml(Protocol):

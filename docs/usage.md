@@ -290,6 +290,30 @@ snippets as attributes:
 <ul data-li-template="&lt;li class=&#34;bar&#34;&gt;&lt;/li&gt;"></ul>
 ```
 
+## Render elements without a parent (orphans)
+
+In some cases such as returning partial content it is useful to render elements
+without a parent element. This is useful in HTMX partial responses.
+
+You may use `render_node` to achieve this:
+
+```pycon title="Render elements without a parent"
+>>> from htpy import render_orphans, tr
+>>> print(render_node([tr["a"], tr["b"]]))
+<tr>a</tr><tr>b</tr>
+```
+
+`render_node()` accepts all kinds of [`Node`](static-typing.md#node) objects.
+You may use it to render anything that would normally be a children of another
+element.
+
+!!! note "Best practice: Only use render_node() to render non-Elements"
+
+    You can render regular elements by using `str()`, e.g. `str(p["hi"])`. While
+    `render_node()` would give the same result, it is more straightforward and
+    better practice to just use `str()` when rendering a regular element. Only
+    use `render_node()` when you do not have a parent element.
+
 ## Iterating of the Output
 
 Iterating over a htpy element will yield the resulting contents in chunks as
@@ -297,13 +321,32 @@ they are rendered:
 
 ```pycon
 >>> from htpy import ul, li
->>> for chunk in ul[li["a", "b"]]:
+>>> for chunk in ul[li["a"], li["b"]]:
 ...     print(f"got a chunk: {chunk!r}")
 ...
 got a chunk: '<ul>'
 got a chunk: '<li>'
 got a chunk: 'a'
+got a chunk: '</li>'
+got a chunk: '<li>'
 got a chunk: 'b'
 got a chunk: '</li>'
 got a chunk: '</ul>'
+```
+
+Just like [render_node()](#render-elements-without-a-parent-orphans), there is
+`iter_node()` that can be used when you need to iterate over a list of elements
+without a parent:
+
+```
+>>> from htpy import li, iter_node
+>>> for chunk in iter_node([li["a"], li["b"]]):
+...     print(f"got a chunk: {chunk!r}")
+...
+got a chunk: '<li>'
+got a chunk: 'a'
+got a chunk: '</li>'
+got a chunk: '<li>'
+got a chunk: 'b'
+got a chunk: '</li>'
 ```
