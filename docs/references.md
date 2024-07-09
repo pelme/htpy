@@ -1,10 +1,15 @@
 # References
 
+## Related projects
+
+- [pyxy](https://github.com/pyxy-org/pyxy) - Write HTML tags directly in Python (like JSX). Uses htpy to generate markup. A modern take on pyxl.
+
 ## Projects That Use htpy
 
 - [voterbowl.org](https://voterbowl.org) - College students win prizes by checking if they are registered to vote: [Github repository](https://github.com/front-seat/voterbowl/tree/main/server/vb/components).
 
-## Similar Libraries and Tools
+
+## Prior implementations of HTML in Python
 
 htpy was heavily inspired by many other libraries that came before it.
 
