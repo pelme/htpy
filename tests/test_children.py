@@ -138,7 +138,7 @@ def test_iter_str() -> None:
 
     assert child == "a"
     # Make sure we dont get Markup (subclass of str)
-    assert type(child) is str  # noqa
+    assert type(child) is str
 
 
 def test_iter_markup() -> None:
@@ -146,7 +146,7 @@ def test_iter_markup() -> None:
 
     assert child == "a"
     # Make sure we dont get Markup (subclass of str)
-    assert type(child) is str  # noqa
+    assert type(child) is str
 
 
 def test_callable() -> None:
