@@ -386,7 +386,7 @@ def test_dict_attributes() -> None:
 
 def test_shorthand_contains_hashtag() -> None:
     actual = html2htpy(
-        '<div id="a" class="bg-gradient-to-tr from-[#ff80b5] to-[#9089fc]">',
+        '<div id="a" class="bg-gradient-to-tr from-[#ff80b5] to-[#9089fc]"></div>',
         shorthand_id_class=True,
         import_mode="no",
     )
@@ -396,7 +396,7 @@ def test_shorthand_contains_hashtag() -> None:
 
 def test_shorthand_contains_dot() -> None:
     actual = html2htpy(
-        '<div id="a" class="w-[50.0625rem]">',
+        '<div id="a" class="w-[50.0625rem]"></div>',
         shorthand_id_class=True,
         import_mode="no",
     )
