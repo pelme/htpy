@@ -72,13 +72,18 @@ def _format_dict_attrs(attrs: dict[str, str | None]) -> str:
     )
 
 
+def _can_use_shorthand_id_class(attrs: dict[str, str | None]) -> bool:
+    class_ = attrs.get("class") or ""
+    return "#" not in class_ and "." not in class_
+
+
 def _format_attrs(attrs: dict[str, str | None], shorthand_id_class: bool) -> str:
     keyword_attrs: dict[str, str | None] = {}
     dict_attrs: dict[str, str | None] = {}
 
     shorthand_id_class_str = (
         _format_id_class_shorthand_attrs(attrs.pop("id", "") or "", attrs.pop("class", "") or "")
-        if shorthand_id_class
+        if shorthand_id_class and _can_use_shorthand_id_class(attrs)
         else ""
     )
 

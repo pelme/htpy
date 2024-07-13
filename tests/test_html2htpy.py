@@ -382,3 +382,23 @@ def test_dict_attributes() -> None:
     expected = 'img(src="bar.gif", {"@a-b": "c", "@d": True})'
 
     assert actual == expected
+
+
+def test_shorthand_contains_hashtag() -> None:
+    actual = html2htpy(
+        '<div id="a" class="bg-gradient-to-tr from-[#ff80b5] to-[#9089fc]">',
+        shorthand_id_class=True,
+        import_mode="no",
+    )
+
+    assert actual == 'div(id="a", class_="bg-gradient-to-tr from-[#ff80b5] to-[#9089fc]")'
+
+
+def test_shorthand_contains_dot() -> None:
+    actual = html2htpy(
+        '<div id="a" class="w-[50.0625rem]">',
+        shorthand_id_class=True,
+        import_mode="no",
+    )
+
+    assert actual == 'div(id="a", class_="w-[50.0625rem]")'
