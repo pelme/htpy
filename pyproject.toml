@@ -66,6 +66,9 @@ lint.select = [
     "UP",       # pyupgrade
     "TID",      # flake8-tidy-imports
 ]
+lint.ignore = [
+    "B904",
+]
 
 [tool.mypy]
 strict = true
