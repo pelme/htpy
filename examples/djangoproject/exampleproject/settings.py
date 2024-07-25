@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "index",
+    "pizza",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +67,7 @@ TEMPLATES = [
             ],
         },
     },
+    {"BACKEND": "htpy.django.HtpyTemplateBackend", "NAME": "htpy"},
 ]
 
 WSGI_APPLICATION = "exampleproject.wsgi.application"

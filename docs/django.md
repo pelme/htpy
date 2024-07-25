@@ -127,3 +127,46 @@ class ShoelaceInput(widgets.Widget):
     def render(self, name, value, attrs=None, renderer=None):
         return str(sl_input(attrs, name=name, value=value))
 ```
+
+## The htpy Template Backend
+
+htpy includes a custom template backend. It makes it possible to use htpy
+instead of Django templates in places where a template name is required.  This
+can be used with generic views or third party applications built to be used with
+Django templates.
+
+To enable the htpy template backend, add `htpy.django.HtpyTemplateBackend` to
+the `TEMPLATES` setting:
+
+```py
+TEMPLATES = [
+    ... # Regular Django template configuration goes here
+    {"BACKEND": "htpy.django.HtpyTemplateBackend", "NAME": "htpy"}
+]
+```
+
+In places that expect template names, such as generic views, specify the import
+path as a string to a htpy component function:
+
+
+```python title="pizza/views.py"
+from django.views.generic import ListView
+from pizza.models import Pizza
+
+
+class PizzaListView(ListView):
+    model = Pizza
+    template_name = "pizza.components.pizza_list"
+```
+
+In `pizza/components.py`, create a function that accepts two arguments: the
+template `Context` (a dictionary with the template variables) and a
+`HttpRequest`. It should return the htpy response:
+
+```python title="pizza/components.py"
+from htpy import li, ul
+
+
+def pizza_list(context, request):
+    return ul[(li[pizza.name] for pizza in context["object_list"])]
+```

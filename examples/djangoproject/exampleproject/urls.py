@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path
 from form.views import my_form
 from index.views import index
+from pizza.views import PizzaListView
 from stream.views import stream
 from widget.views import widget_view
 
@@ -27,5 +28,6 @@ urlpatterns = [
     path("form/", my_form),
     path("widget/", widget_view),
     path("stream/", stream),
+    path("pizza/", PizzaListView.as_view()),
     path("admin/", admin.site.urls),
 ]
