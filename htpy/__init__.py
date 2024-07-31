@@ -2,9 +2,15 @@ from __future__ import annotations
 
 __version__ = "24.7.2"
 __all__: list[str] = []
-
 import functools
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import (
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Iterable,
+    Iterator,
+)
 from typing import Any, Protocol, TypeAlias, TypeVar, overload
 
 from markupsafe import Markup as _Markup
@@ -121,6 +127,33 @@ def iter_node(x: Node) -> Iterator[str]:
         raise ValueError(f"{x!r} is not a valid child element")
 
 
+async def aiter_node(x: Node) -> AsyncIterator[str]:
+    while isinstance(x, Awaitable) or (not isinstance(x, BaseElement) and callable(x)):
+        if isinstance(x, Awaitable):
+            x = await x
+        else:
+            x = x()
+
+    if x is None:
+        return
+
+    if isinstance(x, BaseElement):
+        async for child in x:
+            yield child
+    elif isinstance(x, str) or hasattr(x, "__html__"):
+        yield str(_escape(x))
+    elif isinstance(x, AsyncIterable):
+        async for child in x:  # type: ignore
+            async for chunk in aiter_node(child):  # pyright: ignore[reportUnknownArgumentType]
+                yield chunk
+    elif isinstance(x, Iterable):
+        for child in x:  # type: ignore
+            async for chunk in aiter_node(child):
+                yield chunk
+    else:
+        raise ValueError(f"{x!r} is not a valid async child element")
+
+
 @functools.lru_cache(maxsize=300)
 def _get_element(name: str) -> Element:
     if not name.islower():
@@ -186,6 +219,12 @@ class BaseElement:
             self._children,
         )
 
+    async def __aiter__(self) -> AsyncIterator[str]:
+        yield f"<{self._name}{_attrs_string(self._attrs)}>"
+        async for x in aiter_node(self._children):
+            yield x
+        yield f"</{self._name}>"
+
     def __iter__(self) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
         yield from iter_node(self._children)
@@ -193,6 +232,12 @@ class BaseElement:
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} '{self}'>"
+
+    # Allow starlette Response.render to directly render this element without
+    # explicitly casting to str:
+    # https://github.com/encode/starlette/blob/5ed55c441126687106109a3f5e051176f88cd3e6/starlette/responses.py#L44-L49
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
+        return str(self).encode(encoding, errors)
 
     # Avoid having Django "call" a htpy element that is injected into a
     # template. Setting do_not_call_in_templates will prevent Django from doing
@@ -227,7 +272,16 @@ class _HasHtml(Protocol):
 
 _ClassNamesDict: TypeAlias = dict[str, bool]
 _ClassNames: TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+Node: TypeAlias = (
+    None
+    | str
+    | BaseElement
+    | _HasHtml
+    | Iterable["Node"]
+    | Callable[[], "Node"]
+    | AsyncIterable["Node"]
+    | Awaitable["Node"]
+)
 
 Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
