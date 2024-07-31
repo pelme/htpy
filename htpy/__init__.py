@@ -128,11 +128,16 @@ def iter_node(x: Node) -> Iterator[str]:
 
 
 async def aiter_node(x: Node) -> AsyncIterator[str]:
-    while isinstance(x, Awaitable) or (not isinstance(x, BaseElement) and callable(x)):
+    while True:
         if isinstance(x, Awaitable):
             x = await x
-        else:
+            continue
+
+        if not isinstance(x, BaseElement) and callable(x):
             x = x()
+            continue
+
+        break
 
     if x is None:
         return
