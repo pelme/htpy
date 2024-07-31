@@ -26,6 +26,7 @@ optional-dependencies.dev = [
     "mypy",
     "pyright",
     "pytest",
+    "pytest-asyncio",
     "black",
     "ruff",
     "django",
