@@ -104,8 +104,9 @@ def test_custom_element() -> None:
     assert str(el) == "<my-custom-element></my-custom-element>"
 
 
-def test_ignore_none() -> None:
-    assert str(div[None]) == "<div></div>"
+@pytest.mark.parametrize("ignored_value", [None, True, False])
+def test_ignored(ignored_value: Any) -> None:
+    assert str(div[ignored_value]) == "<div></div>"
 
 
 def test_iter() -> None:
@@ -197,7 +198,7 @@ def test_callable_in_generator() -> None:
     assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
 
 
-@pytest.mark.parametrize("not_a_child", [1234, True, False, b"foo", object(), object])
+@pytest.mark.parametrize("not_a_child", [1234, b"foo", object(), object, 1, 0])
 def test_invalid_child(not_a_child: Any) -> None:
     with pytest.raises(ValueError, match="is not a valid child element"):
         str(div[not_a_child])
