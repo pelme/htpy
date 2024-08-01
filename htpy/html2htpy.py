@@ -10,24 +10,9 @@ from abc import ABC, abstractmethod
 from html.parser import HTMLParser
 from typing import Literal
 
-__all__ = ["html2htpy"]
+from .elements import void_elements
 
-_void_elements = [
-    "area",
-    "base",
-    "br",
-    "col",
-    "embed",
-    "hr",
-    "img",
-    "input",
-    "link",
-    "meta",
-    "param",
-    "source",
-    "track",
-    "wbr",
-]
+__all__ = ["html2htpy"]
 
 
 def _quote(x: str) -> str:
@@ -207,7 +192,7 @@ class HTPYParser(HTMLParser):
         else:
             self._current.children.append(t)
 
-        if tag not in _void_elements:
+        if tag not in void_elements:
             self._current = t
 
     def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
