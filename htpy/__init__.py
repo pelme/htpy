@@ -110,6 +110,12 @@ def iter_node(x: Node) -> Iterator[str]:
     if x is None:
         return
 
+    if x is True:
+        return
+
+    if x is False:
+        return
+
     if isinstance(x, BaseElement):
         yield from x
     elif isinstance(x, str) or hasattr(x, "__html__"):
@@ -227,7 +233,9 @@ class _HasHtml(Protocol):
 
 _ClassNamesDict: TypeAlias = dict[str, bool]
 _ClassNames: TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Node: TypeAlias = None | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+Node: TypeAlias = (
+    None | bool | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+)
 
 Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
 

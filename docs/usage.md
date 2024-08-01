@@ -43,9 +43,13 @@ and safe to directly insert variable data via f-strings:
 
 ### Conditional Rendering
 
-`None` will not render anything. This can be useful to conditionally render some content.
+`True`, `False` and `None` will not render anything. Python's `and` and `or`
+operators will
+[short-circuit](https://docs.python.org/3/library/stdtypes.html#boolean-operations-and-or-not).
+You can use this to conditionally render content with inline `and` and
+`or`.
 
-```pycon title="Conditional rendering"
+```pycon title="Conditional rendering with a value that may be None"
 
 >>> from htpy import div, b
 >>> error = None
@@ -55,12 +59,31 @@ and safe to directly insert variable data via f-strings:
 <div></div>
 
 >>> error = 'Enter a valid email address.'
->>> print(div[error and b[error]])
+>>> print(div[has_error and b[error_message]])
 <div><b>Enter a valid email address.</b></div>
 
 # Inline if/else can also be used:
 >>> print(div[b[error] if error else None])
 <div><b>Enter a valid email address.</b></div>
+```
+
+```pycon title="Conditional rendering based on a bool variable"
+>>> from htpy import div
+>>> is_happy = True
+>>> print(div[is_happy and "😄"])
+<div>😄</div>
+
+>>> is_sad = False
+>>> print(div[is_sad and "😔"])
+<div></div>
+
+>>> is_allowed = True
+>>> print(div[is_allowed or "Access denied!"])
+<div></div>
+
+>>> is_allowed = False
+>>> print(div[is_allowed or "Access denied!"])
+<div>Access denied</div>
 ```
 
 ### Loops / Iterating Over Children
