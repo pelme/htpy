@@ -107,7 +107,7 @@ def iter_node(x: Node) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
-    if x is None:
+    if x is None or x is False:
         return
 
     if isinstance(x, BaseElement):
