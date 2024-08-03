@@ -10,24 +10,16 @@ from abc import ABC, abstractmethod
 from html.parser import HTMLParser
 from typing import Literal
 
+import htpy
+
 __all__ = ["html2htpy"]
 
-_void_elements = [
-    "area",
-    "base",
-    "br",
-    "col",
-    "embed",
-    "hr",
-    "img",
-    "input",
-    "link",
-    "meta",
-    "param",
-    "source",
-    "track",
-    "wbr",
-]
+
+_void_elements: set[str] = {
+    element._name  # pyright: ignore [reportPrivateUsage]
+    for element in htpy.__dict__.values()  # type: ignore[attr-defined]
+    if isinstance(element, htpy.VoidElement)
+}
 
 
 def _quote(x: str) -> str:
