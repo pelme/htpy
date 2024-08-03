@@ -19,6 +19,7 @@ nav:
   - html2htpy.md
   - faq.md
   - references.md
+  - changelog.md
 markdown_extensions:
   - admonition
   - pymdownx.highlight:

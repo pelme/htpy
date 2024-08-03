@@ -111,3 +111,4 @@ The full documentation is available at [https://htpy.dev](https://htpy.dev):
 - [Convert HTML to htpy code](https://htpy.dev/html2htpy/)
 - [FAQ](https://htpy.dev/faq/)
 - [References](https://htpy.dev/references/)
+- [Changelog](https://htpy.dev/changelog/)

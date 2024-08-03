@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__version__ = "24.7.2"
+__version__ = "24.8.0"
 __all__: list[str] = []
 
 import functools
