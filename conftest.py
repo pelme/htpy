@@ -6,5 +6,10 @@ def django_env() -> None:
     import django
     from django.conf import settings
 
-    settings.configure(TEMPLATES=[{"BACKEND": "django.template.backends.django.DjangoTemplates"}])
+    settings.configure(
+        TEMPLATES=[
+            {"BACKEND": "django.template.backends.django.DjangoTemplates"},
+            {"BACKEND": "htpy.django.HTPYTemplates", "NAME": "htpy"},
+        ]
+    )
     django.setup()
