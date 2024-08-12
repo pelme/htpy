@@ -321,7 +321,7 @@ without a parent element. This is useful in HTMX partial responses.
 You may use `render_node` to achieve this:
 
 ```pycon title="Render elements without a parent"
->>> from htpy import render_orphans, tr
+>>> from htpy import render_node, tr
 >>> print(render_node([tr["a"], tr["b"]]))
 <tr>a</tr><tr>b</tr>
 ```
