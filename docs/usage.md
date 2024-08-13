@@ -157,6 +157,26 @@ The [HTML doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) is
 <!doctype html><html></html>
 ```
 
+### HTML Comments
+
+Since the Python code is the source of the HTML generation, to add a comment to
+the code, most of the time regular Python comments (`#`) are used.
+
+If you want to emit HTML comments that will be visible in the browser, use the `comment` function:
+
+```pycon
+>>> from htpy import div, comment
+>>> print(div[comment("This is a HTML comment, visible in the browser!")])
+<div><!-- This is a HTML comment, visible in the browser! --></div>
+```
+
+It is safe to pass arbitrary text to the comment function. Double dashes (`--`)
+will be removed to avoid being able to break out of the comment.
+
+If you need full control over the exact rendering of the comment, you can create
+comments or arbitrary text by injecting your own markup. See the [Injecting
+Markup](#injecting-markup) section above for details.
+
 ## Attributes
 
 HTML attributes are defined by calling the element. They can be specified in a couple of different ways.

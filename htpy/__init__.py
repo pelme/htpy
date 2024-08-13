@@ -229,6 +229,11 @@ def render_node(node: Node) -> _Markup:
     return _Markup("".join(iter_node(node)))
 
 
+def comment(text: str) -> _Markup:
+    escaped_text = text.replace("--", "")
+    return _Markup(f"<!-- {escaped_text} -->")
+
+
 class _HasHtml(Protocol):
     def __html__(self) -> str: ...
 
