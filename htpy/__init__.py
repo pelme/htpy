@@ -4,22 +4,22 @@ __version__ = "24.8.0"
 __all__: list[str] = []
 
 import functools
+import typing as t
 from collections.abc import Callable, Iterable, Iterator
-from typing import Any, Protocol, TypeAlias, TypeVar, overload
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
-BaseElementSelf = TypeVar("BaseElementSelf", bound="BaseElement")
-ElementSelf = TypeVar("ElementSelf", bound="Element")
+BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
+ElementSelf = t.TypeVar("ElementSelf", bound="Element")
 
 
-def _force_escape(value: Any) -> str:
+def _force_escape(value: t.Any) -> str:
     return _escape(str(value))
 
 
 # Inspired by https://www.npmjs.com/package/classnames
-def _class_names(items: Any) -> Any:
+def _class_names(items: t.Any) -> t.Any:
     if isinstance(items, str):
         return _force_escape(items)
 
@@ -33,7 +33,7 @@ def _class_names(items: Any) -> Any:
     return " ".join(_force_escape(class_name) for class_name in result)
 
 
-def _class_names_for_items(items: Any) -> Any:
+def _class_names_for_items(items: t.Any) -> t.Any:
     for item in items:
         if isinstance(item, dict):
             for k, v in item.items():  # pyright: ignore [reportUnknownVariableType]
@@ -44,7 +44,7 @@ def _class_names_for_items(items: Any) -> Any:
                 yield item
 
 
-def _id_class_names_from_css_str(x: Any) -> dict[str, Attribute]:
+def _id_class_names_from_css_str(x: t.Any) -> dict[str, Attribute]:
     if not isinstance(x, str):
         raise ValueError(f"id/class strings must be str. got {x}")
 
@@ -153,21 +153,21 @@ class BaseElement:
     def __str__(self) -> _Markup:
         return _Markup("".join(str(x) for x in self))
 
-    @overload
+    @t.overload
     def __call__(
         self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
-    @overload
+    @t.overload
     def __call__(
         self: BaseElementSelf, id_class: str = "", **kwargs: Attribute
     ) -> BaseElementSelf: ...
-    @overload
+    @t.overload
     def __call__(
         self: BaseElementSelf, attrs: dict[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
-    @overload
+    @t.overload
     def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
-    def __call__(self: BaseElementSelf, *args: Any, **kwargs: Any) -> BaseElementSelf:
+    def __call__(self: BaseElementSelf, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
         id_class = ""
         attrs: dict[str, Attribute] = {}
 
@@ -234,17 +234,17 @@ def comment(text: str) -> _Markup:
     return _Markup(f"<!-- {escaped_text} -->")
 
 
-class _HasHtml(Protocol):
+class _HasHtml(t.Protocol):
     def __html__(self) -> str: ...
 
 
-_ClassNamesDict: TypeAlias = dict[str, bool]
-_ClassNames: TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Node: TypeAlias = (
+_ClassNamesDict: t.TypeAlias = dict[str, bool]
+_ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
+Node: t.TypeAlias = (
     None | bool | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
 )
 
-Attribute: TypeAlias = None | bool | str | _HasHtml | _ClassNames
+Attribute: t.TypeAlias = None | bool | str | _HasHtml | _ClassNames
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
 html = HTMLElement("html")

@@ -6,9 +6,9 @@ import re
 import shutil
 import subprocess
 import sys
+import typing as t
 from abc import ABC, abstractmethod
 from html.parser import HTMLParser
-from typing import Literal
 
 import htpy
 
@@ -234,7 +234,7 @@ class HTPYParser(HTMLParser):
     def serialize_python(
         self,
         shorthand_id_class: bool = False,
-        import_mode: Literal["yes", "h", "no"] = "yes",
+        import_mode: t.Literal["yes", "h", "no"] = "yes",
         formatter: Formatter | None = None,
     ) -> str:
         o = ""
@@ -282,7 +282,7 @@ class HTPYParser(HTMLParser):
 def html2htpy(
     html: str,
     shorthand_id_class: bool = True,
-    import_mode: Literal["yes", "h", "no"] = "yes",
+    import_mode: t.Literal["yes", "h", "no"] = "yes",
     formatter: Formatter | None = None,
 ) -> str:
     parser = HTPYParser()
@@ -345,7 +345,7 @@ def _serialize(el: Tag | str, shorthand_id_class: bool, use_h_prefix: bool) -> s
         return str(el)
 
 
-def _get_formatter(format: Literal["auto", "ruff", "black", "none"]) -> Formatter | None:
+def _get_formatter(format: t.Literal["auto", "ruff", "black", "none"]) -> Formatter | None:
     if format == "ruff":
         if _is_command_available("ruff"):
             return RuffFormatter()
@@ -422,7 +422,7 @@ def main() -> None:
         sys.exit(1)
 
     shorthand = not args.no_shorthand
-    imports: Literal["yes", "h", "no"] = args.imports
+    imports: t.Literal["yes", "h", "no"] = args.imports
 
     formatter = _get_formatter(args.format)
 

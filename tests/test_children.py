@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+import typing as t
 
 import pytest
 from markupsafe import Markup
@@ -8,7 +8,7 @@ from typing_extensions import assert_type
 
 from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
     from htpy import Node
@@ -105,7 +105,7 @@ def test_custom_element() -> None:
 
 
 @pytest.mark.parametrize("ignored_value", [None, True, False])
-def test_ignored(ignored_value: Any) -> None:
+def test_ignored(ignored_value: t.Any) -> None:
     assert str(div[ignored_value]) == "<div></div>"
 
 
@@ -199,6 +199,6 @@ def test_callable_in_generator() -> None:
 
 
 @pytest.mark.parametrize("not_a_child", [1234, b"foo", object(), object, 1, 0])
-def test_invalid_child(not_a_child: Any) -> None:
+def test_invalid_child(not_a_child: t.Any) -> None:
     with pytest.raises(ValueError, match="is not a valid child element"):
         str(div[not_a_child])
