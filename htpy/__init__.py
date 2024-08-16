@@ -80,7 +80,10 @@ def _kwarg_attribute_name(name: str) -> str:
 
 def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
     for key, value in raw_attrs.items():
-        if value in (False, None):
+        if not isinstance(key, str):  # pyright: ignore [reportUnnecessaryIsInstance]
+            raise ValueError("Attribute key must be a string")
+
+        if value is False or value is None:
             continue
 
         if key == "class":
@@ -91,6 +94,9 @@ def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attr
             yield _force_escape(key), True
 
         else:
+            if not isinstance(value, str | _HasHtml):
+                raise ValueError(f"Attribute value must be a string , got {value!r}")
+
             yield _force_escape(key), _force_escape(value)
 
 
@@ -118,9 +124,9 @@ def iter_node(x: Node) -> Iterator[str]:
 
     if isinstance(x, BaseElement):
         yield from x
-    elif isinstance(x, str) or hasattr(x, "__html__"):
+    elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
-    elif isinstance(x, Iterable):
+    elif isinstance(x, Iterable):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from iter_node(child)
     else:
@@ -234,6 +240,7 @@ def comment(text: str) -> _Markup:
     return _Markup(f"<!-- {escaped_text} -->")
 
 
+@t.runtime_checkable
 class _HasHtml(t.Protocol):
     def __html__(self) -> str: ...
 

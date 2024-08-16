@@ -6,6 +6,9 @@
  #42](https://github.com/pelme/htpy/issues/42).
  - Run tests on Python 3.13 RC (no changes were required, earlier versions
  should work fine too). [PR #45](https://github.com/pelme/htpy/pull/45).
+ - Attributes that are not strings will now be rejected runtime. Attributes have
+ been typed as strings previously but this is now also enforced during runtime.
+ If you need to pass non-strings as attribute values, wrap them in str() calls.
 
 ## 24.8.0 - 2024-08-03
 - Allow conditional rendering based on `bool`. [PR #40](https://github.com/pelme/htpy/pull/41).

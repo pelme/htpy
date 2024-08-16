@@ -1,3 +1,5 @@
+import typing as t
+
 import pytest
 from markupsafe import Markup
 
@@ -177,3 +179,18 @@ def test_class_priority() -> None:
 def test_attribute_priority() -> None:
     result = div({"foo": "a"}, foo="b")
     assert str(result) == """<div foo="b"></div>"""
+
+
+@pytest.mark.parametrize("not_an_attr", [1234, b"foo", object(), object, 1, 0, None])
+def test_invalid_attribute_key(not_an_attr: t.Any) -> None:
+    with pytest.raises(ValueError, match="Attribute key must be a string"):
+        str(div({not_an_attr: "foo"}))
+
+
+@pytest.mark.parametrize(
+    "not_an_attr",
+    [1234, b"foo", object(), object, 1, 0],
+)
+def test_invalid_attribute_value(not_an_attr: t.Any) -> None:
+    with pytest.raises(ValueError, match="Attribute value must be a string"):
+        str(div(foo=not_an_attr))
