@@ -3,6 +3,7 @@ from __future__ import annotations
 __version__ = "24.8.1"
 __all__: list[str] = []
 
+import dataclasses
 import functools
 import typing as t
 from collections.abc import Callable, Iterable, Iterator
@@ -109,7 +110,58 @@ def _attrs_string(attrs: dict[str, Attribute]) -> str:
     return " " + result
 
 
+T = t.TypeVar("T")
+P = t.ParamSpec("P")
+
+
+@dataclasses.dataclass(frozen=True)
+class ContextProvider(t.Generic[T]):
+    context: Context[T]
+    value: T
+    func: Callable[[], Node]
+
+    def __iter__(self) -> Iterator[str]:
+        return iter_node(self)
+
+    def __str__(self) -> str:
+        return render_node(self)
+
+
+@dataclasses.dataclass(frozen=True)
+class ContextConsumer(t.Generic[T]):
+    context: Context[T]
+    debug_name: str
+    func: Callable[[T], Node]
+
+
+class _NO_DEFAULT:
+    pass
+
+
+class Context(t.Generic[T]):
+    def __init__(self, name: str, *, default: T | type[_NO_DEFAULT] = _NO_DEFAULT) -> None:
+        self.name = name
+        self.default = default
+
+    def provider(self, value: T, children_func: Callable[[], Node]) -> ContextProvider[T]:
+        return ContextProvider(self, value, children_func)
+
+    def consumer(
+        self,
+        func: Callable[t.Concatenate[T, P], Node],
+    ) -> Callable[P, ContextConsumer[T]]:
+        @functools.wraps(func)
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> ContextConsumer[T]:
+            return ContextConsumer(self, func.__name__, lambda value: func(value, *args, **kwargs))
+
+        return wrapper
+
+
 def iter_node(x: Node) -> Iterator[str]:
+    return _iter_node_context(x, {})
+
+
+def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
@@ -123,12 +175,22 @@ def iter_node(x: Node) -> Iterator[str]:
         return
 
     if isinstance(x, BaseElement):
-        yield from x
+        yield from x._iter_context(context_dict)  # pyright: ignore [reportPrivateUsage]
+    elif isinstance(x, ContextProvider):
+        yield from _iter_node_context(x.func(), {**context_dict, x.context: x.value})  # pyright: ignore [reportUnknownMemberType]
+    elif isinstance(x, ContextConsumer):
+        context_value = context_dict.get(x.context, x.context.default)
+        if context_value is _NO_DEFAULT:
+            raise LookupError(
+                f'Context value for "{x.context.name}" does not exist, '
+                f"requested by {x.debug_name}()."
+            )
+        yield from _iter_node_context(x.func(context_value), context_dict)
     elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
     elif isinstance(x, Iterable):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
-            yield from iter_node(child)
+            yield from _iter_node_context(child, context_dict)
     else:
         raise ValueError(f"{x!r} is not a valid child element")
 
@@ -201,8 +263,11 @@ class BaseElement:
         )
 
     def __iter__(self) -> Iterator[str]:
+        return self._iter_context({})
+
+    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
-        yield from iter_node(self._children)
+        yield from _iter_node_context(self._children, ctx)
         yield f"</{self._name}>"
 
     def __repr__(self) -> str:
@@ -221,13 +286,13 @@ class Element(BaseElement):
 
 
 class HTMLElement(Element):
-    def __iter__(self) -> Iterator[str]:
+    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
         yield "<!doctype html>"
-        yield from super().__iter__()
+        yield from super()._iter_context(ctx)
 
 
 class VoidElement(BaseElement):
-    def __iter__(self) -> Iterator[str]:
+    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
         yield f"<{self._name}{_attrs_string(self._attrs)}>"
 
 
@@ -248,7 +313,15 @@ class _HasHtml(t.Protocol):
 _ClassNamesDict: t.TypeAlias = dict[str, bool]
 _ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
 Node: t.TypeAlias = (
-    None | bool | str | BaseElement | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+    None
+    | bool
+    | str
+    | BaseElement
+    | _HasHtml
+    | Iterable["Node"]
+    | Callable[[], "Node"]
+    | ContextProvider[t.Any]
+    | ContextConsumer[t.Any]
 )
 
 Attribute: t.TypeAlias = None | bool | str | _HasHtml | _ClassNames
