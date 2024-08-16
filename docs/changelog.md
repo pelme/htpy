@@ -1,5 +1,9 @@
 # Changelog
 
+## next
+- Added support for passing data between components via Context. See the [Usage
+docs](usage.md#passing-data-with-context) for more information. [PR #48](https://github.com/pelme/htpy/pull/48).
+
 ## 24.8.1 - 2024-08-16
  - Added the `comment()` function to render HTML comments.
  [Documentation](usage.md#html-comments) /  [Issue
