@@ -1,6 +1,6 @@
 # Changelog
 
-## next
+## 24.8.2 - 2024-08-23
 - Added support for passing data between components via Context. See the [Usage
 docs](usage.md#passing-data-with-context) for more information. [PR #48](https://github.com/pelme/htpy/pull/48).
 - Added Django template backend. The Django template backend allows you to
