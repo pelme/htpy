@@ -31,6 +31,8 @@ optional-dependencies.dev = [
     "django",
     "django-stubs",
     "jinja2",
+    "starlette",
+    "httpx",
 ]
 optional-dependencies.docs = [
     "mkdocs-material==9.5.12",
