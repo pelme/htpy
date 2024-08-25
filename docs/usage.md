@@ -407,17 +407,27 @@ Using contexts in htpy involves:
 define the type and optional default value of a context variable.
 - Using `my_context.provider(value, lambda: children)` to set the value of a context variable for a subtree.
 - Adding the `@my_context.consumer` decorator to a component that requires the
-context value. The decorator will add the context value as the first argument to the decorated function.
-
-A context value can be passed arbitrarily deep between components. It is
-possible to nest multiple context provider and different values can be used in
-different subtrees.
+context value. The decorator will add the context value as the first argument to the decorated function:
 
 The `Context` class is a generic and fully supports static type checking.
 
 The values are passed as part of the tree used to render components without
 using global state. It is safe to use contexts for lazy constructs such as
 callables and generators.
+
+A context value can be passed arbitrarily deep between components. It is
+possible to nest multiple context provider and different values can be used in
+different subtrees.
+
+A single component can consume as many contexts as possible by using multiple
+decorators:
+
+```python
+@context_b.consumer
+@context_a.consumer
+def my_component(a, b):
+    ...
+```
 
 ### Example
 
