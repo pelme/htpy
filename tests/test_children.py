@@ -27,6 +27,10 @@ def test_children() -> None:
     assert str(div[img]) == "<div><img></div>"
 
 
+def test_integer_child() -> None:
+    assert str(div[123]) == "<div>123</div>"
+
+
 def test_multiple_children() -> None:
     result = ul[li, li]
 
@@ -198,7 +202,7 @@ def test_callable_in_generator() -> None:
     assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
 
 
-@pytest.mark.parametrize("not_a_child", [1234, b"foo", object(), object, 1, 0])
+@pytest.mark.parametrize("not_a_child", [12.34, b"foo", object(), object])
 def test_invalid_child(not_a_child: t.Any) -> None:
     with pytest.raises(ValueError, match="is not a valid child element"):
         str(div[not_a_child])

@@ -188,6 +188,8 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
         yield from _iter_node_context(x.func(context_value), context_dict)
     elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
+    elif isinstance(x, int):
+        yield str(x)
     elif isinstance(x, Iterable):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_node_context(child, context_dict)
@@ -322,6 +324,7 @@ Node: t.TypeAlias = (
     None
     | bool
     | str
+    | int
     | BaseElement
     | _HasHtml
     | Iterable["Node"]
