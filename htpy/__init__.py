@@ -95,8 +95,8 @@ def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attr
             yield _force_escape(key), True
 
         else:
-            if not isinstance(value, str | _HasHtml):
-                raise ValueError(f"Attribute value must be a string , got {value!r}")
+            if not isinstance(value, str | int | _HasHtml):
+                raise ValueError(f"Attribute value must be a string or an integer , got {value!r}")
 
             yield _force_escape(key), _force_escape(value)
 
@@ -330,7 +330,7 @@ Node: t.TypeAlias = (
     | ContextConsumer[t.Any]
 )
 
-Attribute: t.TypeAlias = None | bool | str | _HasHtml | _ClassNames
+Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
 html = HTMLElement("html")
