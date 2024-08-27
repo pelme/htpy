@@ -3,7 +3,7 @@ import typing as t
 import pytest
 from markupsafe import Markup
 
-from htpy import button, div
+from htpy import button, div, th
 
 
 def test_attribute() -> None:
@@ -127,6 +127,11 @@ def test_boolean_attribute_false() -> None:
     assert str(result) == "<button></button>"
 
 
+def test_integer_attribute() -> None:
+    result = th(colspan=123)
+    assert str(result) == '<th colspan="123"></th>'
+
+
 def test_id_class() -> None:
     result = div("#myid.cls1.cls2")
 
@@ -189,7 +194,7 @@ def test_invalid_attribute_key(not_an_attr: t.Any) -> None:
 
 @pytest.mark.parametrize(
     "not_an_attr",
-    [1234, b"foo", object(), object, 1, 0],
+    [12.34, b"foo", object(), object],
 )
 def test_invalid_attribute_value(not_an_attr: t.Any) -> None:
     with pytest.raises(ValueError, match="Attribute value must be a string"):
