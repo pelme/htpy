@@ -190,7 +190,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
         yield str(_escape(x))
     elif isinstance(x, int):
         yield str(x)
-    elif isinstance(x, Iterable):  # pyright: ignore [reportUnnecessaryIsInstance]
+    elif isinstance(x, Iterable) and not isinstance(x, bytes):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_node_context(child, context_dict)
     else:
