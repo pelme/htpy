@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-__version__ = "24.8.2"
+__version__ = "24.8.3"
 __all__: list[str] = []
 
 import dataclasses

@@ -1,6 +1,6 @@
 # Changelog
 
-## next
+## 24.8.3 - 2024-08-28
 - Support passing htpy elements directly to Starlette responses. Document Starlette support. [PR #50](https://github.com/pelme/htpy/pull/50).
 - Allow passing ints to attributes and children [PR #52](https://github.com/pelme/htpy/pull/52).
 
