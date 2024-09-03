@@ -16,7 +16,7 @@ menu = ["egg+bacon", "bacon+spam", "eggs+spam"]
 
 print(
     html[
-        head[title["Todays menu"]],
+        head[title["Today's menu"]],
         body[
             h1["Menu"],
             ul(".menu")[(li[item] for item in menu)],
@@ -31,7 +31,7 @@ print(
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Todays menu</title>
+    <title>Today's menu</title>
   </head>
   <body>
     <h1>Menu</h1>
@@ -101,7 +101,7 @@ pip install htpy
 
 ## Documentation
 
-The full documentation is available at [https://htpy.dev](https://htpy.dev):
+The full documentation is available at [htpy.dev](https://htpy.dev):
 
 - [Usage](https://htpy.dev/usage/)
 - [Common patterns](https://htpy.dev/common-patterns/)
