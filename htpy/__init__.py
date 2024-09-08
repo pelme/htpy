@@ -213,11 +213,9 @@ def __getattr__(name: str) -> Element:
 class BaseElement:
     __slots__ = ("_name", "_attrs", "_children")
 
-    def __init__(
-        self, name: str, attrs: dict[str, Attribute] | None = None, children: Node = None
-    ) -> None:
+    def __init__(self, name: str, attrs_str: str = "", children: Node = None) -> None:
         self._name = name
-        self._attrs = attrs or {}
+        self._attrs = attrs_str
         self._children = children
 
     def __str__(self) -> _Markup:
@@ -256,11 +254,13 @@ class BaseElement:
 
         return self.__class__(
             self._name,
-            {
-                **(_id_class_names_from_css_str(id_class) if id_class else {}),
-                **attrs,
-                **{_kwarg_attribute_name(k): v for k, v in kwargs.items()},
-            },
+            _attrs_string(
+                {
+                    **(_id_class_names_from_css_str(id_class) if id_class else {}),
+                    **attrs,
+                    **{_kwarg_attribute_name(k): v for k, v in kwargs.items()},
+                }
+            ),
             self._children,
         )
 
@@ -268,7 +268,7 @@ class BaseElement:
         return self._iter_context({})
 
     def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
-        yield f"<{self._name}{_attrs_string(self._attrs)}>"
+        yield f"<{self._name}{self._attrs}>"
         yield from _iter_node_context(self._children, ctx)
         yield f"</{self._name}>"
 
@@ -301,7 +301,7 @@ class HTMLElement(Element):
 
 class VoidElement(BaseElement):
     def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
-        yield f"<{self._name}{_attrs_string(self._attrs)}>"
+        yield f"<{self._name}{self._attrs}>"
 
 
 def render_node(node: Node) -> _Markup:

@@ -198,4 +198,4 @@ def test_invalid_attribute_key(not_an_attr: t.Any) -> None:
 )
 def test_invalid_attribute_value(not_an_attr: t.Any) -> None:
     with pytest.raises(ValueError, match="Attribute value must be a string"):
-        str(div(foo=not_an_attr))
+        div(foo=not_an_attr)
