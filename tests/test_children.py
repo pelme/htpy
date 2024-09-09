@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import dataclasses
+import datetime
+import decimal
+import pathlib
+import re
 import typing as t
 
 import pytest
@@ -202,7 +207,68 @@ def test_callable_in_generator() -> None:
     assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
 
 
-@pytest.mark.parametrize("not_a_child", [12.34, b"foo", object(), object])
-def test_invalid_child(not_a_child: t.Any) -> None:
+@dataclasses.dataclass
+class MyDataClass:
+    name: str
+
+
+class SomeClass:
+    pass
+
+
+# Various types that are not valid children.
+_invalid_children = [
+    12.34,
+    decimal.Decimal("12.34"),
+    complex("+1.23"),
+    object(),
+    datetime.date(1, 2, 3),
+    datetime.datetime(1, 2, 3),
+    datetime.time(1, 2),
+    b"foo",
+    bytearray(b"foo"),
+    memoryview(b"foo"),
+    Exception("foo"),
+    Ellipsis,
+    re.compile("foo"),
+    pathlib.Path("FOO"),
+    re,  # module type
+    MyDataClass(name="Andreas"),
+    SomeClass(),
+]
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_direct(not_a_child: t.Any) -> None:
     with pytest.raises(ValueError, match="is not a valid child element"):
-        str(div[not_a_child])
+        div[not_a_child]
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_nested_iterable(not_a_child: t.Any) -> None:
+    with pytest.raises(ValueError, match="is not a valid child element"):
+        div[[not_a_child]]
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_lazy_callable(not_a_child: t.Any) -> None:
+    """
+    Ensure proper exception is raised for lazily evaluated invalid children.
+    """
+    element = div[lambda: not_a_child]
+    with pytest.raises(ValueError, match="is not a valid child element"):
+        str(element)
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_lazy_generator(not_a_child: t.Any) -> None:
+    """
+    Ensure proper exception is raised for lazily evaluated invalid children.
+    """
+
+    def gen() -> t.Any:
+        yield not_a_child
+
+    element = div[gen()]
+    with pytest.raises(ValueError, match="is not a valid child element"):
+        str(element)

@@ -1,5 +1,9 @@
 # Changelog
 
+## next
+- Raise errors directly on invalid children. This avoids cryptic stack traces.
+[PR #56](https://github.com/pelme/htpy/pull/56).
+
 ## 24.9.1 - 2024-09-09
 - Raise errors directly on invalid attributes. This avoids cryptic stack traces
   for invalid attributes. [Issue #49](https://github.com/pelme/htpy/issues/49)
