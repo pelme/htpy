@@ -1,6 +1,6 @@
 # Changelog
 
-## 24.9.1
+## 24.9.1 - 2024-09-09
 - Raise errors directly on invalid attributes. This avoids cryptic stack traces
   for invalid attributes. [Issue #49](https://github.com/pelme/htpy/issues/49)
   [PR #55](https://github.com/pelme/htpy/pull/55).
