@@ -6,10 +6,13 @@ __all__: list[str] = []
 import dataclasses
 import functools
 import typing as t
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Generator, Iterable, Iterator
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
+
+if t.TYPE_CHECKING:
+    from types import UnionType
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
 ElementSelf = t.TypeVar("ElementSelf", bound="Element")
@@ -190,7 +193,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
         yield str(_escape(x))
     elif isinstance(x, int):
         yield str(x)
-    elif isinstance(x, Iterable) and not isinstance(x, bytes):  # pyright: ignore [reportUnnecessaryIsInstance]
+    elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_node_context(child, context_dict)
     else:
@@ -288,9 +291,22 @@ class BaseElement:
     do_not_call_in_templates = True
 
 
+def _validate_children(children: t.Any) -> None:
+    if isinstance(children, _KnownValidChildren):
+        return
+
+    if isinstance(children, Iterable) and not isinstance(children, _KnownInvalidChildren):
+        for child in children:  # pyright: ignore [reportUnknownVariableType]
+            _validate_children(child)
+        return
+
+    raise ValueError(f"{children!r} is not a valid child element")
+
+
 class Element(BaseElement):
     def __getitem__(self: ElementSelf, children: Node) -> ElementSelf:
-        return self.__class__(self._name, self._attrs, children)
+        _validate_children(children)
+        return self.__class__(self._name, self._attrs, children)  # pyright: ignore [reportUnknownArgumentType]
 
 
 class HTMLElement(Element):
@@ -457,3 +473,18 @@ tr = Element("tr")
 u = Element("u")
 ul = Element("ul")
 var = Element("var")
+
+
+_KnownInvalidChildren: UnionType = bytes | bytearray | memoryview
+
+_KnownValidChildren: UnionType = (  # pyright: ignore [reportUnknownVariableType]
+    None
+    | BaseElement
+    | ContextProvider  # pyright: ignore [reportMissingTypeArgument]
+    | ContextConsumer  # pyright: ignore [reportMissingTypeArgument]
+    | Callable  # pyright: ignore [reportMissingTypeArgument]
+    | str
+    | int
+    | Generator  # pyright: ignore [reportMissingTypeArgument]
+    | _HasHtml
+)
