@@ -1,7 +1,9 @@
 # Changelog
 
-## next
-- Raise errors directly on invalid attributes. This avoids cryptic stack traces for invalid attributes. [Issue #49](https://github.com/pelme/htpy/issues/49) [PR #55](https://github.com/pelme/htpy/pull/55).
+## 24.9.1
+- Raise errors directly on invalid attributes. This avoids cryptic stack traces
+  for invalid attributes. [Issue #49](https://github.com/pelme/htpy/issues/49)
+  [PR #55](https://github.com/pelme/htpy/pull/55).
 
 ## 24.8.3 - 2024-08-28
 - Support passing htpy elements directly to Starlette responses. Document Starlette support. [PR #50](https://github.com/pelme/htpy/pull/50).
