@@ -222,7 +222,7 @@ class BaseElement:
         self._children = children
 
     def __str__(self) -> _Markup:
-        return _Markup("".join(str(x) for x in self))
+        return _Markup("".join(self))
 
     @t.overload
     def __call__(
