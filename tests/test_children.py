@@ -240,13 +240,13 @@ _invalid_children = [
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
 def test_invalid_child_direct(not_a_child: t.Any) -> None:
-    with pytest.raises(ValueError, match="is not a valid child element"):
+    with pytest.raises(TypeError, match="is not a valid child element"):
         div[not_a_child]
 
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
 def test_invalid_child_nested_iterable(not_a_child: t.Any) -> None:
-    with pytest.raises(ValueError, match="is not a valid child element"):
+    with pytest.raises(TypeError, match="is not a valid child element"):
         div[[not_a_child]]
 
 
@@ -256,7 +256,7 @@ def test_invalid_child_lazy_callable(not_a_child: t.Any) -> None:
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
     element = div[lambda: not_a_child]
-    with pytest.raises(ValueError, match="is not a valid child element"):
+    with pytest.raises(TypeError, match="is not a valid child element"):
         str(element)
 
 
@@ -270,5 +270,5 @@ def test_invalid_child_lazy_generator(not_a_child: t.Any) -> None:
         yield not_a_child
 
     element = div[gen()]
-    with pytest.raises(ValueError, match="is not a valid child element"):
+    with pytest.raises(TypeError, match="is not a valid child element"):
         str(element)
