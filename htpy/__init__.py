@@ -50,7 +50,7 @@ def _class_names_for_items(items: t.Any) -> t.Any:
 
 def _id_class_names_from_css_str(x: t.Any) -> dict[str, Attribute]:
     if not isinstance(x, str):
-        raise ValueError(f"id/class strings must be str. got {x}")
+        raise TypeError(f"id/class strings must be str. got {x}")
 
     if "#" in x and "." in x and x.find("#") > x.find("."):
         raise ValueError("id (#) must be specified before classes (.)")
@@ -85,7 +85,7 @@ def _kwarg_attribute_name(name: str) -> str:
 def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
     for key, value in raw_attrs.items():
         if not isinstance(key, str):  # pyright: ignore [reportUnnecessaryIsInstance]
-            raise ValueError("Attribute key must be a string")
+            raise TypeError("Attribute key must be a string")
 
         if value is False or value is None:
             continue
@@ -99,7 +99,7 @@ def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attr
 
         else:
             if not isinstance(value, str | int | _HasHtml):
-                raise ValueError(f"Attribute value must be a string or an integer , got {value!r}")
+                raise TypeError(f"Attribute value must be a string or an integer , got {value!r}")
 
             yield _force_escape(key), _force_escape(value)
 
@@ -197,7 +197,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
         for child in x:
             yield from _iter_node_context(child, context_dict)
     else:
-        raise ValueError(f"{x!r} is not a valid child element")
+        raise TypeError(f"{x!r} is not a valid child element")
 
 
 @functools.lru_cache(maxsize=300)
@@ -300,7 +300,7 @@ def _validate_children(children: t.Any) -> None:
             _validate_children(child)
         return
 
-    raise ValueError(f"{children!r} is not a valid child element")
+    raise TypeError(f"{children!r} is not a valid child element")
 
 
 class Element(BaseElement):

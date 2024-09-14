@@ -159,7 +159,7 @@ def test_id_class_bad_format() -> None:
 
 
 def test_id_class_bad_type() -> None:
-    with pytest.raises(ValueError, match="id/class strings must be str. got {'oops': 'yes'}"):
+    with pytest.raises(TypeError, match="id/class strings must be str. got {'oops': 'yes'}"):
         div({"oops": "yes"}, {})  # type: ignore
 
 
@@ -188,8 +188,8 @@ def test_attribute_priority() -> None:
 
 @pytest.mark.parametrize("not_an_attr", [1234, b"foo", object(), object, 1, 0, None])
 def test_invalid_attribute_key(not_an_attr: t.Any) -> None:
-    with pytest.raises(ValueError, match="Attribute key must be a string"):
-        str(div({not_an_attr: "foo"}))
+    with pytest.raises(TypeError, match="Attribute key must be a string"):
+        div({not_an_attr: "foo"})
 
 
 @pytest.mark.parametrize(
@@ -197,5 +197,5 @@ def test_invalid_attribute_key(not_an_attr: t.Any) -> None:
     [12.34, b"foo", object(), object],
 )
 def test_invalid_attribute_value(not_an_attr: t.Any) -> None:
-    with pytest.raises(ValueError, match="Attribute value must be a string"):
+    with pytest.raises(TypeError, match="Attribute value must be a string"):
         div(foo=not_an_attr)

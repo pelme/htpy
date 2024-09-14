@@ -3,6 +3,8 @@
 ## next
 - Raise errors directly on invalid children. This avoids cryptic stack traces.
 [PR #56](https://github.com/pelme/htpy/pull/56).
+- Raise TypeError rather than ValueError when invalid types are passed as
+attributes or children. [PR #59].
 
 ## 24.9.1 - 2024-09-09
 - Raise errors directly on invalid attributes. This avoids cryptic stack traces
