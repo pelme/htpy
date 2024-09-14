@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 
 import pytest
@@ -5,33 +7,36 @@ from markupsafe import Markup
 
 from htpy import button, div, th
 
+if t.TYPE_CHECKING:
+    from .conftest import RenderFixture
 
-def test_attribute() -> None:
-    assert str(div(id="hello")["hi"]) == '<div id="hello">hi</div>'
+
+def test_attribute(render: RenderFixture) -> None:
+    assert render(div(id="hello")["hi"]) == ['<div id="hello">', "hi", "</div>"]
 
 
 class Test_class_names:
-    def test_str(self) -> None:
+    def test_str(self, render: RenderFixture) -> None:
         result = div(class_='">foo bar')
-        assert str(result) == '<div class="&#34;&gt;foo bar"></div>'
+        assert render(result) == ['<div class="&#34;&gt;foo bar">', "</div>"]
 
-    def test_safestring(self) -> None:
+    def test_safestring(self, render: RenderFixture) -> None:
         result = div(class_=Markup('">foo bar'))
-        assert str(result) == '<div class="&#34;&gt;foo bar"></div>'
+        assert render(result) == ['<div class="&#34;&gt;foo bar">', "</div>"]
 
-    def test_list(self) -> None:
+    def test_list(self, render: RenderFixture) -> None:
         result = div(class_=['">foo', Markup('">bar'), False, None, "", "baz"])
-        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
+        assert render(result) == ['<div class="&#34;&gt;foo &#34;&gt;bar baz">', "</div>"]
 
-    def test_tuple(self) -> None:
+    def test_tuple(self, render: RenderFixture) -> None:
         result = div(class_=('">foo', Markup('">bar'), False, None, "", "baz"))
-        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
+        assert render(result) == ['<div class="&#34;&gt;foo &#34;&gt;bar baz">', "</div>"]
 
-    def test_dict(self) -> None:
+    def test_dict(self, render: RenderFixture) -> None:
         result = div(class_={'">foo': True, Markup('">bar'): True, "x": False, "baz": True})
-        assert str(result) == '<div class="&#34;&gt;foo &#34;&gt;bar baz"></div>'
+        assert render(result) == ['<div class="&#34;&gt;foo &#34;&gt;bar baz">', "</div>"]
 
-    def test_nested_dict(self) -> None:
+    def test_nested_dict(self, render: RenderFixture) -> None:
         result = div(
             class_=[
                 '">list-foo',
@@ -39,54 +44,55 @@ class Test_class_names:
                 {'">dict-foo': True, Markup('">list-bar'): True, "x": False},
             ]
         )
-        assert str(result) == (
+        assert render(result) == [
             '<div class="&#34;&gt;list-foo &#34;&gt;list-bar '
-            '&#34;&gt;dict-foo &#34;&gt;list-bar"></div>'
-        )
+            '&#34;&gt;dict-foo &#34;&gt;list-bar">',
+            "</div>",
+        ]
 
-    def test_false(self) -> None:
-        result = str(div(class_=False))
-        assert result == "<div></div>"
+    def test_false(self, render: RenderFixture) -> None:
+        result = render(div(class_=False))
+        assert result == ["<div>", "</div>"]
 
-    def test_none(self) -> None:
-        result = str(div(class_=None))
-        assert result == "<div></div>"
+    def test_none(self, render: RenderFixture) -> None:
+        result = render(div(class_=None))
+        assert result == ["<div>", "</div>"]
 
-    def test_no_classes(self) -> None:
-        result = str(div(class_={"foo": False}))
-        assert result == "<div></div>"
+    def test_no_classes(self, render: RenderFixture) -> None:
+        result = render(div(class_={"foo": False}))
+        assert result == ["<div>", "</div>"]
 
 
-def test_dict_attributes() -> None:
+def test_dict_attributes(render: RenderFixture) -> None:
     result = div({"@click": 'hi = "hello"'})
 
-    assert str(result) == """<div @click="hi = &#34;hello&#34;"></div>"""
+    assert render(result) == ['<div @click="hi = &#34;hello&#34;">', "</div>"]
 
 
-def test_underscore() -> None:
+def test_underscore(render: RenderFixture) -> None:
     # Hyperscript (https://hyperscript.org/) uses _, make sure it works good.
     result = div(_="foo")
-    assert str(result) == """<div _="foo"></div>"""
+    assert render(result) == ['<div _="foo">', "</div>"]
 
 
-def test_dict_attributes_avoid_replace() -> None:
+def test_dict_attributes_avoid_replace(render: RenderFixture) -> None:
     result = div({"class_": "foo", "hello_hi": "abc"})
-    assert str(result) == """<div class_="foo" hello_hi="abc"></div>"""
+    assert render(result) == ['<div class_="foo" hello_hi="abc">', "</div>"]
 
 
-def test_dict_attribute_false() -> None:
+def test_dict_attribute_false(render: RenderFixture) -> None:
     result = div({"bool-false": False})
-    assert str(result) == "<div></div>"
+    assert render(result) == ["<div>", "</div>"]
 
 
-def test_dict_attribute_true() -> None:
+def test_dict_attribute_true(render: RenderFixture) -> None:
     result = div({"bool-true": True})
-    assert str(result) == "<div bool-true></div>"
+    assert render(result) == ["<div bool-true>", "</div>"]
 
 
-def test_underscore_replacement() -> None:
+def test_underscore_replacement(render: RenderFixture) -> None:
     result = button(hx_post="/foo")["click me!"]
-    assert str(result) == """<button hx-post="/foo">click me!</button>"""
+    assert render(result) == ['<button hx-post="/foo">', "click me!", "</button>"]
 
 
 class Test_attribute_escape:
@@ -98,54 +104,53 @@ class Test_attribute_escape:
         ],
     )
 
-    def test_dict(self, x: str) -> None:
+    def test_dict(self, x: str, render: RenderFixture) -> None:
         result = div({x: x})
-        assert str(result) == """<div &lt;&#34;foo="&lt;&#34;foo"></div>"""
+        assert render(result) == ['<div &lt;&#34;foo="&lt;&#34;foo">', "</div>"]
 
-    def test_kwarg(self, x: str) -> None:
+    def test_kwarg(self, x: str, render: RenderFixture) -> None:
         result = div(**{x: x})
-        assert str(result) == """<div &lt;&#34;foo="&lt;&#34;foo"></div>"""
+        assert render(result) == ['<div &lt;&#34;foo="&lt;&#34;foo">', "</div>"]
 
 
-def test_boolean_attribute_true() -> None:
+def test_boolean_attribute_true(render: RenderFixture) -> None:
     result = button(disabled=True)
-    assert str(result) == "<button disabled></button>"
+    assert render(result) == ["<button disabled>", "</button>"]
 
 
-def test_kwarg_attribute_none() -> None:
+def test_kwarg_attribute_none(render: RenderFixture) -> None:
     result = div(foo=None)
-    assert str(result) == "<div></div>"
+    assert render(result) == ["<div>", "</div>"]
 
 
-def test_dict_attribute_none() -> None:
+def test_dict_attribute_none(render: RenderFixture) -> None:
     result = div({"foo": None})
-    assert str(result) == "<div></div>"
+    assert render(result) == ["<div>", "</div>"]
 
 
-def test_boolean_attribute_false() -> None:
+def test_boolean_attribute_false(render: RenderFixture) -> None:
     result = button(disabled=False)
-    assert str(result) == "<button></button>"
+    assert render(result) == ["<button>", "</button>"]
 
 
-def test_integer_attribute() -> None:
+def test_integer_attribute(render: RenderFixture) -> None:
     result = th(colspan=123)
-    assert str(result) == '<th colspan="123"></th>'
+    assert render(result) == ['<th colspan="123">', "</th>"]
 
 
-def test_id_class() -> None:
+def test_id_class(render: RenderFixture) -> None:
     result = div("#myid.cls1.cls2")
+    assert render(result) == ['<div id="myid" class="cls1 cls2">', "</div>"]
 
-    assert str(result) == """<div id="myid" class="cls1 cls2"></div>"""
 
-
-def test_id_class_only_id() -> None:
+def test_id_class_only_id(render: RenderFixture) -> None:
     result = div("#myid")
-    assert str(result) == """<div id="myid"></div>"""
+    assert render(result) == ['<div id="myid">', "</div>"]
 
 
-def test_id_class_only_classes() -> None:
+def test_id_class_only_classes(render: RenderFixture) -> None:
     result = div(".foo.bar")
-    assert str(result) == """<div class="foo bar"></div>"""
+    assert render(result) == ['<div class="foo bar">', "</div>"]
 
 
 def test_id_class_wrong_order() -> None:
@@ -163,27 +168,27 @@ def test_id_class_bad_type() -> None:
         div({"oops": "yes"}, {})  # type: ignore
 
 
-def test_id_class_and_kwargs() -> None:
+def test_id_class_and_kwargs(render: RenderFixture) -> None:
     result = div("#theid", for_="hello", data_foo="<bar")
-    assert str(result) == """<div id="theid" for="hello" data-foo="&lt;bar"></div>"""
+    assert render(result) == ['<div id="theid" for="hello" data-foo="&lt;bar">', "</div>"]
 
 
-def test_attrs_and_kwargs() -> None:
+def test_attrs_and_kwargs(render: RenderFixture) -> None:
     result = div({"a": "1", "for": "a"}, for_="b", b="2")
-    assert str(result) == """<div a="1" for="b" b="2"></div>"""
+    assert render(result) == ['<div a="1" for="b" b="2">', "</div>"]
 
 
-def test_class_priority() -> None:
+def test_class_priority(render: RenderFixture) -> None:
     result = div(".a", {"class": "b"}, class_="c")
-    assert str(result) == """<div class="c"></div>"""
+    assert render(result) == ['<div class="c">', "</div>"]
 
     result = div(".a", {"class": "b"})
-    assert str(result) == """<div class="b"></div>"""
+    assert render(result) == ['<div class="b">', "</div>"]
 
 
-def test_attribute_priority() -> None:
+def test_attribute_priority(render: RenderFixture) -> None:
     result = div({"foo": "a"}, foo="b")
-    assert str(result) == """<div foo="b"></div>"""
+    assert render(result) == ['<div foo="b">', "</div>"]
 
 
 @pytest.mark.parametrize("not_an_attr", [1234, b"foo", object(), object, 1, 0, None])

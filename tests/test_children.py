@@ -18,58 +18,74 @@ if t.TYPE_CHECKING:
 
     from htpy import Node
 
-
-def test_void_element() -> None:
-    element = input(name="foo")
-    assert_type(element, VoidElement)
-    assert isinstance(element, VoidElement)
-
-    result = str(element)
-    assert str(result) == '<input name="foo">'
+    from .conftest import RenderFixture
 
 
-def test_children() -> None:
-    assert str(div[img]) == "<div><img></div>"
+def test_void_element(render: RenderFixture) -> None:
+    result = input(name="foo")
+    assert_type(result, VoidElement)
+    assert isinstance(result, VoidElement)
+
+    assert render(result) == ['<input name="foo">']
 
 
-def test_integer_child() -> None:
-    assert str(div[123]) == "<div>123</div>"
+def test_integer_child(render: RenderFixture) -> None:
+    assert render(div[123]) == ["<div>", "123", "</div>"]
 
 
-def test_multiple_children() -> None:
+def test_children(render: RenderFixture) -> None:
+    assert render(div[img]) == ["<div>", "<img>", "</div>"]
+
+
+def test_multiple_children(render: RenderFixture) -> None:
     result = ul[li, li]
 
-    assert str(result) == "<ul><li></li><li></li></ul>"
+    assert render(result) == ["<ul>", "<li>", "</li>", "<li>", "</li>", "</ul>"]
 
 
-def test_list_children() -> None:
+def test_list_children(render: RenderFixture) -> None:
     children: list[Element] = [li["a"], li["b"]]
     result = ul[children]
-    assert str(result) == "<ul><li>a</li><li>b</li></ul>"
+    assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
 
 
-def test_tuple_children() -> None:
+def test_tuple_children(render: RenderFixture) -> None:
     result = ul[(li["a"], li["b"])]
-    assert str(result) == "<ul><li>a</li><li>b</li></ul>"
+    assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
 
 
-def test_flatten_nested_children() -> None:
+def test_flatten_nested_children(render: RenderFixture) -> None:
     result = dl[
         [
             (dt["a"], dd["b"]),
             (dt["c"], dd["d"]),
         ]
     ]
-    assert str(result) == """<dl><dt>a</dt><dd>b</dd><dt>c</dt><dd>d</dd></dl>"""
+    assert render(result) == [
+        "<dl>",
+        "<dt>",
+        "a",
+        "</dt>",
+        "<dd>",
+        "b",
+        "</dd>",
+        "<dt>",
+        "c",
+        "</dt>",
+        "<dd>",
+        "d",
+        "</dd>",
+        "</dl>",
+    ]
 
 
-def test_flatten_very_nested_children() -> None:
+def test_flatten_very_nested_children(render: RenderFixture) -> None:
     # maybe not super useful but the nesting may be arbitrarily deep
     result = div[[([["a"]],)], [([["b"]],)]]
-    assert str(result) == """<div>ab</div>"""
+    assert render(result) == ["<div>", "a", "b", "</div>"]
 
 
-def test_flatten_nested_generators() -> None:
+def test_flatten_nested_generators(render: RenderFixture) -> None:
     def cols() -> Generator[str, None, None]:
         yield "a"
         yield "b"
@@ -82,18 +98,18 @@ def test_flatten_nested_generators() -> None:
 
     result = div[rows()]
 
-    assert str(result) == """<div>abcabcabc</div>"""
+    assert render(result) == ["<div>", "a", "b", "c", "a", "b", "c", "a", "b", "c", "</div>"]
 
 
-def test_generator_children() -> None:
+def test_generator_children(render: RenderFixture) -> None:
     gen: Generator[Element, None, None] = (li[x] for x in ["a", "b"])
     result = ul[gen]
-    assert str(result) == "<ul><li>a</li><li>b</li></ul>"
+    assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
 
 
-def test_html_tag_with_doctype() -> None:
+def test_html_tag_with_doctype(render: RenderFixture) -> None:
     result = html(foo="bar")["hello"]
-    assert str(result) == '<!doctype html><html foo="bar">hello</html>'
+    assert render(result) == ["<!doctype html>", '<html foo="bar">', "hello", "</html>"]
 
 
 def test_void_element_children() -> None:
@@ -101,24 +117,24 @@ def test_void_element_children() -> None:
         img["hey"]  # type: ignore[index]
 
 
-def test_call_without_args() -> None:
+def test_call_without_args(render: RenderFixture) -> None:
     result = img()
-    assert str(result) == "<img>"
+    assert render(result) == ["<img>"]
 
 
-def test_custom_element() -> None:
-    el = my_custom_element()
-    assert_type(el, Element)
-    assert isinstance(el, Element)
-    assert str(el) == "<my-custom-element></my-custom-element>"
+def test_custom_element(render: RenderFixture) -> None:
+    result = my_custom_element()
+    assert_type(result, Element)
+    assert isinstance(result, Element)
+    assert render(result) == ["<my-custom-element>", "</my-custom-element>"]
 
 
 @pytest.mark.parametrize("ignored_value", [None, True, False])
-def test_ignored(ignored_value: t.Any) -> None:
-    assert str(div[ignored_value]) == "<div></div>"
+def test_ignored(render: RenderFixture, ignored_value: t.Any) -> None:
+    assert render(div[ignored_value]) == ["<div>", "</div>"]
 
 
-def test_iter() -> None:
+def test_sync_iter() -> None:
     trace = "not started"
 
     def generate_list() -> Generator[Element, None, None]:
@@ -143,16 +159,16 @@ def test_iter() -> None:
     assert trace == "done"
 
 
-def test_iter_str() -> None:
-    _, child, _ = div["a"]
+def test_iter_str(render: RenderFixture) -> None:
+    _, child, _ = render(div["a"])
 
     assert child == "a"
     # Make sure we dont get Markup (subclass of str)
     assert type(child) is str
 
 
-def test_iter_markup() -> None:
-    _, child, _ = div["a"]
+def test_iter_markup(render: RenderFixture) -> None:
+    _, child, _ = render(div["a"])
 
     assert child == "a"
     # Make sure we dont get Markup (subclass of str)
@@ -176,35 +192,35 @@ def test_callable() -> None:
     assert next(iterator) == "</div>"
 
 
-def test_escape_children() -> None:
-    result = str(div['>"'])
-    assert result == "<div>&gt;&#34;</div>"
+def test_escape_children(render: RenderFixture) -> None:
+    result = render(div['>"'])
+    assert result == ["<div>", "&gt;&#34;", "</div>"]
 
 
-def test_safe_children() -> None:
-    result = str(div[Markup("<hello></hello>")])
-    assert result == "<div><hello></hello></div>"
+def test_safe_children(render: RenderFixture) -> None:
+    result = render(div[Markup("<hello></hello>")])
+    assert result == ["<div>", "<hello></hello>", "</div>"]
 
 
-def test_nested_callable_generator() -> None:
+def test_nested_callable_generator(render: RenderFixture) -> None:
     def func() -> Generator[str, None, None]:
         return (x for x in "abc")
 
-    assert str(div[func]) == "<div>abc</div>"
+    assert render(div[func]) == ["<div>", "a", "b", "c", "</div>"]
 
 
-def test_nested_callables() -> None:
+def test_nested_callables(render: RenderFixture) -> None:
     def first() -> Callable[[], Node]:
         return second
 
     def second() -> Node:
         return "hi"
 
-    assert str(div[first]) == "<div>hi</div>"
+    assert render(div[first]) == ["<div>", "hi", "</div>"]
 
 
-def test_callable_in_generator() -> None:
-    assert str(div[((lambda: "hi") for _ in range(1))]) == "<div>hi</div>"
+def test_callable_in_generator(render: RenderFixture) -> None:
+    assert render(div[((lambda: "hi") for _ in range(1))]) == ["<div>", "hi", "</div>"]
 
 
 @dataclasses.dataclass
@@ -251,17 +267,17 @@ def test_invalid_child_nested_iterable(not_a_child: t.Any) -> None:
 
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_lazy_callable(not_a_child: t.Any) -> None:
+def test_invalid_child_lazy_callable(not_a_child: t.Any, render: RenderFixture) -> None:
     """
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
     element = div[lambda: not_a_child]
     with pytest.raises(TypeError, match="is not a valid child element"):
-        str(element)
+        render(element)
 
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_lazy_generator(not_a_child: t.Any) -> None:
+def test_invalid_child_lazy_generator(not_a_child: t.Any, render: RenderFixture) -> None:
     """
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
@@ -271,4 +287,4 @@ def test_invalid_child_lazy_generator(not_a_child: t.Any) -> None:
 
     element = div[gen()]
     with pytest.raises(TypeError, match="is not a valid child element"):
-        str(element)
+        render(element)

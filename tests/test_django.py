@@ -1,15 +1,22 @@
-from typing import Any
+from __future__ import annotations
+
+import typing as t
 
 import pytest
 from django.core import management
 from django.forms.utils import ErrorList
-from django.http import HttpRequest
 from django.template import Context, Template, TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.html import escape
 from django.utils.safestring import SafeString
 
 from htpy import Element, Node, div, li, ul
+
+if t.TYPE_CHECKING:
+    from django.http import HttpRequest
+
+    from .conftest import RenderFixture
+
 
 pytestmark = pytest.mark.usefixtures("django_env")
 
@@ -21,26 +28,26 @@ def test_template_injection() -> None:
     assert result == '<ul><li id="hi">I am safe!</li></ul>'
 
 
-def test_SafeString() -> None:
+def test_SafeString(render: RenderFixture) -> None:
     result = ul[SafeString("<li>hello</li>")]
-    assert str(result) == "<ul><li>hello</li></ul>"
+    assert render(result) == ["<ul>", "<li>hello</li>", "</ul>"]
 
 
-def test_explicit_escape() -> None:
+def test_explicit_escape(render: RenderFixture) -> None:
     result = ul[escape("<hello>")]
-    assert str(result) == "<ul>&lt;hello&gt;</ul>"
+    assert render(result) == ["<ul>", "&lt;hello&gt;", "</ul>"]
 
 
-def test_errorlist() -> None:
+def test_errorlist(render: RenderFixture) -> None:
     result = div[ErrorList(["my error"])]
-    assert str(result) == """<div><ul class="errorlist"><li>my error</li></ul></div>"""
+    assert render(result) == ["<div>", '<ul class="errorlist"><li>my error</li></ul>', "</div>"]
 
 
-def my_template(context: dict[str, Any], request: HttpRequest | None) -> Element:
+def my_template(context: dict[str, t.Any], request: HttpRequest | None) -> Element:
     return div[f"hey {context['name']}"]
 
 
-def my_template_fragment(context: dict[str, Any], request: HttpRequest | None) -> Node:
+def my_template_fragment(context: dict[str, t.Any], request: HttpRequest | None) -> Node:
     return [div[f"hey {context['name']}"]]
 
 
