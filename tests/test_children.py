@@ -13,12 +13,14 @@ from typing_extensions import assert_type
 
 from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
 
+from .conftest import Trace
+
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Generator
 
     from htpy import Node
 
-    from .conftest import RenderFixture
+    from .conftest import RenderFixture, TraceFixture
 
 
 def test_void_element(render: RenderFixture) -> None:
@@ -134,29 +136,43 @@ def test_ignored(render: RenderFixture, ignored_value: t.Any) -> None:
     assert render(div[ignored_value]) == ["<div>", "</div>"]
 
 
-def test_sync_iter() -> None:
-    trace = "not started"
-
+def test_lazy_iter(render: RenderFixture, trace: TraceFixture) -> None:
     def generate_list() -> Generator[Element, None, None]:
-        nonlocal trace
-
-        trace = "before yield"
+        trace("before yield")
         yield li("#a")
+        trace("after yield")
 
-        trace = "done"
+    result = render(ul[generate_list()])
+    assert result == [
+        "<ul>",
+        Trace("before yield"),
+        '<li id="a">',
+        "</li>",
+        Trace("after yield"),
+        "</ul>",
+    ]
 
-    iterator = iter(ul[generate_list()])
 
-    assert next(iterator) == "<ul>"
-    assert trace == "not started"
+def test_lazy_callable(render: RenderFixture, trace: TraceFixture) -> None:
+    def parent() -> Element:
+        trace("in parent")
+        return div("#parent")[child]
 
-    assert next(iterator) == '<li id="a">'
-    assert trace == "before yield"
-    assert next(iterator) == "</li>"
-    assert trace == "before yield"
+    def child() -> str:
+        trace("in child")
+        return "child"
 
-    assert next(iterator) == "</ul>"
-    assert trace == "done"
+    result = render(div[parent])
+
+    assert result == [
+        "<div>",
+        Trace(description="in parent"),
+        '<div id="parent">',
+        Trace(description="in child"),
+        "child",
+        "</div>",
+        "</div>",
+    ]
 
 
 def test_iter_str(render: RenderFixture) -> None:
@@ -173,23 +189,6 @@ def test_iter_markup(render: RenderFixture) -> None:
     assert child == "a"
     # Make sure we dont get Markup (subclass of str)
     assert type(child) is str
-
-
-def test_callable() -> None:
-    called = False
-
-    def generate_img() -> VoidElement:
-        nonlocal called
-        called = True
-        return img
-
-    iterator = iter(div[generate_img])
-
-    assert next(iterator) == "<div>"
-    assert called is False
-    assert next(iterator) == "<img>"
-    assert called is True
-    assert next(iterator) == "</div>"
 
 
 def test_escape_children(render: RenderFixture) -> None:

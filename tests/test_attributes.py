@@ -178,12 +178,14 @@ def test_attrs_and_kwargs(render: RenderFixture) -> None:
     assert render(result) == ['<div a="1" for="b" b="2">', "</div>"]
 
 
-def test_class_priority(render: RenderFixture) -> None:
-    result = div(".a", {"class": "b"}, class_="c")
-    assert render(result) == ['<div class="c">', "</div>"]
-
+def test_class_priority_dict(render: RenderFixture) -> None:
     result = div(".a", {"class": "b"})
     assert render(result) == ['<div class="b">', "</div>"]
+
+
+def test_class_priority_dict_and_kwarg(render: RenderFixture) -> None:
+    result = div(".a", {"class": "b"}, class_="c")
+    assert render(result) == ['<div class="c">', "</div>"]
 
 
 def test_attribute_priority(render: RenderFixture) -> None:
