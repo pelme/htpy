@@ -19,7 +19,7 @@ def test_invalid_element_name() -> None:
 
 
 def test_element_repr() -> None:
-    assert repr(htpy.div("#a")) == """<Element '<div id="a"></div>'>"""
+    assert repr(htpy.div("#a")) == """<Element '<div id="a">...</div>'>"""
 
 
 def test_void_element_repr() -> None:

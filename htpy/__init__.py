@@ -275,9 +275,6 @@ class BaseElement:
         yield from _iter_node_context(self._children, ctx)
         yield f"</{self._name}>"
 
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} '{self}'>"
-
     # Allow starlette Response.render to directly render this element without
     # explicitly casting to str:
     # https://github.com/encode/starlette/blob/5ed55c441126687106109a3f5e051176f88cd3e6/starlette/responses.py#L44-L49
@@ -308,6 +305,9 @@ class Element(BaseElement):
         _validate_children(children)
         return self.__class__(self._name, self._attrs, children)  # pyright: ignore [reportUnknownArgumentType]
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} '<{self._name}{self._attrs}>...</{self._name}>'>"
+
 
 class HTMLElement(Element):
     def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
@@ -318,6 +318,9 @@ class HTMLElement(Element):
 class VoidElement(BaseElement):
     def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
         yield f"<{self._name}{self._attrs}>"
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} '<{self._name}{self._attrs}>'>"
 
 
 def render_node(node: Node) -> _Markup:
