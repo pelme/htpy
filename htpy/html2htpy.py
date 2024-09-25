@@ -160,28 +160,40 @@ class Tag:
 
 
 class Formatter(ABC):
+    error_return_code: int
+
     @abstractmethod
     def format(self, s: str) -> str:
         raise NotImplementedError()
 
 
 class BlackFormatter(Formatter):
+    error_return_code = 123
+
     def format(self, s: str) -> str:
         result = subprocess.run(
             ["black", "-q", "-"],
             input=s.encode("utf8"),
             stdout=subprocess.PIPE,
         )
+        if result.returncode == self.error_return_code:
+            _printerr("Black failed to parse the input. The output will be left unformatted.")
+            return s
         return result.stdout.decode("utf8")
 
 
 class RuffFormatter(Formatter):
+    error_return_code = 2
+
     def format(self, s: str) -> str:
         result = subprocess.run(
             ["ruff", "format", "-"],
             input=s.encode("utf8"),
             stdout=subprocess.PIPE,
         )
+        if result.returncode == self.error_return_code:
+            _printerr("Ruff failed to parse the input. The output will be left unformatted.")
+            return s
         return result.stdout.decode("utf8")
 
 
