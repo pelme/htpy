@@ -353,3 +353,13 @@ def test_shorthand_contains_dot() -> None:
     )
 
     assert actual == 'div(id="a", class_="w-[50.0625rem]")'
+
+
+def test_del_tag_is_replaced_with_del_() -> None:
+    actual = html2htpy(
+        "<div><del>deleted</del></div>",
+        shorthand_id_class=True,
+        import_mode="yes",
+    )
+
+    assert actual == 'from htpy import del_, div\ndiv[del_["deleted"]]'
