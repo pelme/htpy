@@ -147,9 +147,8 @@ class Tag:
 
     @property
     def python_element_name(self) -> str:
-        # Note: <del> tags should be translated to "del_" instead of "del" in htpy.
-        if self.html_tag == "del":
-            return "del_"
+        if keyword.iskeyword(self.html_tag):
+            return self.html_tag + "_"
         return self.html_tag.replace("-", "_")
 
     def serialize(self, *, shorthand_id_class: bool, use_h_prefix: bool) -> str:
