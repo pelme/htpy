@@ -3,7 +3,7 @@ from markupsafe import Markup
 from typing_extensions import assert_type
 
 import htpy
-from htpy import Element, div
+from htpy import Element, del_, div
 
 
 def test_instance_cache() -> None:
@@ -42,3 +42,7 @@ def test_element_type() -> None:
 
     assert_type(div()["a"], Element)
     assert isinstance(div()["a"], Element)
+
+
+def test_del_keyword_element() -> None:
+    assert str(del_) == "<del></del>"
