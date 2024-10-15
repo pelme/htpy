@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import keyword
+
 __version__ = "24.9.1"
 __all__: list[str] = []
 
@@ -74,12 +76,18 @@ def _id_class_names_from_css_str(x: t.Any) -> dict[str, Attribute]:
     return result
 
 
-def _kwarg_attribute_name(name: str) -> str:
+def _html_name(name: str) -> str:
     # Make _hyperscript (https://hyperscript.org/) work smoothly
     if name == "_":
         return "_"
 
-    return name.removesuffix("_").replace("_", "-")
+    html_name = name
+    name_without_underscore_suffix = name.removesuffix("_")
+    if keyword.iskeyword(name_without_underscore_suffix):
+        html_name = name_without_underscore_suffix
+    html_name = html_name.replace("_", "-")
+
+    return html_name
 
 
 def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
@@ -206,7 +214,7 @@ def _get_element(name: str) -> Element:
         raise AttributeError(
             f"{name} is not a valid element name. html elements must have all lowercase names"
         )
-    return Element(name.replace("_", "-"))
+    return Element(_html_name(name))
 
 
 def __getattr__(name: str) -> Element:
@@ -261,7 +269,7 @@ class BaseElement:
                 {
                     **(_id_class_names_from_css_str(id_class) if id_class else {}),
                     **attrs,
-                    **{_kwarg_attribute_name(k): v for k, v in kwargs.items()},
+                    **{_html_name(k): v for k, v in kwargs.items()},
                 }
             ),
             self._children,
@@ -398,7 +406,7 @@ colgroup = Element("colgroup")
 data = Element("data")
 datalist = Element("datalist")
 dd = Element("dd")
-del_ = Element("del_")
+del_ = Element("del")
 details = Element("details")
 dfn = Element("dfn")
 dialog = Element("dialog")

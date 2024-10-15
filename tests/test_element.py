@@ -3,7 +3,7 @@ from markupsafe import Markup
 from typing_extensions import assert_type
 
 import htpy
-from htpy import Element, div
+from htpy import Element, break_, class_, del_, div, imaginary, imaginary_
 
 
 def test_instance_cache() -> None:
@@ -42,3 +42,21 @@ def test_element_type() -> None:
 
     assert_type(div()["a"], Element)
     assert isinstance(div()["a"], Element)
+
+
+@pytest.mark.parametrize(
+    ("element", "expected"),
+    [(del_, "<del></del>"), (class_, "<class></class>"), (break_, "<break></break>")],
+)
+def test_keyword_named_elements(element: Element, expected: str) -> None:
+    actual = str(element)
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    ("element", "expected"),
+    [(imaginary, "<imaginary></imaginary>"), (imaginary_, "<imaginary-></imaginary->")],
+)
+def test_non_keyword_named_elements(element: Element, expected: str) -> None:
+    actual = str(element)
+    assert actual == expected
