@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import typing as t
 
 import pytest
 
-from htpy import Node, iter_node
+from htpy import Node, aiter_node, iter_node
 
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -49,8 +50,30 @@ def trace(render_result: RenderResult) -> Callable[[str], None]:
 
 
 @pytest.fixture
-def render(render_result: RenderResult) -> Generator[RenderFixture, None, None]:
+def render_async(render_result: RenderResult) -> RenderFixture:
+    def func(node: Node) -> RenderResult:
+        async def run() -> RenderResult:
+            async for chunk in aiter_node(node):
+                render_result.append(chunk)
+            return render_result
+
+        return asyncio.run(run(), debug=True)
+
+    return func
+
+
+@pytest.fixture(params=["sync", "async"])
+def render(
+    request: pytest.FixtureRequest,
+    render_async: RenderFixture,
+    render_result: RenderResult,
+) -> Generator[RenderFixture, None, None]:
     called = False
+
+    def render_sync(node: Node) -> RenderResult:
+        for chunk in iter_node(node):
+            render_result.append(chunk)
+        return render_result
 
     def func(node: Node) -> RenderResult:
         nonlocal called
@@ -59,10 +82,11 @@ def render(render_result: RenderResult) -> Generator[RenderFixture, None, None]:
             raise AssertionError("render() must only be called once per test")
 
         called = True
-        for chunk in iter_node(node):
-            render_result.append(chunk)
 
-        return render_result
+        if request.param == "sync":
+            return render_sync(node)
+        else:
+            return render_async(node)
 
     yield func
 

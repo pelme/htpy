@@ -6,7 +6,15 @@ __all__: list[str] = []
 import dataclasses
 import functools
 import typing as t
-from collections.abc import Callable, Generator, Iterable, Iterator
+from collections.abc import (
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Generator,
+    Iterable,
+    Iterator,
+)
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -126,6 +134,9 @@ class ContextProvider(t.Generic[T]):
     def __iter__(self) -> Iterator[str]:
         return iter_node(self)
 
+    def __aiter__(self) -> AsyncIterator[str]:
+        return aiter_node(self)
+
     def __str__(self) -> str:
         return render_node(self)
 
@@ -135,6 +146,10 @@ class ContextConsumer(t.Generic[T]):
     context: Context[T]
     debug_name: str
     func: Callable[[T], Node]
+
+
+def _is_noop_node(x: Node) -> bool:
+    return x is None or x is True or x is False
 
 
 class _NO_DEFAULT:
@@ -168,15 +183,8 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
-    if x is None:
+    if _is_noop_node(x):
         return
-
-    if x is True:
-        return
-
-    if x is False:
-        return
-
     if isinstance(x, BaseElement):
         yield from x._iter_context(context_dict)  # pyright: ignore [reportPrivateUsage]
     elif isinstance(x, ContextProvider):
@@ -196,6 +204,68 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
     elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_node_context(child, context_dict)
+    elif isinstance(x, Awaitable | AsyncIterable):  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise ValueError(
+            f"{x!r} is not a valid child element. "
+            "Use async iteration to retrieve element content: https://htpy.dev/streaming/"
+        )
+    else:
+        raise TypeError(f"{x!r} is not a valid child element")
+
+
+def aiter_node(x: Node) -> AsyncIterator[str]:
+    return _aiter_node_context(x, {})
+
+
+async def _aiter_node_context(
+    x: Node, context_dict: dict[Context[t.Any], t.Any]
+) -> AsyncIterator[str]:
+    while True:
+        if isinstance(x, Awaitable):
+            x = await x
+            continue
+
+        if not isinstance(x, BaseElement) and callable(x):
+            x = x()
+            continue
+
+        break
+
+    if _is_noop_node(x):
+        return
+
+    if isinstance(x, BaseElement):
+        async for child in x._aiter_context(context_dict):  # pyright: ignore [reportPrivateUsage]
+            yield child
+    elif isinstance(x, ContextProvider):
+        async for chunk in _aiter_node_context(
+            x.func(),
+            {**context_dict, x.context: x.value},  # pyright: ignore [reportUnknownMemberType]
+        ):
+            yield chunk
+
+    elif isinstance(x, ContextConsumer):
+        context_value = context_dict.get(x.context, x.context.default)
+        if context_value is _NO_DEFAULT:
+            raise LookupError(
+                f'Context value for "{x.context.name}" does not exist, '
+                f"requested by {x.debug_name}()."
+            )
+        async for chunk in _aiter_node_context(x.func(context_value), context_dict):
+            yield chunk
+
+    elif isinstance(x, str | _HasHtml):
+        yield str(_escape(x))
+    elif isinstance(x, int):
+        yield str(x)
+    elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
+        for child in x:  # type: ignore[assignment]
+            async for chunk in _aiter_node_context(child, context_dict):
+                yield chunk
+    elif isinstance(x, AsyncIterable):  # pyright: ignore[reportUnnecessaryIsInstance]
+        async for child in x:  # type: ignore[assignment]
+            async for chunk in _aiter_node_context(child, context_dict):  # pyright: ignore[reportUnknownArgumentType]
+                yield chunk
     else:
         raise TypeError(f"{x!r} is not a valid child element")
 
@@ -267,6 +337,15 @@ class BaseElement:
             self._children,
         )
 
+    async def _aiter_context(self, context: dict[Context[t.Any], t.Any]) -> AsyncIterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+        async for x in _aiter_node_context(self._children, context):
+            yield x
+        yield f"</{self._name}>"
+
+    def __aiter__(self) -> AsyncIterator[str]:
+        return self._aiter_context({})
+
     def __iter__(self) -> Iterator[str]:
         return self._iter_context({})
 
@@ -314,8 +393,16 @@ class HTMLElement(Element):
         yield "<!doctype html>"
         yield from super()._iter_context(ctx)
 
+    async def _aiter_context(self, context: dict[Context[t.Any], t.Any]) -> AsyncIterator[str]:
+        yield "<!doctype html>"
+        async for x in super()._aiter_context(context):
+            yield x
+
 
 class VoidElement(BaseElement):
+    async def _aiter_context(self, context: dict[Context[t.Any], t.Any]) -> AsyncIterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+
     def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
         yield f"<{self._name}{self._attrs}>"
 
@@ -350,6 +437,8 @@ Node: t.TypeAlias = (
     | Callable[[], "Node"]
     | ContextProvider[t.Any]
     | ContextConsumer[t.Any]
+    | AsyncIterable["Node"]
+    | Awaitable["Node"]
 )
 
 Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
@@ -483,6 +572,8 @@ _KnownInvalidChildren: UnionType = bytes | bytearray | memoryview
 _KnownValidChildren: UnionType = (  # pyright: ignore [reportUnknownVariableType]
     None
     | BaseElement
+    | AsyncIterable  # pyright: ignore [reportMissingTypeArgument]
+    | Awaitable  # pyright: ignore [reportMissingTypeArgument]
     | ContextProvider  # pyright: ignore [reportMissingTypeArgument]
     | ContextConsumer  # pyright: ignore [reportMissingTypeArgument]
     | Callable  # pyright: ignore [reportMissingTypeArgument]
