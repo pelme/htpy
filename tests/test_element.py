@@ -1,5 +1,5 @@
+import markupsafe
 import pytest
-from markupsafe import Markup
 from typing_extensions import assert_type
 
 import htpy
@@ -29,7 +29,7 @@ def test_void_element_repr() -> None:
 def test_markup_str() -> None:
     result = str(div(id="a"))
     assert isinstance(result, str)
-    assert isinstance(result, Markup)
+    assert isinstance(result, markupsafe.Markup)
     assert result == '<div id="a"></div>'
 
 
@@ -42,3 +42,16 @@ def test_element_type() -> None:
 
     assert_type(div()["a"], Element)
     assert isinstance(div()["a"], Element)
+
+
+def test_html_protocol() -> None:
+    element = div["test"]
+    result = element.__html__()
+    assert result == "<div>test</div>"
+    assert isinstance(result, markupsafe.Markup)
+
+
+def test_markupsafe_escape() -> None:
+    result = markupsafe.escape(div["test"])
+    assert result == "<div>test</div>"
+    assert isinstance(result, markupsafe.Markup)

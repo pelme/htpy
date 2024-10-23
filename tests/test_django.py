@@ -7,7 +7,7 @@ from django.core import management
 from django.forms.utils import ErrorList
 from django.template import Context, Template, TemplateDoesNotExist
 from django.template.loader import render_to_string
-from django.utils.html import escape
+from django.utils.html import conditional_escape, escape
 from django.utils.safestring import SafeString
 
 from htpy import Element, Node, div, li, ul
@@ -68,3 +68,8 @@ class Test_template_loader:
         # Django 5.1 requires template backends to implement a check() method.
         # This test ensures that it does not crash.
         management.call_command("check")
+
+
+def test_conditional_escape() -> None:
+    result = conditional_escape(div["test"])  # type: ignore[arg-type]
+    assert result == "<div>test</div>"

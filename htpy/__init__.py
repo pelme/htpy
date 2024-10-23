@@ -224,6 +224,8 @@ class BaseElement:
     def __str__(self) -> _Markup:
         return _Markup("".join(self))
 
+    __html__ = __str__
+
     @t.overload
     def __call__(
         self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
