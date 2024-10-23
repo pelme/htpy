@@ -1,6 +1,6 @@
 # Changelog
 
-## next
+## 24.10.0 - 2024-10-23
 - Implement `Element.__html__`. This avoids double escaping when passed to
 `markupsafe.escape` and Django's `django.utils.html.conditional_escape`. [PR #65](https://github.com/pelme/htpy/pull/65).
 - Raise errors directly on invalid children. This avoids cryptic stack traces.
