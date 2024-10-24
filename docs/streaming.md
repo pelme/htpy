@@ -1,7 +1,7 @@
 # Streaming of Contents
 
 Internally, htpy is built with generators. Most of the time, you would render
-the full page with `str()`, but htpy can also incrementally generate pages which
+the full page with `str()`, but htpy can also incrementally generate pages synchronously or asynchronous which
 can then be streamed to the browser. If your page uses a database or other
 services to retrieve data, you can sending the first part of the page to the
 client while the page is being generated.
@@ -111,3 +111,59 @@ print(
 # output: <div><h1>Fibonacci!</h1>fib(12)=6765</div>
 
 ```
+
+
+## Asynchronous streaming
+
+It is also possible to use htpy to stream fully asynchronous. This intended to be used
+with ASGI/async web frameworks/servers such as Starlette and Django. You can
+build htpy components using Python's `asyncio` module and the `async`/`await`
+syntax.
+
+### Starlette, ASGI and uvicorn example
+
+```python
+title="starlette_demo.py"
+import asyncio
+from collections.abc import AsyncIterator
+
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import StreamingResponse
+
+from htpy import Element, div, h1, li, p, ul
+
+app = Starlette(debug=True)
+
+
+@app.route("/")
+async def index(request: Request) -> StreamingResponse:
+    return StreamingResponse(await index_page(), media_type="text/html")
+
+
+async def index_page() -> Element:
+    return div[
+        h1["Starlette Async example"],
+        p["This page is generated asynchronously using Starlette and ASGI."],
+        ul[(li[str(num)] async for num in slow_numbers(1, 10))],
+    ]
+
+
+async def slow_numbers(minimum: int, maximum: int) -> AsyncIterator[int]:
+    for number in range(minimum, maximum + 1):
+        yield number
+        await asyncio.sleep(0.5)
+
+```
+
+Run with [uvicorn](https://www.uvicorn.org/):
+
+
+```
+$ uvicorn starlette_demo:app
+```
+
+In the browser, it looks like this:
+<video width="500" controls loop >
+  <source src="/assets/starlette.webm" type="video/webm">
+</video>
