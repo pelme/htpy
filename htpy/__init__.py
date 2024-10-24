@@ -76,7 +76,7 @@ def _id_class_names_from_css_str(x: t.Any) -> dict[str, Attribute]:
     return result
 
 
-def _html_name(name: str) -> str:
+def _python_to_html_name(name: str) -> str:
     # Make _hyperscript (https://hyperscript.org/) work smoothly
     if name == "_":
         return "_"
@@ -214,7 +214,7 @@ def _get_element(name: str) -> Element:
         raise AttributeError(
             f"{name} is not a valid element name. html elements must have all lowercase names"
         )
-    return Element(_html_name(name))
+    return Element(_python_to_html_name(name))
 
 
 def __getattr__(name: str) -> Element:
@@ -271,7 +271,7 @@ class BaseElement:
                 {
                     **(_id_class_names_from_css_str(id_class) if id_class else {}),
                     **attrs,
-                    **{_html_name(k): v for k, v in kwargs.items()},
+                    **{_python_to_html_name(k): v for k, v in kwargs.items()},
                 }
             ),
             self._children,
