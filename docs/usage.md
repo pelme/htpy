@@ -115,7 +115,7 @@ A `list` can be used similar to a [JSX fragment](https://react.dev/reference/rea
 
 [Custom elements / web
 components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements)
-are HTML elements that contains at least one dash (`-`). Since `-` cannot be
+are HTML elements that contain at least one dash (`-`). Since `-` cannot be
 used in Python identifiers, use underscore (`_`) instead:
 
 ```pycon title="Using custom elements"
@@ -137,7 +137,8 @@ library. markupsafe is a dependency of htpy and is automatically installed:
 <div><foo></foo></div>
 ```
 
-If you are generate [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, use `Markup`:
+If you are generating [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, 
+use `Markup` to mark it as safe:
 
 ```pycon title="Injecting generated markdown"
 >>> from markdown import markdown
@@ -209,7 +210,7 @@ In Python, `class` and `for` cannot be used as keyword arguments. Instead, they 
 <label for="myfield"></label>
 ```
 
-Attributes that contains dashes `-` can be specified using underscores:
+Attributes that contain dashes `-` can be specified using underscores:
 
 ```pycon
 >>> from htpy import form
@@ -299,7 +300,7 @@ accepts a list of class names or a dict. Falsey values will be ignored.
 Attributes via id/class shorthand, keyword arguments and dictionary can be combined:
 
 ```pycon title="Specifying attribute via multiple arguments"
->>> from htyp import label
+>>> from htpy import label
 >>> print(label("#myid.foo.bar", {'for': "somefield"}, name="myname",))
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
 ```
@@ -381,7 +382,7 @@ Just like [render_node()](#render-elements-without-a-parent-orphans), there is
 `iter_node()` that can be used when you need to iterate over a list of elements
 without a parent:
 
-```
+```pycon
 >>> from htpy import li, iter_node
 >>> for chunk in iter_node([li["a"], li["b"]]):
 ...     print(f"got a chunk: {chunk!r}")
