@@ -19,8 +19,8 @@ HTML.
 Using a file named `components.py` can be a good idea. If you have many
 components, you may create a `components` package instead.
 
-Your component functions can accept arbitrary argument with the required data.
-It is a good idea to only use keyword arguments (put a `*` in the argument list
+Your component functions can accept arbitrary arguments with the required data.
+It is a good idea to only use keyword arguments (put a `*` on the left of the argument list
 to force keyword arguments):
 
 ```py title="views.py"
