@@ -180,6 +180,9 @@ class BlackFormatter(Formatter):
         )
         if result.returncode == self.error_return_code:
             _printerr("Black failed to parse the input. The output will be left unformatted.")
+            _printerr(
+                "This is likely a bug in html2htpy. Please report this as an issue to htpy: https://github.com/pelme/htpy/issues."
+            )
             return s
         return result.stdout.decode("utf8")
 
@@ -195,6 +198,9 @@ class RuffFormatter(Formatter):
         )
         if result.returncode == self.error_return_code:
             _printerr("Ruff failed to parse the input. The output will be left unformatted.")
+            _printerr(
+                "This is likely a bug in html2htpy. Please report this as an issue to htpy: https://github.com/pelme/htpy/issues."
+            )
             return s
         return result.stdout.decode("utf8")
 
