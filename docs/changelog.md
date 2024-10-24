@@ -1,5 +1,8 @@
 # Changelog
 
+## 24.10.1 - 2024-10-24
+- Fix handling of Python keywords such as `<del>` in html2htpy. [PR #61](https://github.com/pelme/htpy/pull/61).
+
 ## 24.10.0 - 2024-10-23
 - Implement `Element.__html__`. This avoids double escaping when passed to
 `markupsafe.escape` and Django's `django.utils.html.conditional_escape`. [PR #65](https://github.com/pelme/htpy/pull/65).
