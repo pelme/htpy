@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-import keyword
-
-__version__ = "24.10.1"
-__all__: list[str] = []
-
 import dataclasses
 import functools
+import keyword
 import typing as t
 from collections.abc import Callable, Generator, Iterable, Iterator
 
@@ -15,6 +11,8 @@ from markupsafe import escape as _escape
 
 if t.TYPE_CHECKING:
     from types import UnionType
+__version__ = "24.10.1"
+__all__: list[str] = []
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
 ElementSelf = t.TypeVar("ElementSelf", bound="Element")
