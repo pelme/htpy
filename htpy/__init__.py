@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import dataclasses
 import functools
 import keyword
@@ -169,7 +168,6 @@ class Context(t.Generic[T]):
 def iter_node(x: Node) -> Iterator[str]:
     return _iter_node_context(x, {})
 
-
 def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
@@ -195,7 +193,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
                 f"requested by {x.debug_name}()."
             )
         yield from _iter_node_context(x.func(context_value), context_dict)
-    elif isinstance(x, str | _HasHtml):
+    elif isinstance(x, str) or hasattr(x, "__html__"):
         yield str(_escape(x))
     elif isinstance(x, int):
         yield str(x)
