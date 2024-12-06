@@ -295,22 +295,24 @@ class BaseElement:
     # https://docs.djangoproject.com/en/5.0/ref/templates/api/#variables-and-lookups
     do_not_call_in_templates = True
 
+_T = t.TypeVar("_T", bound=t.Any)
 
-def _validate_children(children: t.Any) -> None:
+def _validate_children(children: _T) -> _T | t.Iterable[t.Any] | t.Never:
     if isinstance(children, _KnownValidChildren):
-        return
+        return children
 
     if isinstance(children, Iterable) and not isinstance(children, _KnownInvalidChildren):
-        for child in children:  # pyright: ignore [reportUnknownVariableType]
-            _validate_children(child)
-        return
+        return [
+            _validate_children(child)  # pyright: ignore [reportUnknownArgumentType]
+            for child in children  # pyright: ignore [reportUnknownVariableType]
+        ]
 
     raise TypeError(f"{children!r} is not a valid child element")
 
 
 class Element(BaseElement):
     def __getitem__(self: ElementSelf, children: Node) -> ElementSelf:
-        _validate_children(children)
+        children = _validate_children(children)
         return self.__class__(self._name, self._attrs, children)  # pyright: ignore [reportUnknownArgumentType]
 
     def __repr__(self) -> str:

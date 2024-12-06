@@ -6,6 +6,7 @@ import decimal
 import pathlib
 import re
 import typing as t
+from itertools import chain
 
 import pytest
 from markupsafe import Markup
@@ -107,6 +108,18 @@ def test_generator_children(render: RenderFixture) -> None:
     gen: Generator[Element, None, None] = (li[x] for x in ["a", "b"])
     result = ul[gen]
     assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
+
+
+def test_one_shot_iterator_children(render: RenderFixture) -> None:
+    gen: chain[Element] = chain([li["a"]], chain([li["b"]], [li["c"]]))
+    result = ul[gen]
+    assert render(result) == [
+        "<ul>",
+        "<li>", "a", "</li>",
+        "<li>", "b", "</li>",
+        "<li>", "c", "</li>",
+        "</ul>",
+    ]
 
 
 def test_html_tag_with_doctype(render: RenderFixture) -> None:
