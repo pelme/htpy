@@ -296,10 +296,7 @@ class BaseElement:
     do_not_call_in_templates = True
 
 
-_T = t.TypeVar("_T", bound=t.Any)
-
-
-def _validate_children(children: _T) -> _T | t.Iterable[t.Any] | None:
+def _validate_children(children: t.Any) -> t.Any:
     if isinstance(children, _KnownValidChildren):
         return children
 
