@@ -115,9 +115,15 @@ def test_one_shot_iterator_children(render: RenderFixture) -> None:
     result = ul[gen]
     assert render(result) == [
         "<ul>",
-        "<li>", "a", "</li>",
-        "<li>", "b", "</li>",
-        "<li>", "c", "</li>",
+        "<li>",
+        "a",
+        "</li>",
+        "<li>",
+        "b",
+        "</li>",
+        "<li>",
+        "c",
+        "</li>",
         "</ul>",
     ]
 

@@ -295,9 +295,11 @@ class BaseElement:
     # https://docs.djangoproject.com/en/5.0/ref/templates/api/#variables-and-lookups
     do_not_call_in_templates = True
 
+
 _T = t.TypeVar("_T", bound=t.Any)
 
-def _validate_children(children: _T) -> _T | t.Iterable[t.Any] | t.Never:
+
+def _validate_children(children: _T) -> _T | t.Iterable[t.Any] | None:
     if isinstance(children, _KnownValidChildren):
         return children
 
