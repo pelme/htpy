@@ -4,7 +4,7 @@ import dataclasses
 import functools
 import keyword
 import typing as t
-from collections.abc import Callable, Generator, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -297,14 +297,26 @@ class BaseElement:
 
 
 def _validate_children(children: t.Any) -> None:
-    if isinstance(children, _KnownValidChildren):
-        return
-
-    if isinstance(children, Iterable) and not isinstance(children, _KnownInvalidChildren):
-        for child in children:  # pyright: ignore [reportUnknownVariableType]
+    # Non-lazy iterables:
+    # list and tuple are iterables and part of _KnownValidChildren. Since we
+    # know they can be consumed multiple times, we validate them recursively now
+    # rather than at render time to provide better error messages.
+    if isinstance(children, list | tuple):
+        for child in children:  # pyright: ignore[reportUnknownVariableType]
             _validate_children(child)
         return
 
+    # bytes, bytearray etc:
+    # These are Iterable (part of _KnownValidChildren) but still not
+    # useful as a child node.
+    if isinstance(children, _KnownInvalidChildren):
+        raise TypeError(f"{children!r} is not a valid child element")
+
+    # Element, str, int and all other regular/valid types.
+    if isinstance(children, _KnownValidChildren):
+        return
+
+    # Arbitrary objects that are not valid children.
     raise TypeError(f"{children!r} is not a valid child element")
 
 
@@ -487,15 +499,14 @@ var = Element("var")
 
 
 _KnownInvalidChildren: UnionType = bytes | bytearray | memoryview
-
-_KnownValidChildren: UnionType = (  # pyright: ignore [reportUnknownVariableType]
+_KnownValidChildren: UnionType = (
     None
     | BaseElement
     | ContextProvider  # pyright: ignore [reportMissingTypeArgument]
     | ContextConsumer  # pyright: ignore [reportMissingTypeArgument]
-    | Callable  # pyright: ignore [reportMissingTypeArgument]
     | str
     | int
-    | Generator  # pyright: ignore [reportMissingTypeArgument]
     | _HasHtml
+    | Callable
+    | Iterable
 )

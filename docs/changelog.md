@@ -1,5 +1,10 @@
 # Changelog
 
+## NEXT
+- Fixed handling of non-generator iterators such as `itertools.chain()` as
+children. Thanks to Aleksei Pirogov ([@astynax](https://github.com/astynax)).
+[PR #72](https://github.com/pelme/htpy/pull/72).
+
 ## 24.10.1 - 2024-10-24
 - Fix handling of Python keywords such as `<del>` in html2htpy. [PR #61](https://github.com/pelme/htpy/pull/61).
 

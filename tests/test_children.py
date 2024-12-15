@@ -6,6 +6,7 @@ import decimal
 import pathlib
 import re
 import typing as t
+from collections.abc import Iterator
 
 import pytest
 from markupsafe import Markup
@@ -16,11 +17,34 @@ from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my
 from .conftest import Trace
 
 if t.TYPE_CHECKING:
-    from collections.abc import Callable, Generator
+    from collections.abc import Callable
 
     from htpy import Node
 
     from .conftest import RenderFixture, TraceFixture
+
+
+T = t.TypeVar("T")
+
+
+class SingleShotIterator(Iterator[T]):
+    def __init__(self, value: T, trace: TraceFixture = lambda x: None) -> None:
+        self.value = value
+        self.trace = trace
+        self.consumed = False
+
+    def __iter__(self) -> SingleShotIterator[T]:
+        return self
+
+    def __next__(self) -> T:
+        if self.consumed:
+            self.trace("SingleShotIterator: StopIteration")
+            raise StopIteration
+
+        self.consumed = True
+        self.trace("SingleShotIterator: returning value")
+
+        return self.value
 
 
 def test_void_element(render: RenderFixture) -> None:
@@ -88,12 +112,12 @@ def test_flatten_very_nested_children(render: RenderFixture) -> None:
 
 
 def test_flatten_nested_generators(render: RenderFixture) -> None:
-    def cols() -> Generator[str, None, None]:
+    def cols() -> Iterator[str]:
         yield "a"
         yield "b"
         yield "c"
 
-    def rows() -> Generator[Generator[str, None, None], None, None]:
+    def rows() -> Iterator[Iterator[str]]:
         yield cols()
         yield cols()
         yield cols()
@@ -104,9 +128,21 @@ def test_flatten_nested_generators(render: RenderFixture) -> None:
 
 
 def test_generator_children(render: RenderFixture) -> None:
-    gen: Generator[Element, None, None] = (li[x] for x in ["a", "b"])
+    gen: Iterator[Element] = (li[x] for x in ["a", "b"])
     result = ul[gen]
     assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
+
+
+def test_non_generator_iterator(render: RenderFixture, trace: TraceFixture) -> None:
+    result = div[SingleShotIterator("hello", trace=trace)]
+
+    assert render(result) == [
+        "<div>",
+        Trace("SingleShotIterator: returning value"),
+        "hello",
+        Trace("SingleShotIterator: StopIteration"),
+        "</div>",
+    ]
 
 
 def test_html_tag_with_doctype(render: RenderFixture) -> None:
@@ -137,7 +173,7 @@ def test_ignored(render: RenderFixture, ignored_value: t.Any) -> None:
 
 
 def test_lazy_iter(render: RenderFixture, trace: TraceFixture) -> None:
-    def generate_list() -> Generator[Element, None, None]:
+    def generate_list() -> Iterator[Element]:
         trace("before yield")
         yield li("#a")
         trace("after yield")
@@ -202,7 +238,7 @@ def test_safe_children(render: RenderFixture) -> None:
 
 
 def test_nested_callable_generator(render: RenderFixture) -> None:
-    def func() -> Generator[str, None, None]:
+    def func() -> Iterator[str]:
         return (x for x in "abc")
 
     assert render(div[func]) == ["<div>", "a", "b", "c", "</div>"]
@@ -260,7 +296,19 @@ def test_invalid_child_direct(not_a_child: t.Any) -> None:
 
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_nested_iterable(not_a_child: t.Any) -> None:
+def test_invalid_child_wrapped_in_list(not_a_child: t.Any) -> None:
+    with pytest.raises(TypeError, match="is not a valid child element"):
+        div[[not_a_child]]
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_wrapped_in_tuple(not_a_child: t.Any) -> None:
+    with pytest.raises(TypeError, match="is not a valid child element"):
+        div[(not_a_child,)]
+
+
+@pytest.mark.parametrize("not_a_child", _invalid_children)
+def test_invalid_child_nested_iterator(not_a_child: t.Any) -> None:
     with pytest.raises(TypeError, match="is not a valid child element"):
         div[[not_a_child]]
 
@@ -276,14 +324,11 @@ def test_invalid_child_lazy_callable(not_a_child: t.Any, render: RenderFixture) 
 
 
 @pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_lazy_generator(not_a_child: t.Any, render: RenderFixture) -> None:
+def test_invalid_child_lazy_iterator(not_a_child: t.Any, render: RenderFixture) -> None:
     """
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
 
-    def gen() -> t.Any:
-        yield not_a_child
-
-    element = div[gen()]
+    element = div[SingleShotIterator(not_a_child)]
     with pytest.raises(TypeError, match="is not a valid child element"):
         render(element)
