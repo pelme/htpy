@@ -289,46 +289,46 @@ _invalid_children = [
 ]
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_direct(not_a_child: t.Any) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_direct(invalid_child: t.Any) -> None:
     with pytest.raises(TypeError, match="is not a valid child element"):
-        div[not_a_child]
+        div[invalid_child]
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_wrapped_in_list(not_a_child: t.Any) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_wrapped_in_list(invalid_child: t.Any) -> None:
     with pytest.raises(TypeError, match="is not a valid child element"):
-        div[[not_a_child]]
+        div[[invalid_child]]
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_wrapped_in_tuple(not_a_child: t.Any) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_wrapped_in_tuple(invalid_child: t.Any) -> None:
     with pytest.raises(TypeError, match="is not a valid child element"):
-        div[(not_a_child,)]
+        div[(invalid_child,)]
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_nested_iterator(not_a_child: t.Any) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_nested_iterator(invalid_child: t.Any) -> None:
     with pytest.raises(TypeError, match="is not a valid child element"):
-        div[[not_a_child]]
+        div[[invalid_child]]
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_lazy_callable(not_a_child: t.Any, render: RenderFixture) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_lazy_callable(invalid_child: t.Any, render: RenderFixture) -> None:
     """
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
-    element = div[lambda: not_a_child]
+    element = div[lambda: invalid_child]
     with pytest.raises(TypeError, match="is not a valid child element"):
         render(element)
 
 
-@pytest.mark.parametrize("not_a_child", _invalid_children)
-def test_invalid_child_lazy_iterator(not_a_child: t.Any, render: RenderFixture) -> None:
+@pytest.mark.parametrize("invalid_child", _invalid_children)
+def test_invalid_child_lazy_iterator(invalid_child: t.Any, render: RenderFixture) -> None:
     """
     Ensure proper exception is raised for lazily evaluated invalid children.
     """
 
-    element = div[SingleShotIterator(not_a_child)]
+    element = div[SingleShotIterator(invalid_child)]
     with pytest.raises(TypeError, match="is not a valid child element"):
         render(element)
