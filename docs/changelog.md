@@ -1,6 +1,6 @@
 # Changelog
 
-## NEXT
+## 24.12.0 - 2024-12-15
 - Fixed handling of non-generator iterators such as `itertools.chain()` as
 children. Thanks to Aleksei Pirogov ([@astynax](https://github.com/astynax)).
 [PR #72](https://github.com/pelme/htpy/pull/72).
