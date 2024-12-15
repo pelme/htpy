@@ -41,7 +41,29 @@ def greeting_page(*, name: str) -> Element:
     return html[body[h1[f"hi {name}!"]]]
 ```
 
-## Using a Base Layout
+## Creating components
+
+A central way of structuring your elements, layouts is by creating components.
+The most straightforward way to create a component is to create a function that
+accepts arguments to allow customization. htpy requires no special arguments,
+decorators or classes to create a component. A component is just a plain Python
+function that returns a htpy element.
+
+If you are used to React/JSX, this is similar to React functional components.
+
+!!! note "About Immutability"
+
+    All elements in htpy are immutable, just like in JSX/React. This means that
+    it is not possible to change an element once it is created. Instead of
+    trying to change an element, you create a "component function" that accepts
+    arguments to let you customize your element. You can define the component
+    function with as many arguments as you like.
+
+    The immutability of htpy elements is by design. It makes it clearer how
+    things are wired together and avoids surprises from changing existing
+    elements.
+
+### Using a Base Layout
 
 A common feature of template languages is to "extend" a base/parent template and specify placeholders. This can be achieved with a `base_layout` function:
 
@@ -51,7 +73,7 @@ import datetime
 from htpy import body, div, h1, head, html, p, title, Node, Element
 
 
-def base_page(*,
+def base_layout(*,
     page_title: str | None = None,
     extra_head: Node = None,
     content: Node = None,
@@ -88,7 +110,7 @@ def about_page() -> Element:
 
 ```
 
-## UI Components
+### UI Components
 
 Creating higher level wrappers for common UI components can be a good idea to reduce repetition.
 
