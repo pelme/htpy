@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import typing as t
 
 import markupsafe
@@ -35,11 +36,20 @@ def test_context_provider(render: RenderFixture) -> None:
 
 
 class Test_provider_outer_api:
-    """Ensure provider implements __iter__/__str__"""
+    """Ensure provider implements __iter__/__aiter__/__str__"""
 
     def test_iter(self) -> None:
         result = letter_ctx.provider("c", lambda: div[display_letter("Hello")])
         assert list(result) == ["<div>", "Hello: c!", "</div>"]
+
+    def test_aiter(self) -> None:
+        provider = letter_ctx.provider("c", lambda: div[display_letter("Hello")])
+
+        async def run() -> list[str]:
+            return [chunk async for chunk in provider]
+
+        result = asyncio.run(run(), debug=True)
+        assert result == ["<div>", "Hello: c!", "</div>"]
 
     def test_str(self) -> None:
         result = str(letter_ctx.provider("c", lambda: div[display_letter("Hello")]))
