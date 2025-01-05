@@ -1,5 +1,8 @@
 # References
 
+## Blog posts/tutorials
+- [Building HTML components from Python functions by Ricardo Ander-Egg](https://ricardoanderegg.com/posts/python-build-html-components-lxml/)
+
 ## Related projects
 
 - [pyxy](https://github.com/pyxy-org/pyxy) - Write HTML tags directly in Python (like JSX). Uses htpy to generate markup. A modern take on pyxl.
