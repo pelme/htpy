@@ -8,6 +8,8 @@ from markupsafe import Markup
 from htpy import button, div, th
 
 if t.TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from .conftest import RenderFixture
 
 
@@ -66,6 +68,13 @@ def test_dict_attributes(render: RenderFixture) -> None:
     result = div({"@click": 'hi = "hello"'})
 
     assert render(result) == ['<div @click="hi = &#34;hello&#34;">', "</div>"]
+
+
+def test_dict_attributes_mapping(render: RenderFixture) -> None:
+    attrs: Mapping[str, str] = {"id": "foo"}
+    result = div(attrs)
+
+    assert render(result) == ['<div id="foo">', "</div>"]
 
 
 def test_underscore(render: RenderFixture) -> None:

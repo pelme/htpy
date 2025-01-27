@@ -4,7 +4,7 @@ import dataclasses
 import functools
 import keyword
 import typing as t
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator, Mapping
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -48,7 +48,7 @@ def _class_names_for_items(items: t.Any) -> t.Any:
                 yield item
 
 
-def _id_class_names_from_css_str(x: t.Any) -> dict[str, Attribute]:
+def _id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
     if not isinstance(x, str):
         raise TypeError(f"id/class strings must be str. got {x}")
 
@@ -88,7 +88,7 @@ def _python_to_html_name(name: str) -> str:
     return html_name
 
 
-def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
+def _generate_attrs(raw_attrs: Mapping[str, Attribute]) -> Iterable[tuple[str, Attribute]]:
     for key, value in raw_attrs.items():
         if not isinstance(key, str):  # pyright: ignore [reportUnnecessaryIsInstance]
             raise TypeError("Attribute key must be a string")
@@ -110,7 +110,7 @@ def _generate_attrs(raw_attrs: dict[str, Attribute]) -> Iterable[tuple[str, Attr
             yield _force_escape(key), _force_escape(value)
 
 
-def _attrs_string(attrs: dict[str, Attribute]) -> str:
+def _attrs_string(attrs: Mapping[str, Attribute]) -> str:
     result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs))
 
     if not result:
@@ -234,7 +234,7 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, id_class: str, attrs: Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
@@ -242,13 +242,13 @@ class BaseElement:
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: dict[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, attrs: Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
     def __call__(self: BaseElementSelf, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
         id_class = ""
-        attrs: dict[str, Attribute] = {}
+        attrs: Mapping[str, Attribute] = {}
 
         if len(args) == 1:
             if isinstance(args[0], str):
