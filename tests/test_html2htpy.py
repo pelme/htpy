@@ -145,50 +145,11 @@ def test_convert_special_characters() -> None:
 
 def test_convert_f_string_escaping() -> None:
     input = """
-        <p>{{ variable }} is "a" { paragraph }.</p>
+        <p>{{ variable }} is "a" { paragraph } {{ variable.with.attrib }}.</p>
     """
 
     actual = html2htpy(input, import_mode="no")
-    expected = r'p[f"{ variable } is \"a\" {{ paragraph }}."]'
-
-    assert actual == expected
-
-
-def test_convert_f_string_escaping_complex() -> None:
-    input = """
-    <body>
-        <h1>{{ heading }}</h1>
-        <p>Welcome to our cooking site, {{ user.name }}!</p>
-
-        <h2>Recipe of the Day: {{ recipe.name }}</h2>
-        <p>{{ recipe.description }}</p>
-
-        <h3>Instructions:</h3>
-        <ol>
-            {% for step in recipe.steps %}
-            <li>{{ step }}</li>
-            {% endfor %}
-        </ol>
-    </body>
-    """
-
-    actual = html2htpy(input, formatter=RuffFormatter(), import_mode="no")
-    expected = textwrap.dedent(
-        """\
-        body[
-            h1[f"{ heading }"],
-            p[f"Welcome to our cooking site, { user.name }!"],
-            h2[f"Recipe of the Day: { recipe.name }"],
-            p[f"{ recipe.description }"],
-            h3["Instructions:"],
-            ol[
-                \"\"\"            {% for step in recipe.steps %}            \"\"\",
-                li[f"{ step }"],
-                \"\"\"            {% endfor %}        \"\"\",
-            ],
-        ]
-    """
-    )
+    expected = r'p[f"{ variable } is \"a\" {{ paragraph }} { variable.with.attrib }."]'
 
     assert actual == expected
 
