@@ -234,7 +234,7 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: dict[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, id_class: str, attrs: t.Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
@@ -242,7 +242,7 @@ class BaseElement:
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: dict[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, attrs: t.Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
