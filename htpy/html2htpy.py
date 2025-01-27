@@ -278,7 +278,7 @@ class HTPYParser(HTMLParser):
             sorted_tags = list(unique_tags)
             sorted_tags.sort()
 
-            o += f'from htpy import {", ".join(sorted_tags)}\n'
+            o += f"from htpy import {', '.join(sorted_tags)}\n"
 
         elif import_mode == "h":
             o += "import htpy as h\n"

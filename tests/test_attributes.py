@@ -45,8 +45,7 @@ class Test_class_names:
             ]
         )
         assert render(result) == [
-            '<div class="&#34;&gt;list-foo &#34;&gt;list-bar '
-            '&#34;&gt;dict-foo &#34;&gt;list-bar">',
+            '<div class="&#34;&gt;list-foo &#34;&gt;list-bar &#34;&gt;dict-foo &#34;&gt;list-bar">',
             "</div>",
         ]
 
