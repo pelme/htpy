@@ -1,5 +1,9 @@
 # Changelog
 
+# 25.1.0 - 2025-01-27
+- Adjust typing for attributes: Allow Mapping instead of just dict. Thanks to
+David Svenson ([@Majsvaffla](https://github.com/Majsvaffla)) for the initial report+patch. [PR #80](https://github.com/pelme/htpy/pull/80).
+
 ## 24.12.0 - 2024-12-15
 - Fixed handling of non-generator iterators such as `itertools.chain()` as
 children. Thanks to Aleksei Pirogov ([@astynax](https://github.com/astynax)).
