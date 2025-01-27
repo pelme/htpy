@@ -103,7 +103,7 @@ def test_convert_custom_element_include_imports() -> None:
     actual = html2htpy(input, import_mode="yes")
 
     assert actual == (
-        "from htpy import custom_element\n" 'custom_element(attribute="value")["Custom content"]'
+        'from htpy import custom_element\ncustom_element(attribute="value")["Custom content"]'
     )
 
 
