@@ -406,15 +406,14 @@ Using contexts in htpy involves:
 
 - Creating a context object with `my_context = Context(name[, *, default])` to
 define the type and optional default value of a context variable.
-- Using `my_context.provider(value, lambda: children)` to set the value of a context variable for a subtree.
+- Using `my_context.provider(value, children)` to set the value of a context variable for a subtree.
 - Adding the `@my_context.consumer` decorator to a component that requires the
 context value. The decorator will add the context value as the first argument to the decorated function:
 
 The `Context` class is a generic and fully supports static type checking.
 
 The values are passed as part of the tree used to render components without
-using global state. It is safe to use contexts for lazy constructs such as
-callables and generators.
+using global state.
 
 A context value can be passed arbitrarily deep between components. It is
 possible to nest multiple context provider and different values can be used in
@@ -437,7 +436,7 @@ This example shows how context can be used to pass data between components:
 - `theme_context: Context[Theme] = Context("theme", default="light")` creates a
 context object that can later be used to define/retrieve the value. In this
 case, `"light"` acts as the default value if no other value is provided.
-- `theme_context.provider(value, lambda: subtree)` defines the value of the
+- `theme_context.provider(value, subtree)` defines the value of the
 `theme_context` for the subtree. In this case the value is set to `"dark"` which
 overrides the default value.
 - The `sidebar` component uses the `@theme_context.consumer` decorator. This
@@ -459,7 +458,7 @@ theme_context: Context[Theme] = Context("theme", default="light")
 def my_page() -> Node:
     return theme_context.provider(
         "dark",
-        lambda: div[
+        div[
             h1["Hello!"],
             sidebar("The Sidebar!"),
         ],

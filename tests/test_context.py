@@ -30,7 +30,7 @@ def test_context_default(render: RenderFixture) -> None:
 
 
 def test_context_provider(render: RenderFixture) -> None:
-    result = letter_ctx.provider("c", lambda: div[display_letter("Hello")])
+    result = letter_ctx.provider("c", div[display_letter("Hello")])
     assert render(result) == ["<div>", "Hello: c!", "</div>"]
 
 
@@ -38,11 +38,11 @@ class Test_provider_outer_api:
     """Ensure provider implements __iter__/__str__"""
 
     def test_iter(self) -> None:
-        result = letter_ctx.provider("c", lambda: div[display_letter("Hello")])
+        result = letter_ctx.provider("c", div[display_letter("Hello")])
         assert list(result) == ["<div>", "Hello: c!", "</div>"]
 
     def test_str(self) -> None:
-        result = str(letter_ctx.provider("c", lambda: div[display_letter("Hello")]))
+        result = str(letter_ctx.provider("c", div[display_letter("Hello")]))
         assert result == "<div>Hello: c!</div>"
         assert isinstance(result, markupsafe.Markup)
 
@@ -59,9 +59,9 @@ def test_nested_override(render: RenderFixture) -> None:
     result = div[
         letter_ctx.provider(
             "b",
-            lambda: letter_ctx.provider(
+            letter_ctx.provider(
                 "c",
-                lambda: display_letter("Nested"),
+                display_letter("Nested"),
             ),
         )
     ]
@@ -104,6 +104,6 @@ def test_context_passed_via_iterable(render: RenderFixture) -> None:
     def echo(value: str) -> str:
         return value
 
-    result = div[ctx.provider("foo", lambda: [echo()])]
+    result = div[ctx.provider("foo", [echo()])]
 
     assert render(result) == ["<div>", "foo", "</div>"]

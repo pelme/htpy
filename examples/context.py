@@ -10,7 +10,7 @@ theme_context: Context[Theme] = Context("theme", default="light")
 def my_page() -> Node:
     return theme_context.provider(
         "dark",
-        lambda: div[
+        div[
             h1["Hello!"],
             sidebar("The Sidebar!"),
         ],

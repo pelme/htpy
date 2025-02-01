@@ -128,7 +128,7 @@ P = t.ParamSpec("P")
 class ContextProvider(t.Generic[T]):
     context: Context[T]
     value: T
-    func: Callable[[], Node]
+    node: Node
 
     def __iter__(self) -> Iterator[str]:
         return iter_node(self)
@@ -153,8 +153,8 @@ class Context(t.Generic[T]):
         self.name = name
         self.default = default
 
-    def provider(self, value: T, children_func: Callable[[], Node]) -> ContextProvider[T]:
-        return ContextProvider(self, value, children_func)
+    def provider(self, value: T, node: Node) -> ContextProvider[T]:
+        return ContextProvider(self, value, node)
 
     def consumer(
         self,
@@ -187,7 +187,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
     if isinstance(x, BaseElement):
         yield from x._iter_context(context_dict)  # pyright: ignore [reportPrivateUsage]
     elif isinstance(x, ContextProvider):
-        yield from _iter_node_context(x.func(), {**context_dict, x.context: x.value})  # pyright: ignore [reportUnknownMemberType]
+        yield from _iter_node_context(x.node, {**context_dict, x.context: x.value})  # pyright: ignore [reportUnknownMemberType]
     elif isinstance(x, ContextConsumer):
         context_value = context_dict.get(x.context, x.context.default)
         if context_value is _NO_DEFAULT:
