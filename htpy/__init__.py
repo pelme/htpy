@@ -3,16 +3,20 @@ from __future__ import annotations
 import dataclasses
 import functools
 import keyword
+import sys
+
+if sys.version_info < (3, 10):
+    from typing_extensions import Concatenate, ParamSpec, TypeAlias
+else:
+    from typing import Concatenate, ParamSpec, TypeAlias
+
 import typing as t
 from collections.abc import Callable, Iterable, Iterator, Mapping
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
-if t.TYPE_CHECKING:
-    from types import UnionType
-
-__version__ = "25.2.0"
+__version__ = "25.1.0"
 __all__: list[str] = []
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
@@ -60,7 +64,7 @@ def _id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
         raise ValueError("id/class strings must start with # or .")
 
     parts = x.split(".")
-    ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
+    ids = [part[1:] for part in parts if part.startswith("#")]
     classes = [part for part in parts if not part.startswith("#") if part]
 
     assert len(ids) in (0, 1)
@@ -81,7 +85,7 @@ def _python_to_html_name(name: str) -> str:
         return "_"
 
     html_name = name
-    name_without_underscore_suffix = name.removesuffix("_")
+    name_without_underscore_suffix = name[:-1] if name.endswith("_") else name
     if keyword.iskeyword(name_without_underscore_suffix):
         html_name = name_without_underscore_suffix
     html_name = html_name.replace("_", "-")
@@ -105,7 +109,7 @@ def _generate_attrs(raw_attrs: Mapping[str, Attribute]) -> Iterable[tuple[str, A
             yield _force_escape(key), True
 
         else:
-            if not isinstance(value, str | int | _HasHtml):
+            if not isinstance(value, (str, int, _HasHtml)):
                 raise TypeError(f"Attribute value must be a string or an integer , got {value!r}")
 
             yield _force_escape(key), _force_escape(value)
@@ -121,7 +125,7 @@ def _attrs_string(attrs: Mapping[str, Attribute]) -> str:
 
 
 T = t.TypeVar("T")
-P = t.ParamSpec("P")
+P = ParamSpec("P")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -158,7 +162,7 @@ class Context(t.Generic[T]):
 
     def consumer(
         self,
-        func: Callable[t.Concatenate[T, P], Node],
+        func: Callable[Concatenate[T, P], Node],
     ) -> Callable[P, ContextConsumer[T]]:
         @functools.wraps(func)
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> ContextConsumer[T]:
@@ -196,7 +200,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
                 f"requested by {x.debug_name}()."
             )
         yield from _iter_node_context(x.func(context_value), context_dict)
-    elif isinstance(x, str | _HasHtml):
+    elif isinstance(x, (str, _HasHtml)):
         yield str(_escape(x))
     elif isinstance(x, int):
         yield str(x)
@@ -302,7 +306,7 @@ def _validate_children(children: t.Any) -> None:
     # list and tuple are iterables and part of _KnownValidChildren. Since we
     # know they can be consumed multiple times, we validate them recursively now
     # rather than at render time to provide better error messages.
-    if isinstance(children, list | tuple):
+    if isinstance(children, (list, tuple)):
         for child in children:  # pyright: ignore[reportUnknownVariableType]
             _validate_children(child)
         return
@@ -314,7 +318,7 @@ def _validate_children(children: t.Any) -> None:
         raise TypeError(f"{children!r} is not a valid child element")
 
     # Element, str, int and all other regular/valid types.
-    if isinstance(children, _KnownValidChildren):
+    if isinstance(children, _KnownValidChildren):  # type: ignore
         return
 
     # Arbitrary objects that are not valid children.
@@ -358,22 +362,24 @@ class _HasHtml(t.Protocol):
     def __html__(self) -> str: ...
 
 
-_ClassNamesDict: t.TypeAlias = dict[str, bool]
-_ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Node: t.TypeAlias = (
-    None
-    | bool
-    | str
-    | int
-    | BaseElement
-    | _HasHtml
-    | Iterable["Node"]
-    | Callable[[], "Node"]
-    | ContextProvider[t.Any]
-    | ContextConsumer[t.Any]
-)
+_ClassNamesDict: TypeAlias = t.Dict[str, bool]
+_ClassNames: TypeAlias = t.Union[
+    t.Iterable[t.Union[str, None, bool, _ClassNamesDict]], _ClassNamesDict
+]
+Node: TypeAlias = t.Union[
+    None,
+    bool,
+    str,
+    int,
+    BaseElement,
+    _HasHtml,
+    t.Iterable["Node"],
+    t.Callable[[], "Node"],
+    ContextProvider[t.Any],
+    ContextConsumer[t.Any],
+]
 
-Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
+Attribute: TypeAlias = t.Union[None, bool, str, int, _HasHtml, _ClassNames]
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
 html = HTMLElement("html")
@@ -499,15 +505,15 @@ ul = Element("ul")
 var = Element("var")
 
 
-_KnownInvalidChildren: UnionType = bytes | bytearray | memoryview
-_KnownValidChildren: UnionType = (
-    None
-    | BaseElement
-    | ContextProvider  # pyright: ignore [reportMissingTypeArgument]
-    | ContextConsumer  # pyright: ignore [reportMissingTypeArgument]
-    | str
-    | int
-    | _HasHtml
-    | Callable
-    | Iterable
+_KnownInvalidChildren = (bytes, bytearray, memoryview)
+_KnownValidChildren = (
+    type(None),
+    BaseElement,
+    ContextProvider,  # pyright: ignore [reportMissingTypeArgument]
+    ContextConsumer,  # pyright: ignore [reportMissingTypeArgument]
+    str,
+    int,
+    _HasHtml,
+    Callable,
+    t.Iterable,
 )

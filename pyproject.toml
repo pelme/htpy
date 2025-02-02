@@ -1,7 +1,7 @@
 [project]
 name = "htpy"
 description = "htpy - HTML in Python"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 dynamic = ["version"]
 dependencies = [
     "markupsafe>=2.0.0"

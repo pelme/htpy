@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 import dataclasses
+import sys
 import typing as t
+
+if sys.version_info < (3, 10):
+    from typing_extensions import TypeAlias
+else:
+    from typing import TypeAlias
 
 import pytest
 
@@ -16,9 +22,9 @@ class Trace:
     description: str
 
 
-RenderResult: t.TypeAlias = list[str | Trace]
-RenderFixture: t.TypeAlias = t.Callable[[Node], RenderResult]
-TraceFixture: t.TypeAlias = t.Callable[[str], None]
+RenderResult: TypeAlias = t.List[t.Union[str, Trace]]
+RenderFixture: TypeAlias = t.Callable[[Node], RenderResult]
+TraceFixture: TypeAlias = t.Callable[[str], None]
 
 
 @pytest.fixture(scope="session")
