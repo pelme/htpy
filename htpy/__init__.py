@@ -16,7 +16,7 @@ from collections.abc import Callable, Iterable, Iterator, Mapping
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
-__version__ = "25.1.0"
+__version__ = "25.2.0"
 __all__: list[str] = []
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
