@@ -314,9 +314,39 @@ def html2htpy(
 def _convert_data_to_string(data: str) -> str:
     _data = str(data)
 
-    is_multiline = "\n" in _data
+    # Normalize leading whitespace
+    leading_whitespace_pattern = re.compile(r"^(\s+)(\S)")
 
-    _data = _data.replace("\n", "")
+    def leading_whitespace_replacer(match: re.Match[str]) -> str:
+        whitespace = match.group(1)
+        first_char = match.group(2)
+
+        if whitespace.endswith(" "):
+            # keep single leading space (' ') before non-whitespace
+            # if it was there from before
+            return " " + first_char
+        else:
+            return first_char
+
+    _data = leading_whitespace_pattern.sub(leading_whitespace_replacer, _data)
+
+    # Normalize trailing whitespace
+    leading_whitespace_pattern = re.compile(r"(\S)(\s+)$")
+
+    def trailing_whitespace_replacer(match: re.Match[str]) -> str:
+        last_char = match.group(1)
+        whitespace = match.group(2)
+
+        if whitespace.startswith(" "):
+            # keep single trailing space (' ') after non-whitespace
+            # if it was there from before
+            return last_char + " "
+        else:
+            return last_char
+
+    _data = leading_whitespace_pattern.sub(trailing_whitespace_replacer, _data)
+
+    is_multiline = "\n" in _data
 
     # escape unescaped dblquote: " -> \"
     _data = re.compile(r'(?<![\\])"').sub('\\"', _data)

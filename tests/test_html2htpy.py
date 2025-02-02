@@ -324,3 +324,74 @@ def test_del_tag_is_replaced_with_del_() -> None:
     )
 
     assert actual == 'from htpy import del_, div\ndiv[del_["deleted"]]'
+
+
+def test_convert_stripping_simple_whitespace() -> None:
+    actual = html2htpy(
+        "<p>      \t\t\nHi\n\n\t  </p>",
+        shorthand_id_class=True,
+        import_mode="no",
+    )
+
+    assert actual == 'p["Hi"]'
+
+
+def test_convert_pre_element_retains_all_whitespace() -> None:
+    actual = html2htpy(
+        textwrap.dedent(
+            """\
+            <pre>
+            hello,   fellow   programmer.
+
+            This   element   retains   newlines   and   whitespace.
+            </pre>
+            """
+        ),
+        import_mode="no",
+    )
+
+    assert actual == textwrap.dedent(
+        '''\
+        pre["""hello,   fellow   programmer.
+
+        This   element   retains   newlines   and   whitespace."""]'''
+    )
+
+
+def test_convert_jinja_docs_example() -> None:
+    actual = html2htpy(
+        textwrap.dedent(
+            """\
+            <body>
+              <h1>{{ heading }}</h1>
+              <p>Welcome to our cooking site, {{ user.name }}!</p>
+
+              <h2>Recipe of the Day: {{ recipe.name }}</h2>
+              <p>{{ recipe.description }}</p>
+
+              <h3>Instructions:</h3>
+              <ol>
+                {% for step in recipe.steps %}
+                  <li>{{ step }}</li>
+                {% endfor %}
+              </ol>
+            </body>
+            """
+        ),
+        formatter=BlackFormatter(),
+    )
+
+    assert actual == textwrap.dedent(
+        """\
+        from htpy import body, h1, h2, h3, li, ol, p
+
+        body[
+            h1[f"{ heading }"],
+            p[f"Welcome to our cooking site, { user.name }!"],
+            h2[f"Recipe of the Day: { recipe.name }"],
+            p[f"{ recipe.description }"],
+            h3["Instructions:"],
+            ol[" {% for step in recipe.steps %}", li[f"{ step }"], " {% endfor %}"],
+        ]
+        """
+    )

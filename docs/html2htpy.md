@@ -108,7 +108,7 @@ powershell Get-Clipboard | html2htpy > output.py
 `html2htpy` can format the output Python code using `black` or `ruff`.
 Select the preferred formatter with the `-f`/`--format` flag. Options are `auto`, `ruff`, `black` and `none`.
 
-By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `ruff` if it's available.
+By default, the selection will be `auto`, formatting if it finds a formatter on path, prefering `black` if it's available.
 If no formatters are available on path, the output will not be formatted.
 
 ## Import Options
@@ -181,7 +181,7 @@ See the example below:
   <h3>Instructions:</h3>
   <ol>
     {% for step in recipe.steps %}
-    <li>{{ step }}</li>
+      <li>{{ step }}</li>
     {% endfor %}
   </ol>
 </body>
@@ -196,10 +196,6 @@ body[
     h2[f"Recipe of the Day: { recipe.name }"],
     p[f"{ recipe.description }"],
     h3["Instructions:"],
-    ol[
-        """        {% for step in recipe.steps %}        """,
-        li[f"{ step }"],
-        """        {% endfor %}    """,
-    ],
+    ol[" {% for step in recipe.steps %}", li[f"{ step }"], " {% endfor %}"],
 ]
 ```
