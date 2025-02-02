@@ -27,7 +27,7 @@ if t.TYPE_CHECKING:
 T = t.TypeVar("T")
 
 
-class SingleShotIterator(Iterator[T]):
+class SingleShotIterator(t.Iterator[T]):
     def __init__(self, value: T, trace: TraceFixture = lambda x: None) -> None:
         self.value = value
         self.trace = trace
