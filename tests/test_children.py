@@ -6,7 +6,6 @@ import decimal
 import pathlib
 import re
 import typing as t
-from collections.abc import Iterator
 
 import pytest
 from markupsafe import Markup
@@ -17,7 +16,7 @@ from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my
 from .conftest import Trace
 
 if t.TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterator
 
     from htpy import Node
 
