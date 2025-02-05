@@ -6,6 +6,7 @@ Elements are imported directly from the `htpy` module as their name. HTML attrib
 >>> from htpy import div
 >>> print(div(id="hi")["Hello!"])
 <div id="hi">Hello!</div>
+
 ```
 
 ## Elements
@@ -18,6 +19,7 @@ Elements can be arbitrarily nested:
 >>> from htpy import article, section, p
 >>> print(section[article[p["Lorem ipsum"]]])
 <section><article><p>Lorem ipsum</p></article></section>
+
 ```
 
 ### Text/Strings
@@ -28,6 +30,7 @@ It is possible to pass a string directly:
 >>> from htpy import h1
 >>> print(h1["Welcome to my site!"])
 <h1>Welcome to my site!</h1>
+
 ```
 
 Strings are automatically escaped to avoid [XSS
@@ -39,6 +42,7 @@ and safe to directly insert variable data via f-strings:
 >>> user_supplied_name = "bobby </h1>"
 >>> print(h1[f"hello {user_supplied_name}"])
 <h1>hello bobby &lt;/h1&gt;</h1>
+
 ```
 
 ### Conditional Rendering
@@ -59,12 +63,13 @@ You can use this to conditionally render content with inline `and` and
 <div></div>
 
 >>> error = 'Enter a valid email address.'
->>> print(div[has_error and b[error_message]])
+>>> print(div[error and b[error]])
 <div><b>Enter a valid email address.</b></div>
 
 # Inline if/else can also be used:
 >>> print(div[b[error] if error else None])
 <div><b>Enter a valid email address.</b></div>
+
 ```
 
 ```pycon title="Conditional rendering based on a bool variable"
@@ -83,7 +88,8 @@ You can use this to conditionally render content with inline `and` and
 
 >>> is_allowed = False
 >>> print(div[is_allowed or "Access denied!"])
-<div>Access denied</div>
+<div>Access denied!</div>
+
 ```
 
 ### Loops / Iterating Over Children
@@ -94,6 +100,7 @@ You can pass a list, tuple or generator to generate multiple children:
 >>> from htpy import ul, li
 >>> print(ul[(li[letter] for letter in "abc")])
 <ul><li>a</li><li>b</li><li>c</li></ul>
+
 ```
 
 !!! note
@@ -109,6 +116,7 @@ A `list` can be used similar to a [JSX fragment](https://react.dev/reference/rea
 >>> my_images = [img(src="a.jpg"), img(src="b.jpg")]
 >>> print(div[my_images])
 <div><img src="a.jpg"><img src="b.jpg"></div>
+
 ```
 
 ### Custom Elements / Web Components
@@ -122,6 +130,7 @@ used in Python identifiers, use underscore (`_`) instead:
 >>> from htpy import my_custom_element
 >>> print(my_custom_element['hi!'])
 <my-custom-element>hi!</my-custom-element>
+
 ```
 
 ### Injecting Markup
@@ -135,6 +144,7 @@ library. markupsafe is a dependency of htpy and is automatically installed:
 >>> from markupsafe import Markup
 >>> print(div[Markup("<foo></foo>")])
 <div><foo></foo></div>
+
 ```
 
 If you are generating [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, 
@@ -146,6 +156,7 @@ use `Markup` to mark it as safe:
 >>> from htpy import div
 >>> print(div[Markup(markdown('# Hi'))])
 <div><h1>Hi</h1></div>
+
 ```
 
 ### HTML Doctype
@@ -156,6 +167,7 @@ The [HTML doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) is
 >>> from htpy import html
 >>> print(html)
 <!doctype html><html></html>
+
 ```
 
 ### HTML Comments
@@ -169,6 +181,7 @@ If you want to emit HTML comments that will be visible in the browser, use the `
 >>> from htpy import div, comment
 >>> print(div[comment("This is a HTML comment, visible in the browser!")])
 <div><!-- This is a HTML comment, visible in the browser! --></div>
+
 ```
 
 It is safe to pass arbitrary text to the comment function. Double dashes (`--`)
@@ -190,6 +203,7 @@ Some elements do not have attributes, they can be specified by just the element 
 >>> from htpy import hr
 >>> print(hr)
 <hr>
+
 ```
 
 ### Keyword Arguments
@@ -200,6 +214,7 @@ Attributes can be specified via keyword arguments:
 >>> from htpy import img
 >>> print(img(src="picture.jpg"))
 <img src="picture.jpg">
+
 ```
 
 In Python, `class` and `for` cannot be used as keyword arguments. Instead, they can be specified as `class_` or `for_` when using keyword arguments:
@@ -208,6 +223,7 @@ In Python, `class` and `for` cannot be used as keyword arguments. Instead, they 
 >>> from htpy import label
 >>> print(label(for_="myfield"))
 <label for="myfield"></label>
+
 ```
 
 Attributes that contain dashes `-` can be specified using underscores:
@@ -216,6 +232,7 @@ Attributes that contain dashes `-` can be specified using underscores:
 >>> from htpy import form
 >>> print(form(hx_post="/foo"))
 <form hx-post="/foo"></form>
+
 ```
 
 ### Id/Class Shorthand
@@ -227,18 +244,21 @@ that looks like a CSS selector can be used to quickly define id and classes:
 >>> from htpy import div
 >>> print(div("#myid"))
 <div id="myid"></div>
+
 ```
 
 ```pycon title="Define multiple classes"
 >>> from htpy import div
 >>> print(div(".foo.bar"))
 <div class="foo bar"></div>
+
 ```
 
 ```pycon title="Combining both id and classes"
 >>> from htpy import div
 >>> print(div("#myid.foo.bar"))
 <div id="myid" class="foo bar"></div>
+
 ```
 
 ### Attributes as Dict
@@ -252,12 +272,14 @@ dynamically.
 >>> from htpy import button
 >>> print(button({"@click.shift": "addToSelection()"}))
 <button @click.shift="addToSelection()"></button>
+
 ```
 
 ```pycon title="Using an attribute with a reserved keyword"
 >>> from htpy import label
 >>> print(label({"for": "myfield"}))
 <label for="myfield"></label>
+
 ```
 
 ### Boolean/Empty Attributes
@@ -271,12 +293,14 @@ HTML.
 >>> from htpy import button
 >>> print(button(disabled=True))
 <button disabled></button>
+
 ```
 
 ```pycon title="False bool attribute"
 >>> from htpy import button
 >>> print(button(disabled=False))
 <button></button>
+
 ```
 
 ### Conditionally Mixing CSS Classes
@@ -293,6 +317,7 @@ accepts a list of class names or a dict. Falsey values will be ignored.
 >>> print(button(class_=["btn", {"btn-primary": is_primary}]))
 <button class="btn"></button>
 >>>
+
 ```
 
 ### Combining Modes
@@ -303,6 +328,7 @@ Attributes via id/class shorthand, keyword arguments and dictionary can be combi
 >>> from htpy import label
 >>> print(label("#myid.foo.bar", {'for': "somefield"}, name="myname",))
 <label id="myid" class="foo bar" for="somefield" name="myname"></label>
+
 ```
 
 ### Escaping of Attributes
@@ -313,8 +339,9 @@ all unsafe characters are escaped but the browser will interpret it correctly:
 
 ```pycon
 >>> from htpy import button
->>> print(button(id="example", onclick="let name = 'andreas'; alert('hi' + name);")["Say hi"])
+>>> print(button(onclick="let name = 'andreas'; alert('hi' + name);")["Say hi"])
 <button onclick="let name = &#39;andreas&#39;; alert(&#39;hi&#39; + name);">Say hi</button>
+
 ```
 
 In the browser, the parsed attribute as returned by
@@ -332,6 +359,7 @@ snippets as attributes:
 >>> some_markup = Markup("""<li class="bar"></li>""")
 >>> print(ul(data_li_template=some_markup))
 <ul data-li-template="&lt;li class=&#34;bar&#34;&gt;&lt;/li&gt;"></ul>
+
 ```
 
 ## Render elements without a parent (orphans)
@@ -345,6 +373,7 @@ You may use `render_node` to achieve this:
 >>> from htpy import render_node, tr
 >>> print(render_node([tr["a"], tr["b"]]))
 <tr>a</tr><tr>b</tr>
+
 ```
 
 `render_node()` accepts all kinds of [`Node`](static-typing.md#node) objects.
@@ -376,6 +405,7 @@ got a chunk: '<li>'
 got a chunk: 'b'
 got a chunk: '</li>'
 got a chunk: '</ul>'
+
 ```
 
 Just like [render_node()](#render-elements-without-a-parent-orphans), there is
@@ -393,6 +423,7 @@ got a chunk: '</li>'
 got a chunk: '<li>'
 got a chunk: 'b'
 got a chunk: '</li>'
+
 ```
 
 ## Passing Data with Context

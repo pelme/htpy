@@ -33,6 +33,7 @@ optional-dependencies.dev = [
     "jinja2",
     "starlette",
     "httpx",
+    "markdown",
 ]
 optional-dependencies.docs = [
     "mkdocs-material==9.5.12",

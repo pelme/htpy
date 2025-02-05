@@ -35,6 +35,7 @@ jobs:
           cache: pip
       - run: pip install .[dev]
       - run: pytest
+      - run: python -m doctest -v docs/*.md
 
   mypy:
     runs-on: ubuntu-latest
