@@ -22,3 +22,7 @@ def test_escape_three_dashes(render: RenderFixture) -> None:
 
 def test_escape_four_dashes(render: RenderFixture) -> None:
     assert render(div[comment("foo----bar")]) == ["<div>", "<!-- foobar -->", "</div>"]
+
+
+def test_str() -> None:
+    assert str(comment("foo")) == "<!-- foo -->"
