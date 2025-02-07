@@ -203,3 +203,7 @@ body[
     ],
 ]
 ```
+
+## VSCode Extension
+
+If you are using VSCode, you can install the [html2htpy](https://marketplace.visualstudio.com/items?itemName=dunderrrrrr.html2htpy) extension to quickly convert HTML to htpy code.
