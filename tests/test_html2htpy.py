@@ -329,7 +329,6 @@ def test_del_tag_is_replaced_with_del_() -> None:
 def test_convert_stripping_simple_whitespace() -> None:
     actual = html2htpy(
         "<p>      \t\t\nHi\n\n\t  </p>",
-        shorthand_id_class=True,
         import_mode="no",
     )
 
