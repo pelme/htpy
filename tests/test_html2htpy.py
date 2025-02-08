@@ -324,3 +324,34 @@ def test_del_tag_is_replaced_with_del_() -> None:
     )
 
     assert actual == 'from htpy import del_, div\ndiv[del_["deleted"]]'
+
+
+def test_convert_stripping_simple_whitespace() -> None:
+    actual = html2htpy(
+        "<p>      \t\t\nHi\n\n\t  </p>",
+        import_mode="no",
+    )
+
+    assert actual == 'p["Hi"]'
+
+
+def test_convert_pre_element_retains_all_whitespace() -> None:
+    actual = html2htpy(
+        textwrap.dedent(
+            """\
+            <pre>
+            hello,   fellow   programmer.
+
+            This   element   retains   newlines   and   whitespace.
+            </pre>
+            """
+        ),
+        import_mode="no",
+    )
+
+    assert actual == textwrap.dedent(
+        '''\
+        pre["""hello,   fellow   programmer.
+
+        This   element   retains   newlines   and   whitespace."""]'''
+    )
