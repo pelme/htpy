@@ -3,7 +3,7 @@
 Internally, htpy is built with generators. Most of the time, you would render
 the full page with `str()`, but htpy can also incrementally generate pages which
 can then be streamed to the browser. If your page uses a database or other
-services to retrieve data, you can sending the first part of the page to the
+services to retrieve data, you can send the first part of the page to the
 client while the page is being generated.
 
 !!! note
