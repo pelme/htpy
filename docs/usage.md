@@ -92,6 +92,22 @@ You can use this to conditionally render content with inline `and` and
 
 ```
 
+### Fragments
+
+Fragments allow you to wrap a group of nodes (not necessarily elements) so that
+they can be rendered without a wrapping element.
+
+```pycon
+>>> from htpy import p, i, Fragment
+>>> content = Fragment("Hello ", None, i["world!"])
+>>> print(content)
+Hello <i>world!</i>
+
+>>> print(p[content])
+<p>Hello <i>world!</i></p>
+
+```
+
 ### Loops / Iterating Over Children
 
 You can pass a list, tuple or generator to generate multiple children:
@@ -361,31 +377,6 @@ snippets as attributes:
 <ul data-li-template="&lt;li class=&#34;bar&#34;&gt;&lt;/li&gt;"></ul>
 
 ```
-
-## Render elements without a parent (orphans)
-
-In some cases such as returning partial content it is useful to render elements
-without a parent element. This is useful in HTMX partial responses.
-
-You may use `render_node` to achieve this:
-
-```pycon title="Render elements without a parent"
->>> from htpy import render_node, tr
->>> print(render_node([tr["a"], tr["b"]]))
-<tr>a</tr><tr>b</tr>
-
-```
-
-`render_node()` accepts all kinds of [`Node`](static-typing.md#node) objects.
-You may use it to render anything that would normally be a children of another
-element.
-
-!!! note "Best practice: Only use render_node() to render non-Elements"
-
-    You can render regular elements by using `str()`, e.g. `str(p["hi"])`. While
-    `render_node()` would give the same result, it is more straightforward and
-    better practice to just use `str()` when rendering a regular element. Only
-    use `render_node()` when you do not have a parent element.
 
 ## Iterating of the Output
 
