@@ -89,7 +89,7 @@ def base_layout(*,
 
 
 def index_page() -> Element:
-    return base_page(
+    return base_layout(
         page_title="Welcome!",
         body_class="green",
         content=[
@@ -100,7 +100,7 @@ def index_page() -> Element:
 
 
 def about_page() -> Element:
-    return base_page(
+    return base_layout(
         page_title="About us",
         content=[
             h1["About us"],
