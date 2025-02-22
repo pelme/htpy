@@ -3,8 +3,7 @@
 # 25.2.0 - 2025-02-01
 - Context providers longer require wrapping nodes in a function/lambda. This
 simplifies context usage while still being backward compatible. Thanks to Thomas
-Scholtes ([@geigerzaehler](https://github.com/geigerzaehler)) for the patch. [PR
-#83](https://github.com/pelme/htpy/pull/83).
+Scholtes ([@geigerzaehler](https://github.com/geigerzaehler)) for the patch. [PR #83](https://github.com/pelme/htpy/pull/83).
 
 # 25.1.0 - 2025-01-27
 - Adjust typing for attributes: Allow Mapping instead of just dict. Thanks to
