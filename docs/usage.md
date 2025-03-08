@@ -378,14 +378,14 @@ snippets as attributes:
 
 ```
 
-## Iterating of the Output
+## Streaming chunks
 
-Iterating over a htpy element will yield the resulting contents in chunks as
-they are rendered:
+htpy objects provide the `iter_chunks()` method to render an element with its
+children one piece at a time.
 
 ```pycon
 >>> from htpy import ul, li
->>> for chunk in ul[li["a"], li["b"]]:
+>>> for chunk in ul[li["a"], li["b"]].iter_chunks():
 ...     print(f"got a chunk: {chunk!r}")
 ...
 got a chunk: '<ul>'
@@ -399,13 +399,11 @@ got a chunk: '</ul>'
 
 ```
 
-Just like [render_node()](#render-elements-without-a-parent-orphans), there is
-`iter_node()` that can be used when you need to iterate over a list of elements
-without a parent:
+If you need to get the chunks of an element without parents, wrap it in a `Fragment`:
 
 ```pycon
->>> from htpy import li, Fragment
->>> for chunk in fragment[li["a"], li["b"]]:
+>>> from htpy import li, fragment
+>>> for chunk in fragment[li["a"], li["b"]].iter_chunks():
 ...     print(f"got a chunk: {chunk!r}")
 ...
 got a chunk: '<li>'
