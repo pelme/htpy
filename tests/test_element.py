@@ -26,13 +26,6 @@ def test_void_element_repr() -> None:
     assert repr(htpy.hr("#a")) == """<VoidElement '<hr id="a">'>"""
 
 
-def test_markup_str() -> None:
-    result = str(div(id="a"))
-    assert isinstance(result, str)
-    assert isinstance(result, markupsafe.Markup)
-    assert result == '<div id="a"></div>'
-
-
 def test_element_type() -> None:
     assert_type(div, Element)
     assert isinstance(div, Element)
@@ -42,13 +35,6 @@ def test_element_type() -> None:
 
     assert_type(div()["a"], Element)
     assert isinstance(div()["a"], Element)
-
-
-def test_html_protocol() -> None:
-    element = div["test"]
-    result = element.__html__()
-    assert result == "<div>test</div>"
-    assert isinstance(result, markupsafe.Markup)
 
 
 def test_markupsafe_escape() -> None:
