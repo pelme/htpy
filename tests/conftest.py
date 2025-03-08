@@ -5,7 +5,7 @@ import typing as t
 
 import pytest
 
-from htpy import Node, iter_node
+import htpy as h
 
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -17,7 +17,7 @@ class Trace:
 
 
 RenderResult: t.TypeAlias = list[str | Trace]
-RenderFixture: t.TypeAlias = t.Callable[[Node], RenderResult]
+RenderFixture: t.TypeAlias = t.Callable[[h.Renderable], RenderResult]
 TraceFixture: t.TypeAlias = t.Callable[[str], None]
 
 
@@ -52,14 +52,14 @@ def trace(render_result: RenderResult) -> Callable[[str], None]:
 def render(render_result: RenderResult) -> Generator[RenderFixture, None, None]:
     called = False
 
-    def func(node: Node) -> RenderResult:
+    def func(renderable: h.Renderable) -> RenderResult:
         nonlocal called
 
         if called:
             raise AssertionError("render() must only be called once per test")
 
         called = True
-        for chunk in iter_node(node):
+        for chunk in renderable.stream_chunks():
             render_result.append(chunk)
 
         return render_result
