@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import typing as t
 
-import markupsafe
 import pytest
 
 from htpy import Context, Node, div, fragment
@@ -32,19 +31,6 @@ def test_context_default(render: RenderFixture) -> None:
 def test_context_provider(render: RenderFixture) -> None:
     result = letter_ctx.provider("c", div[display_letter("Hello")])
     assert render(result) == ["<div>", "Hello: c!", "</div>"]
-
-
-class Test_provider_outer_api:
-    """Ensure provider implements __iter__/__str__"""
-
-    def test_iter(self) -> None:
-        result = letter_ctx.provider("c", div[display_letter("Hello")])
-        assert list(result) == ["<div>", "Hello: c!", "</div>"]
-
-    def test_str(self) -> None:
-        result = str(letter_ctx.provider("c", div[display_letter("Hello")]))
-        assert result == "<div>Hello: c!</div>"
-        assert isinstance(result, markupsafe.Markup)
 
 
 def test_no_default(render: RenderFixture) -> None:

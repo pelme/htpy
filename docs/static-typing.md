@@ -47,6 +47,27 @@ def bootstrap_badge(
 
 ```
 
+## Renderable
+
+htpy elements, fragments and context objects provides are "renderable". The `Renderable` type provides a consistent API to render a `htpy` object as HTML.
+
+The `Renderable` protocol defines these methods:
+
+ - `.__str__()` - render as a HTML string by calling `str()`
+ - `.__html__()`  - render as a HTML string that is safe to use as markup. This makes it possible to directly embed a `Renderable` object in [Django/Jinja templates](django.md#using-htpy-as-part-of-an-existing-django-template).
+ - `.iter_chunks()` - stream the contents as string "chunks". See [Streaming](streaming.md) for more information.
+
+All `Renderable`'s are also `Node`'s and can always be used as a child element. You can use this to write reusable components that can be used as a child node but also be rendered by themselves or embedded into a Django or Jinja template:
+
+```pycon
+>>> from htpy import div, h1, Renderable
+>>> def my_component(name: str) -> Renderable:
+...     return div[h1[f"Hello {name}!"]]
+>>> print(my_component("Dave"))
+<div><h1>Hello Dave!</h1></div>
+
+```
+
 ## Node
 
 `Node` is a type alias for all possible objects that can be used as a child
