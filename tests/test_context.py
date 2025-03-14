@@ -5,7 +5,7 @@ import typing as t
 import markupsafe
 import pytest
 
-from htpy import Context, Fragment, Node, div
+from htpy import Context, Node, div, fragment
 
 if t.TYPE_CHECKING:
     from .conftest import RenderFixture
@@ -116,6 +116,6 @@ def test_context_passed_via_fragment(render: RenderFixture) -> None:
     def echo(value: str) -> str:
         return value
 
-    result = div[ctx.provider("foo", Fragment(echo()))]
+    result = div[ctx.provider("foo", fragment[echo()])]
 
     assert render(result) == ["<div>", "foo", "</div>"]

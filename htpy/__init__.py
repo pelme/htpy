@@ -197,8 +197,7 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
             )
         yield from _iter_node_context(x.func(context_value), context_dict)
     elif isinstance(x, Fragment):
-        for node in x._nodes:  # pyright: ignore [reportPrivateUsage]
-            yield from _iter_node_context(node, context_dict)
+        yield from _iter_node_context(x._node, context_dict)  # pyright: ignore
     elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
     elif isinstance(x, int):
@@ -348,17 +347,15 @@ class VoidElement(BaseElement):
 
 
 class Fragment:
-    """A collection of nodes without a wrapping element.
+    """A collection of nodes without a wrapping element."""
 
-    >>> content = Fragment("Hello ", None, i["world!"])
-    >>> print(content)
-    Hello <i>world!</i>
-    """
+    __slots__ = ("_node",)
 
-    __slots__ = ("_nodes",)
-
-    def __init__(self, *nodes: Node) -> None:
-        self._nodes = nodes
+    def __init__(self) -> None:
+        # Make it awkward to instantiate a Fragment directly:
+        # Encourage using fragment[x]. That is why it is not possible to set the
+        # node directly via the constructor.
+        self._node: Node = None
 
     def __iter__(self) -> Iterator[str]:
         return iter_node(self)
@@ -369,13 +366,23 @@ class Fragment:
     __html__ = __str__
 
 
+class _FragmentGetter:
+    def __getitem__(self, node: Node) -> Fragment:
+        result = Fragment()
+        result._node = node  # pyright: ignore[reportPrivateUsage]
+        return result
+
+
+fragment = _FragmentGetter()
+
+
 def render_node(node: Node) -> _Markup:
     return _Markup("".join(iter_node(node)))
 
 
 def comment(text: str) -> Fragment:
     escaped_text = text.replace("--", "")
-    return Fragment(_Markup(f"<!-- {escaped_text} -->"))
+    return fragment[_Markup(f"<!-- {escaped_text} -->")]
 
 
 @t.runtime_checkable
