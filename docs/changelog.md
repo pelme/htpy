@@ -1,6 +1,6 @@
 # Changelog
 
-## Next (minor)
+## 25.3.0 - 2025-03-16
 - Add `fragment` for explicitly grouping a collection of nodes. [Read the Usage docs for more details](usage.md#fragments) Fixes
 [issue #82](https://github.com/pelme/htpy/issues/82).
 See [PR #86](https://github.com/pelme/htpy/pull/86) and [PR #95](https://github.com/pelme/htpy/pull/95). Thanks to [Thomas Scholtes (@geigerzaehler)](https://github.com/geigerzaehler).
