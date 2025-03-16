@@ -98,8 +98,8 @@ Fragments allow you to wrap a group of nodes (not necessarily elements) so that
 they can be rendered without a wrapping element.
 
 ```pycon
->>> from htpy import p, i, Fragment
->>> content = Fragment("Hello ", None, i["world!"])
+>>> from htpy import p, i, fragment
+>>> content = fragment["Hello ", None, i["world!"]]
 >>> print(content)
 Hello <i>world!</i>
 
@@ -404,8 +404,8 @@ Just like [render_node()](#render-elements-without-a-parent-orphans), there is
 without a parent:
 
 ```pycon
->>> from htpy import li, iter_node
->>> for chunk in iter_node([li["a"], li["b"]]):
+>>> from htpy import li, Fragment
+>>> for chunk in fragment[li["a"], li["b"]]:
 ...     print(f"got a chunk: {chunk!r}")
 ...
 got a chunk: '<li>'
