@@ -2,7 +2,7 @@
     <img src="https://htpy.dev/assets/htpy.webp" width="300">
 </p>
 
-# htpy - HTML in Python
+# htpy -- HTML in Python
 
 htpy is a library that makes writing HTML in plain Python fun and efficient,
 without a template language.
