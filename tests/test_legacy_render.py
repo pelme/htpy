@@ -1,6 +1,6 @@
-from htpy import render_node, p, iter_node
-
 from markupsafe import Markup
+
+from htpy import iter_node, p, render_node
 
 
 def test_render_node() -> None:
