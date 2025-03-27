@@ -148,10 +148,11 @@ class _NO_DEFAULT:
     pass
 
 
+@dataclasses.dataclass(frozen=True)
 class Context(t.Generic[T]):
-    def __init__(self, name: str, *, default: T | type[_NO_DEFAULT] = _NO_DEFAULT) -> None:
-        self.name = name
-        self.default = default
+    name: str
+    _: dataclasses.KW_ONLY
+    default: T | type[_NO_DEFAULT] = _NO_DEFAULT
 
     def provider(self, value: T, node: Node) -> ContextProvider[T]:
         return ContextProvider(self, value, node)
