@@ -13,7 +13,7 @@ from markupsafe import escape as _escape
 if t.TYPE_CHECKING:
     from types import UnionType
 
-__version__ = "25.3.0"
+__version__ = "25.4.0"
 __all__: list[str] = []
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")
