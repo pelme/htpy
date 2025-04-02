@@ -108,6 +108,23 @@ Hello <i>world!</i>
 
 ```
 
+### Renderable
+
+The `Renderable` protocol provides a consistent API to render an `htpy` object as HTML or to iterate over it. `Element`, `Fragment`, `ContextProvider`, and `ContextConsumer` are all `Renderable`.
+
+The `__str__()` (and `__html__()`) methods are used to render the object as HTML. The `iter_chunks()` method is used to iterate over the chunks of the object.
+
+Typically when writing rendering code, your template functions will want to return the `Renderable` type:
+
+```pycon
+>>> from htpy import div, h1, Renderable
+>>> def my_template(name: str) -> Renderable:
+...     return div[h1["Hello", " ", name]]
+>>> print(my_template("World!"))
+<div><h1>Hello World!</h1></div>
+
+```
+
 ### Loops / Iterating Over Children
 
 You can pass a list, tuple or generator to generate multiple children:
@@ -163,7 +180,7 @@ library. markupsafe is a dependency of htpy and is automatically installed:
 
 ```
 
-If you are generating [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element, 
+If you are generating [Markdown](https://pypi.org/project/Markdown/) and want to insert it into an element,
 use `Markup` to mark it as safe:
 
 ```pycon title="Injecting generated markdown"
@@ -425,10 +442,10 @@ React.
 Using contexts in htpy involves:
 
 - Creating a context object with `my_context = Context(name[, *, default])` to
-define the type and optional default value of a context variable.
+  define the type and optional default value of a context variable.
 - Using `my_context.provider(value, children)` to set the value of a context variable for a subtree.
 - Adding the `@my_context.consumer` decorator to a component that requires the
-context value. The decorator will add the context value as the first argument to the decorated function:
+  context value. The decorator will add the context value as the first argument to the decorated function:
 
 The `Context` class is a generic and fully supports static type checking.
 
@@ -454,16 +471,16 @@ def my_component(a, b):
 This example shows how context can be used to pass data between components:
 
 - `theme_context: Context[Theme] = Context("theme", default="light")` creates a
-context object that can later be used to define/retrieve the value. In this
-case, `"light"` acts as the default value if no other value is provided.
+  context object that can later be used to define/retrieve the value. In this
+  case, `"light"` acts as the default value if no other value is provided.
 - `theme_context.provider(value, subtree)` defines the value of the
-`theme_context` for the subtree. In this case the value is set to `"dark"` which
-overrides the default value.
+  `theme_context` for the subtree. In this case the value is set to `"dark"` which
+  overrides the default value.
 - The `sidebar` component uses the `@theme_context.consumer` decorator. This
-will make htpy pass the current context value as the first argument to the
-component function.
+  will make htpy pass the current context value as the first argument to the
+  component function.
 - In this example, a `Theme` type is used to ensure that the correct types are
-used when providing the value as well as when it is consumed.
+  used when providing the value as well as when it is consumed.
 
 ```py
 from typing import Literal
@@ -496,5 +513,8 @@ print(my_page())
 Output:
 
 ```html
-<div><h1>Hello!</h1><div class="theme-dark">The Sidebar!</div></div>
+<div>
+  <h1>Hello!</h1>
+  <div class="theme-dark">The Sidebar!</div>
+</div>
 ```
