@@ -1,5 +1,9 @@
 # Changelog
 
+## 25.4.0 - 2025-04-02
+- Add the `Renderable` protocol, a consistent API to render an `htpy` object as HTML or to iterate over it. `Element`, `Fragment`, `ContextProvider`, and `ContextConsumer` are all `Renderable`.
+- Deprecate `render_node()` and `iter_node()`. Call `Renderable.__str__()` or `Renderable.iter_chunks()` instead. [Read the Usage docs for more details](usage.md#renderable).
+
 ## 25.3.0 - 2025-03-16
 - Add `fragment` for explicitly grouping a collection of nodes. [Read the Usage docs for more details](usage.md#fragments) Fixes
 [issue #82](https://github.com/pelme/htpy/issues/82).
