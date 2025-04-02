@@ -4,6 +4,7 @@ import dataclasses
 import functools
 import keyword
 import typing as t
+import warnings
 from collections.abc import Callable, Iterable, Iterator, Mapping
 
 from markupsafe import Markup as _Markup
@@ -407,6 +408,12 @@ def _as_markup(renderable: Renderable) -> _Markup:
 
 
 def render_node(node: Node) -> _Markup:
+    warnings.warn(
+        "render_node is deprecated and will be removed in a future release. "
+        "Please use Renderable.__str__() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return _Markup(fragment[node])
 
 
