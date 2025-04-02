@@ -188,6 +188,12 @@ class Context(t.Generic[T]):
 
 
 def iter_node(x: Node) -> Iterator[str]:
+    warnings.warn(
+        "iter_node is deprecated and will be removed in a future release. "
+        "Please use Renderable.iter_chunks() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return fragment[x].iter_chunks()
 
 
