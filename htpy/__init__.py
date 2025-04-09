@@ -60,8 +60,8 @@ def _id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
         raise ValueError("id/class strings must start with # or .")
 
     parts = x.split(".")
-    ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
-    classes = [part for part in parts if not part.startswith("#") if part]
+    ids = [part.removeprefix("#").strip() for part in parts if part.startswith("#")]
+    classes = [part.strip() for part in parts if not part.startswith("#") if part]
 
     assert len(ids) in (0, 1)
 
