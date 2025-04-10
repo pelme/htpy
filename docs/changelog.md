@@ -1,5 +1,10 @@
 # Changelog
 
+## Next (minor)
+- Strip whitespace around id and class values in CSS selector. Fixes
+[issue #97](https://github.com/pelme/htpy/issues/97). See [PR #100](https://github.com/pelme/htpy/pull/100).
+Thanks to [William Jackson](https://github.com/williamjacksn).
+
 ## 25.3.0 - 2025-03-16
 - Add `fragment` for explicitly grouping a collection of nodes. [Read the Usage docs for more details](usage.md#fragments) Fixes
 [issue #82](https://github.com/pelme/htpy/issues/82).
