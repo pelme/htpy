@@ -161,6 +161,21 @@ def test_id_class_only_classes(render: RenderFixture) -> None:
     assert render(result) == ['<div class="foo bar">', "</div>"]
 
 
+def test_id_class_spaces_only_id(render: RenderFixture) -> None:
+    result = div("#a ")
+    assert render(result) == ['<div id="a">', "</div>"]
+
+
+def test_id_class_spaces_only_classes(render: RenderFixture) -> None:
+    result = div(".a ")
+    assert render(result) == ['<div class="a">', "</div>"]
+
+
+def test_id_class_spaces(render: RenderFixture) -> None:
+    result = div("#a .a ")
+    assert render(result) == ['<div id="a" class="a">', "</div>"]
+
+
 def test_id_class_wrong_order() -> None:
     with pytest.raises(ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"):
         div(".myclass#myid")
