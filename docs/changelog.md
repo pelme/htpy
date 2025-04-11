@@ -1,5 +1,9 @@
 # Changelog
 
+## NEXT
+- Add the `Renderable` protocol, a consistent API to render an `htpy` object as HTML or to iterate over it. `Element`, `Fragment`, `ContextProvider`, and `ContextConsumer` are all `Renderable`.
+- Deprecate `render_node()` and `iter_node()` and direct iteration over elements. Call `Renderable.__str__()` or `Renderable.iter_chunks()` instead. [Read the Usage docs for more details](usage.md#renderable).
+
 ## 25.4.0 - 2025-04-10
 - Make Context's repr debug friendly [PR #96](https://github.com/pelme/htpy/pull/96). Thanks to Stein Magnus Jodal ([@jodal](https://github.com/jodal)).
 - Strip whitespace around id and class values in CSS selector. Fixes
