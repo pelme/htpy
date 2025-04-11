@@ -1,6 +1,7 @@
 # Changelog
 
 ## 25.4.0 - 2025-04-10
+- Make Context's repr debug friendly [PR #96](https://github.com/pelme/htpy/pull/96). Thanks to Stein Magnus Jodal ([@jodal](https://github.com/jodal)).
 - Strip whitespace around id and class values in CSS selector. Fixes
 [issue #97](https://github.com/pelme/htpy/issues/97). See [PR #100](https://github.com/pelme/htpy/pull/100).
 Thanks to [William Jackson](https://github.com/williamjacksn).
