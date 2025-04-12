@@ -5,7 +5,7 @@ import typing as t
 from django.template import Context, TemplateDoesNotExist
 from django.utils.module_loading import import_string
 
-from . import Element, render_node
+from . import Element, fragment
 
 if t.TYPE_CHECKING:
     from collections.abc import Callable
@@ -19,7 +19,7 @@ class _HtpyTemplate:
         self.func = func
 
     def render(self, context: Context | None, request: HttpRequest | None) -> str:
-        return render_node(self.func(context, request))
+        return str(fragment[self.func(context, request)])
 
 
 class HtpyTemplateBackend:

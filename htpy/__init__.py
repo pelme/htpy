@@ -9,6 +9,11 @@ from collections.abc import Callable, Iterable, Iterator, Mapping
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
+try:
+    from typing import deprecated  # type: ignore[attr-defined]
+except ImportError:
+    from typing_extensions import deprecated
+
 if t.TYPE_CHECKING:
     from types import UnionType
 
@@ -130,11 +135,23 @@ class ContextProvider(t.Generic[T]):
     value: T
     node: Node
 
+    @deprecated(
+        "iterating over a context provider is deprecated and will be removed in a future release. "
+        "Please use the context_provider.iter_chunks() method instead."
+    )  # pyright: ignore [reportUntypedFunctionDecorator]
     def __iter__(self) -> Iterator[str]:
-        return iter_node(self)
+        return self.iter_chunks()
 
-    def __str__(self) -> str:
-        return render_node(self)
+    def __str__(self) -> _Markup:
+        return _chunks_as_markup(self)
+
+    __html__ = __str__
+
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        return _iter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
+
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
+        return str(self).encode(encoding, errors)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -142,6 +159,24 @@ class ContextConsumer(t.Generic[T]):
     context: Context[T]
     debug_name: str
     func: Callable[[T], Node]
+
+    def __str__(self) -> _Markup:
+        return _chunks_as_markup(self)
+
+    __html__ = __str__
+
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        context_value = (context or {}).get(self.context, self.context.default)
+
+        if context_value is _NO_DEFAULT:
+            raise LookupError(
+                f'Context value for "{self.context.name}" does not exist, '  # pyright: ignore
+                f"requested by {self.debug_name}()."
+            )
+        return _iter_chunks_node(self.func(context_value), context)  # pyright: ignore
+
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
+        return str(self).encode(encoding, errors)
 
 
 class _NO_DEFAULT:
@@ -168,11 +203,15 @@ class Context(t.Generic[T]):
         return wrapper
 
 
+@deprecated(
+    "iter_node is deprecated and will be removed in a future release. "
+    "Please use the .iter_chunks() method on elements/fragments instead."
+)  # pyright: ignore [reportUntypedFunctionDecorator]
 def iter_node(x: Node) -> Iterator[str]:
-    return _iter_node_context(x, {})
+    return fragment[x].iter_chunks()
 
 
-def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> Iterator[str]:
+def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -> Iterator[str]:
     while not isinstance(x, BaseElement) and callable(x):
         x = x()
 
@@ -185,27 +224,15 @@ def _iter_node_context(x: Node, context_dict: dict[Context[t.Any], t.Any]) -> It
     if x is False:
         return
 
-    if isinstance(x, BaseElement):
-        yield from x._iter_context(context_dict)  # pyright: ignore [reportPrivateUsage]
-    elif isinstance(x, ContextProvider):
-        yield from _iter_node_context(x.node, {**context_dict, x.context: x.value})  # pyright: ignore [reportUnknownMemberType]
-    elif isinstance(x, ContextConsumer):
-        context_value = context_dict.get(x.context, x.context.default)
-        if context_value is _NO_DEFAULT:
-            raise LookupError(
-                f'Context value for "{x.context.name}" does not exist, '
-                f"requested by {x.debug_name}()."
-            )
-        yield from _iter_node_context(x.func(context_value), context_dict)
-    elif isinstance(x, Fragment):
-        yield from _iter_node_context(x._node, context_dict)  # pyright: ignore
+    if hasattr(x, "iter_chunks"):
+        yield from x.iter_chunks(context)  # pyright: ignore
     elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
     elif isinstance(x, int):
         yield str(x)
     elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
-            yield from _iter_node_context(child, context_dict)
+            yield from _iter_chunks_node(child, context)
     else:
         raise TypeError(f"{x!r} is not a valid child element")
 
@@ -232,7 +259,7 @@ class BaseElement:
         self._children = children
 
     def __str__(self) -> _Markup:
-        return _Markup("".join(self))
+        return _chunks_as_markup(self)
 
     __html__ = __str__
 
@@ -279,17 +306,18 @@ class BaseElement:
             self._children,
         )
 
+    @deprecated(
+        "iterating over an element is deprecated and will be removed in a future release. "
+        "Please use the element.iter_chunks() method instead."
+    )  # pyright: ignore [reportUntypedFunctionDecorator]
     def __iter__(self) -> Iterator[str]:
-        return self._iter_context({})
+        return self.iter_chunks()
 
-    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         yield f"<{self._name}{self._attrs}>"
-        yield from _iter_node_context(self._children, ctx)
+        yield from _iter_chunks_node(self._children, context)
         yield f"</{self._name}>"
 
-    # Allow starlette Response.render to directly render this element without
-    # explicitly casting to str:
-    # https://github.com/encode/starlette/blob/5ed55c441126687106109a3f5e051176f88cd3e6/starlette/responses.py#L44-L49
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -334,13 +362,13 @@ class Element(BaseElement):
 
 
 class HTMLElement(Element):
-    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         yield "<!doctype html>"
-        yield from super()._iter_context(ctx)
+        yield from super().iter_chunks(context)
 
 
 class VoidElement(BaseElement):
-    def _iter_context(self, ctx: dict[Context[t.Any], t.Any]) -> Iterator[str]:
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         yield f"<{self._name}{self._attrs}>"
 
     def __repr__(self) -> str:
@@ -358,13 +386,23 @@ class Fragment:
         # node directly via the constructor.
         self._node: Node = None
 
+    @deprecated(
+        "iterating over a fragment is deprecated and will be removed in a future release. "
+        "Please use the fragment.iter_chunks() method instead."
+    )  # pyright: ignore [reportUntypedFunctionDecorator]
     def __iter__(self) -> Iterator[str]:
-        return iter_node(self)
+        return self.iter_chunks()
 
-    def __str__(self) -> str:
-        return render_node(self)
+    def __str__(self) -> _Markup:
+        return _chunks_as_markup(self)
 
     __html__ = __str__
+
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        return _iter_chunks_node(self._node, context)
+
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
+        return str(self).encode(encoding, errors)
 
 
 class _FragmentGetter:
@@ -377,8 +415,16 @@ class _FragmentGetter:
 fragment = _FragmentGetter()
 
 
+def _chunks_as_markup(renderable: Renderable) -> _Markup:
+    return _Markup("".join(renderable.iter_chunks()))
+
+
+@deprecated(
+    "render_node is deprecated and will be removed in a future release. "
+    "Please use fragment instead: https://htpy.dev/usage/#fragments"
+)  # pyright: ignore [reportUntypedFunctionDecorator]
 def render_node(node: Node) -> _Markup:
-    return _Markup("".join(iter_node(node)))
+    return _Markup(fragment[node])
 
 
 def comment(text: str) -> Fragment:
@@ -391,20 +437,23 @@ class _HasHtml(t.Protocol):
     def __html__(self) -> str: ...
 
 
+class Renderable(t.Protocol):
+    def __str__(self) -> _Markup: ...
+    def __html__(self) -> _Markup: ...
+    def iter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> Iterator[str]: ...
+
+    # Allow starlette Response.render to directly render this element without
+    # explicitly casting to str:
+    # https://github.com/encode/starlette/blob/5ed55c441126687106109a3f5e051176f88cd3e6/starlette/responses.py#L44-L49
+    def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes: ...
+
+
 _ClassNamesDict: t.TypeAlias = dict[str, bool]
 _ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
 Node: t.TypeAlias = (
-    None
-    | bool
-    | str
-    | int
-    | BaseElement
-    | _HasHtml
-    | Fragment
-    | Iterable["Node"]
-    | Callable[[], "Node"]
-    | ContextProvider[t.Any]
-    | ContextConsumer[t.Any]
+    Renderable | None | bool | str | int | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
 )
 
 Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames

@@ -39,5 +39,10 @@ def test_safe() -> None:
     assert markupsafe.escape(fragment[i["hi"]]) == "<i>hi</i>"
 
 
-def test_iter() -> None:
-    assert list(fragment["Hello ", None, i["World"]]) == ["Hello ", "<i>", "World", "</i>"]
+def test_fragment_iter_chunks() -> None:
+    assert list(fragment["Hello ", None, i["World"]].iter_chunks()) == [
+        "Hello ",
+        "<i>",
+        "World",
+        "</i>",
+    ]
