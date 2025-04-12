@@ -17,7 +17,7 @@ except ImportError:
 if t.TYPE_CHECKING:
     from types import UnionType
 
-__version__ = "25.4.0"
+__version__ = "25.4.1"
 __all__: list[str] = []
 
 BaseElementSelf = t.TypeVar("BaseElementSelf", bound="BaseElement")

@@ -1,6 +1,6 @@
 # Changelog
 
-## NEXT
+## 25.4.1 - 2025-04-12
 - Add the `Renderable` protocol, a consistent API to render an `htpy` object as HTML or to iterate over it. `Element`, `Fragment`, `ContextProvider`, and `ContextConsumer` are all `Renderable`.
 - Deprecate `render_node()` and `iter_node()` and direct iteration over elements. Call `Renderable.__str__()` or `Renderable.iter_chunks()` instead. [Read the Usage docs for more details](usage.md#renderable).
 
