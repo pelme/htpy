@@ -5,6 +5,8 @@ import pytest
 
 import htpy as h
 
+from .conftest import RenderFixture
+
 example_ctx: h.Context[str] = h.Context("example_ctx", default="default!")
 
 
@@ -25,18 +27,21 @@ class RenderableTestCase:
         return self.expected_str().encode("utf8")
 
 
-cases = [
-    RenderableTestCase(h.a, ["<a>", "</a>"]),
-    RenderableTestCase(h.img, ["<img>"]),
-    RenderableTestCase(example_ctx.provider("hi!", "stuff!"), ["stuff!"]),
-    RenderableTestCase(example_consumer(), ["default!"]),
-    RenderableTestCase(h.fragment["fragment!"], ["fragment!"]),
-    # comment() is a Fragment but test it anyways for completeness
-    RenderableTestCase(h.comment("comment!"), ["<!-- comment! -->"]),
-]
+@pytest.fixture(
+    params=[
+        RenderableTestCase(h.a, ["<a>", "</a>"]),
+        RenderableTestCase(h.img, ["<img>"]),
+        RenderableTestCase(example_ctx.provider("hi!", "stuff!"), ["stuff!"]),
+        RenderableTestCase(example_consumer(), ["default!"]),
+        RenderableTestCase(h.fragment["fragment!"], ["fragment!"]),
+        # comment() is a Fragment but test it anyways for completeness
+        RenderableTestCase(h.comment("comment!"), ["<!-- comment! -->"]),
+    ]
+)
+def case(request: pytest.FixtureRequest) -> RenderableTestCase:
+    return request.param  # type: ignore[no-any-return]
 
 
-@pytest.mark.parametrize("case", cases)
 def test_str(case: RenderableTestCase) -> None:
     result = str(case.renderable)
     assert isinstance(result, str)
@@ -44,7 +49,6 @@ def test_str(case: RenderableTestCase) -> None:
     assert result == case.expected_str()
 
 
-@pytest.mark.parametrize("case", cases)
 def test_html(case: RenderableTestCase) -> None:
     result = case.renderable.__html__()
     assert isinstance(result, str)
@@ -52,18 +56,21 @@ def test_html(case: RenderableTestCase) -> None:
     assert result == case.expected_str()
 
 
-@pytest.mark.parametrize("case", cases)
 def test_encode(case: RenderableTestCase) -> None:
     result = case.renderable.encode()
     assert isinstance(result, bytes)
     assert result == case.expected_bytes()
 
 
-@pytest.mark.parametrize("case", cases)
 def test_iter_chunks(case: RenderableTestCase) -> None:
     result = list(case.renderable.iter_chunks())
 
     # Ensure we get str back, not markup.
     assert type(result[0]) is str
 
+    assert result == case.expected_chunks
+
+
+def test_aiter_chunks(case: RenderableTestCase, render_async: RenderFixture) -> None:
+    result = render_async(case.renderable)
     assert result == case.expected_chunks

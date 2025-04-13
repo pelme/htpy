@@ -4,7 +4,15 @@ import dataclasses
 import functools
 import keyword
 import typing as t
-from collections.abc import Callable, Iterable, Iterator, Mapping
+from collections.abc import (
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Iterable,
+    Iterator,
+    Mapping,
+)
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
@@ -150,6 +158,11 @@ class ContextProvider(t.Generic[T]):
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         return _iter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
 
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return _aiter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
+
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -165,7 +178,7 @@ class ContextConsumer(t.Generic[T]):
 
     __html__ = __str__
 
-    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+    def _get_value(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> T:
         context_value = (context or {}).get(self.context, self.context.default)
 
         if context_value is _NO_DEFAULT:
@@ -173,7 +186,15 @@ class ContextConsumer(t.Generic[T]):
                 f'Context value for "{self.context.name}" does not exist, '  # pyright: ignore
                 f"requested by {self.debug_name}()."
             )
-        return _iter_chunks_node(self.func(context_value), context)  # pyright: ignore
+        return context_value  # type: ignore[no-any-return]
+
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        return _iter_chunks_node(self.func(self._get_value(context)), context)  # pyright: ignore
+
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return _aiter_chunks_node(self.func(self._get_value(context)), context)  # pyright: ignore
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
@@ -225,7 +246,7 @@ def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -
         return
 
     if hasattr(x, "iter_chunks"):
-        yield from x.iter_chunks(context)  # pyright: ignore
+        yield from x.iter_chunks(context)  # pyright: ignore [reportUnknownMemberType, reportAttributeAccessIssue]
     elif isinstance(x, str | _HasHtml):
         yield str(_escape(x))
     elif isinstance(x, int):
@@ -233,6 +254,53 @@ def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -
     elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_chunks_node(child, context)
+    elif isinstance(x, Awaitable | AsyncIterable):  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise TypeError(
+            f"{x!r} is not a valid child element. "
+            "Use async iteration to retrieve element content: https://htpy.dev/streaming/"
+        )
+    else:
+        raise TypeError(f"{x!r} is not a valid child element")
+
+
+async def _aiter_chunks_node(
+    x: Node, context: Mapping[Context[t.Any], t.Any] | None
+) -> AsyncIterator[str]:
+    while True:
+        if isinstance(x, Awaitable):
+            x = await x  # pyright: ignore [reportUnknownVariableType]
+            continue
+
+        if not isinstance(x, BaseElement) and callable(x):  # pyright: ignore [reportUnknownArgumentType]
+            x = x()  # pyright: ignore [reportAssignmentType]
+            continue
+
+        break
+
+    if x is None:
+        return
+
+    if x is True:
+        return
+
+    if x is False:
+        return
+
+    if hasattr(x, "aiter_chunks"):  # pyright: ignore [reportUnknownVariableType, reportUnknownArgumentType]
+        async for chunk in x.aiter_chunks(context):  # pyright: ignore
+            yield chunk
+    elif isinstance(x, str | _HasHtml):
+        yield str(_escape(x))
+    elif isinstance(x, int):
+        yield str(x)
+    elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
+        for child in x:  # pyright: ignore
+            async for chunk in _aiter_chunks_node(child, context):  # pyright: ignore
+                yield chunk
+    elif isinstance(x, AsyncIterable):  # pyright: ignore[reportUnnecessaryIsInstance]
+        async for child in x:  # pyright: ignore[reportUnknownVariableType]
+            async for chunk in _aiter_chunks_node(child, context):  # pyright: ignore[reportUnknownArgumentType]
+                yield chunk
     else:
         raise TypeError(f"{x!r} is not a valid child element")
 
@@ -318,6 +386,14 @@ class BaseElement:
         yield from _iter_chunks_node(self._children, context)
         yield f"</{self._name}>"
 
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+        async for chunk in _aiter_chunks_node(self._children, context):
+            yield chunk
+        yield f"</{self._name}>"
+
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -366,9 +442,21 @@ class HTMLElement(Element):
         yield "<!doctype html>"
         yield from super().iter_chunks(context)
 
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        yield "<!doctype html>"
+        async for chunk in super().aiter_chunks(context):
+            yield chunk
+
 
 class VoidElement(BaseElement):
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
         yield f"<{self._name}{self._attrs}>"
 
     def __repr__(self) -> str:
@@ -400,6 +488,11 @@ class Fragment:
 
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         return _iter_chunks_node(self._node, context)
+
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return _aiter_chunks_node(self._node, context)
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
@@ -443,6 +536,9 @@ class Renderable(t.Protocol):
     def iter_chunks(
         self, context: Mapping[Context[t.Any], t.Any] | None = None
     ) -> Iterator[str]: ...
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]: ...
 
     # Allow starlette Response.render to directly render this element without
     # explicitly casting to str:
@@ -453,7 +549,16 @@ class Renderable(t.Protocol):
 _ClassNamesDict: t.TypeAlias = dict[str, bool]
 _ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
 Node: t.TypeAlias = (
-    Renderable | None | bool | str | int | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+    Renderable
+    | None
+    | bool
+    | str
+    | int
+    | _HasHtml
+    | Iterable["Node"]
+    | Callable[[], "Node"]
+    | AsyncIterable["Node"]
+    | Awaitable["Node"]
 )
 
 Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
@@ -586,6 +691,8 @@ _KnownInvalidChildren: UnionType = bytes | bytearray | memoryview
 _KnownValidChildren: UnionType = (
     None
     | BaseElement
+    | AsyncIterable  # pyright: ignore [reportMissingTypeArgument]
+    | Awaitable  # pyright: ignore [reportMissingTypeArgument]
     | ContextProvider  # pyright: ignore [reportMissingTypeArgument]
     | ContextConsumer  # pyright: ignore [reportMissingTypeArgument]
     | str
