@@ -10,7 +10,7 @@ from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
 try:
-    from typing import deprecated  # type: ignore[attr-defined]
+    from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
 except ImportError:
     from typing_extensions import deprecated
 
@@ -135,7 +135,7 @@ class ContextProvider(t.Generic[T]):
     value: T
     node: Node
 
-    @deprecated(
+    @deprecated(  # type: ignore[misc,unused-ignore]
         "iterating over a context provider is deprecated and will be removed in a future release. "
         "Please use the context_provider.iter_chunks() method instead."
     )  # pyright: ignore [reportUntypedFunctionDecorator]
@@ -203,7 +203,7 @@ class Context(t.Generic[T]):
         return wrapper
 
 
-@deprecated(
+@deprecated(  # type: ignore[misc,unused-ignore]
     "iter_node is deprecated and will be removed in a future release. "
     "Please use the .iter_chunks() method on elements/fragments instead."
 )  # pyright: ignore [reportUntypedFunctionDecorator]
@@ -306,7 +306,7 @@ class BaseElement:
             self._children,
         )
 
-    @deprecated(
+    @deprecated(  # type: ignore[misc,unused-ignore]
         "iterating over an element is deprecated and will be removed in a future release. "
         "Please use the element.iter_chunks() method instead."
     )  # pyright: ignore [reportUntypedFunctionDecorator]
@@ -386,7 +386,7 @@ class Fragment:
         # node directly via the constructor.
         self._node: Node = None
 
-    @deprecated(
+    @deprecated(  # type: ignore[misc,unused-ignore]
         "iterating over a fragment is deprecated and will be removed in a future release. "
         "Please use the fragment.iter_chunks() method instead."
     )  # pyright: ignore [reportUntypedFunctionDecorator]
@@ -419,7 +419,7 @@ def _chunks_as_markup(renderable: Renderable) -> _Markup:
     return _Markup("".join(renderable.iter_chunks()))
 
 
-@deprecated(
+@deprecated(  # type: ignore[misc,unused-ignore]
     "render_node is deprecated and will be removed in a future release. "
     "Please use fragment instead: https://htpy.dev/usage/#fragments"
 )  # pyright: ignore [reportUntypedFunctionDecorator]
