@@ -5,7 +5,7 @@ requires-python = ">=3.10"
 dynamic = ["version"]
 dependencies = [
     "markupsafe>=2.0.0",
-    # typing_extensions is used for @typing.deprecated introduced in Python 3.13
+    # typing_extensions is used for @warnings.deprecated introduced in Python 3.13
     "typing_extensions>=4.13.2 ; python_version<'3.13'",
 ]
 readme = "docs/README.md"
