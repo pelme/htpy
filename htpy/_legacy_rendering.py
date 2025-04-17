@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
-from markupsafe import Markup as _Markup
+import markupsafe
 
 from htpy._fragments import fragment
 
@@ -29,5 +29,5 @@ def iter_node(x: Node) -> Iterator[str]:
     "render_node is deprecated and will be removed in a future release. "
     "Please use fragment instead: https://htpy.dev/usage/#fragments"
 )  # pyright: ignore [reportUntypedFunctionDecorator]
-def render_node(node: Node) -> _Markup:
-    return _Markup(fragment[node])
+def render_node(node: Node) -> markupsafe.Markup:
+    return markupsafe.Markup(fragment[node])

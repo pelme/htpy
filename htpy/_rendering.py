@@ -3,8 +3,7 @@ from __future__ import annotations
 import typing as t
 from collections.abc import Iterable
 
-from markupsafe import Markup as _Markup
-from markupsafe import escape as _escape
+import markupsafe
 
 from htpy._types import (
     _HasHtml,  # pyright: ignore[reportPrivateUsage]
@@ -18,8 +17,8 @@ if t.TYPE_CHECKING:
     from htpy._types import Node, Renderable
 
 
-def _chunks_as_markup(renderable: Renderable) -> _Markup:  # pyright: ignore[reportUnusedFunction]
-    return _Markup("".join(renderable.iter_chunks()))
+def _chunks_as_markup(renderable: Renderable) -> markupsafe.Markup:  # pyright: ignore[reportUnusedFunction]
+    return markupsafe.Markup("".join(renderable.iter_chunks()))
 
 
 def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -> Iterator[str]:
@@ -40,7 +39,7 @@ def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -
     if hasattr(x, "iter_chunks"):
         yield from x.iter_chunks(context)  # pyright: ignore
     elif isinstance(x, str | _HasHtml):
-        yield str(_escape(x))
+        yield str(markupsafe.escape(x))
     elif isinstance(x, int):
         yield str(x)
     elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]

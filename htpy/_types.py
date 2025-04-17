@@ -6,7 +6,7 @@ from collections.abc import Callable, Iterable
 if t.TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
 
-    from markupsafe import Markup as _Markup
+    import markupsafe
 
     from htpy._contexts import Context
 
@@ -17,8 +17,8 @@ class _HasHtml(t.Protocol):
 
 
 class Renderable(t.Protocol):
-    def __str__(self) -> _Markup: ...
-    def __html__(self) -> _Markup: ...
+    def __str__(self) -> markupsafe.Markup: ...
+    def __html__(self) -> markupsafe.Markup: ...
     def iter_chunks(
         self, context: Mapping[Context[t.Any], t.Any] | None = None
     ) -> Iterator[str]: ...

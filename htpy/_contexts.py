@@ -17,7 +17,7 @@ except ImportError:
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Iterator, Mapping
 
-    from markupsafe import Markup as _Markup
+    import markupsafe
 
     from htpy._types import Node
 
@@ -39,7 +39,7 @@ class ContextProvider(t.Generic[T]):
     def __iter__(self) -> Iterator[str]:
         return self.iter_chunks()
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         return _chunks_as_markup(self)
 
     __html__ = __str__
@@ -57,7 +57,7 @@ class ContextConsumer(t.Generic[T]):
     debug_name: str
     func: Callable[[T], Node]
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         return _chunks_as_markup(self)
 
     __html__ = __str__
