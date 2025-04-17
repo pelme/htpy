@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
-from markupsafe import Markup as _Markup
+import markupsafe
 
 from htpy._rendering import (
     _chunks_as_markup,  # pyright: ignore[reportPrivateUsage]
@@ -39,7 +39,7 @@ class Fragment:
     def __iter__(self) -> Iterator[str]:
         return self.iter_chunks()
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         return _chunks_as_markup(self)
 
     __html__ = __str__
@@ -63,4 +63,4 @@ fragment = _FragmentGetter()
 
 def comment(text: str) -> Fragment:
     escaped_text = text.replace("--", "")
-    return fragment[_Markup(f"<!-- {escaped_text} -->")]
+    return fragment[markupsafe.Markup(f"<!-- {escaped_text} -->")]

@@ -3,7 +3,7 @@ from __future__ import annotations
 import typing as t
 from collections.abc import Iterable
 
-from markupsafe import escape as _escape
+import markupsafe
 
 from htpy._types import _HasHtml  # pyright: ignore[reportPrivateUsage]
 
@@ -14,7 +14,7 @@ if t.TYPE_CHECKING:
 
 
 def _force_escape(value: t.Any) -> str:
-    return _escape(str(value))
+    return markupsafe.escape(str(value))
 
 
 # Inspired by https://www.npmjs.com/package/classnames

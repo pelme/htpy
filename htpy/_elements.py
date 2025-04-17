@@ -29,7 +29,7 @@ if t.TYPE_CHECKING:
     from collections.abc import Iterator
     from types import UnionType
 
-    from markupsafe import Markup as _Markup
+    import markupsafe
 
     from htpy._contexts import Context
     from htpy._types import Attribute, Node
@@ -47,7 +47,7 @@ class BaseElement:
         self._attrs = attrs_str
         self._children = children
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         return _chunks_as_markup(self)
 
     __html__ = __str__
