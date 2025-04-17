@@ -5,10 +5,7 @@ import keyword
 import typing as t
 from collections.abc import Callable, Iterable, Mapping
 
-from htpy._attributes import (
-    _attrs_string,  # pyright: ignore[reportPrivateUsage]
-    _id_class_names_from_css_str,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._attributes import attrs_string, id_class_names_from_css_str
 from htpy._contexts import ContextConsumer, ContextProvider
 from htpy._fragments import Fragment
 from htpy._rendering import chunks_as_markup, iter_chunks_node
@@ -76,9 +73,9 @@ class BaseElement:
 
         return self.__class__(
             self._name,
-            _attrs_string(
+            attrs_string(
                 {
-                    **(_id_class_names_from_css_str(id_class) if id_class else {}),
+                    **(id_class_names_from_css_str(id_class) if id_class else {}),
                     **attrs,
                     **{_python_to_html_name(k): v for k, v in kwargs.items()},
                 }

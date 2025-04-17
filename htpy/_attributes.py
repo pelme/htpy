@@ -43,7 +43,7 @@ def _class_names_for_items(items: t.Any) -> t.Any:
                 yield item
 
 
-def _id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:  # pyright: ignore[reportUnusedFunction]
+def id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
     if not isinstance(x, str):
         raise TypeError(f"id/class strings must be str. got {x}")
 
@@ -91,7 +91,7 @@ def _generate_attrs(raw_attrs: Mapping[str, Attribute]) -> Iterable[tuple[str, A
             yield _force_escape(key), _force_escape(value)
 
 
-def _attrs_string(attrs: Mapping[str, Attribute]) -> str:  # pyright: ignore[reportUnusedFunction]
+def attrs_string(attrs: Mapping[str, Attribute]) -> str:
     result = " ".join(k if v is True else f'{k}="{v}"' for k, v in _generate_attrs(attrs))
 
     if not result:
