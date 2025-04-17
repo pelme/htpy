@@ -14,11 +14,11 @@ if t.TYPE_CHECKING:
     from htpy._types import Node, Renderable
 
 
-def _chunks_as_markup(renderable: Renderable) -> markupsafe.Markup:  # pyright: ignore[reportUnusedFunction]
+def chunks_as_markup(renderable: Renderable) -> markupsafe.Markup:
     return markupsafe.Markup("".join(renderable.iter_chunks()))
 
 
-def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -> Iterator[str]:
+def iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -> Iterator[str]:
     from htpy._elements import BaseElement
 
     while not isinstance(x, BaseElement) and callable(x):
@@ -41,6 +41,6 @@ def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -
         yield str(x)
     elif isinstance(x, Iterable) and not isinstance(x, KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
-            yield from _iter_chunks_node(child, context)
+            yield from iter_chunks_node(child, context)
     else:
         raise TypeError(f"{x!r} is not a valid child element")

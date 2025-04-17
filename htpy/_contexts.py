@@ -4,10 +4,7 @@ import dataclasses
 import functools
 import typing as t
 
-from htpy._rendering import (
-    _chunks_as_markup,  # pyright: ignore[reportPrivateUsage]
-    _iter_chunks_node,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._rendering import chunks_as_markup, iter_chunks_node
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
@@ -40,12 +37,12 @@ class ContextProvider(t.Generic[T]):
         return self.iter_chunks()
 
     def __str__(self) -> markupsafe.Markup:
-        return _chunks_as_markup(self)
+        return chunks_as_markup(self)
 
     __html__ = __str__
 
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
-        return _iter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
+        return iter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
@@ -58,7 +55,7 @@ class ContextConsumer(t.Generic[T]):
     func: Callable[[T], Node]
 
     def __str__(self) -> markupsafe.Markup:
-        return _chunks_as_markup(self)
+        return chunks_as_markup(self)
 
     __html__ = __str__
 
@@ -70,7 +67,7 @@ class ContextConsumer(t.Generic[T]):
                 f'Context value for "{self.context.name}" does not exist, '  # pyright: ignore
                 f"requested by {self.debug_name}()."
             )
-        return _iter_chunks_node(self.func(context_value), context)  # pyright: ignore
+        return iter_chunks_node(self.func(context_value), context)  # pyright: ignore
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)

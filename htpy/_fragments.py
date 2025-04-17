@@ -4,10 +4,7 @@ import typing as t
 
 import markupsafe
 
-from htpy._rendering import (
-    _chunks_as_markup,  # pyright: ignore[reportPrivateUsage]
-    _iter_chunks_node,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._rendering import chunks_as_markup, iter_chunks_node
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
@@ -40,12 +37,12 @@ class Fragment:
         return self.iter_chunks()
 
     def __str__(self) -> markupsafe.Markup:
-        return _chunks_as_markup(self)
+        return chunks_as_markup(self)
 
     __html__ = __str__
 
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
-        return _iter_chunks_node(self._node, context)
+        return iter_chunks_node(self._node, context)
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)

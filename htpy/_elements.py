@@ -11,10 +11,7 @@ from htpy._attributes import (
 )
 from htpy._contexts import ContextConsumer, ContextProvider
 from htpy._fragments import Fragment
-from htpy._rendering import (
-    _chunks_as_markup,  # pyright: ignore[reportPrivateUsage]
-    _iter_chunks_node,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._rendering import chunks_as_markup, iter_chunks_node
 from htpy._types import HasHtml, KnownInvalidChildren
 
 try:
@@ -45,7 +42,7 @@ class BaseElement:
         self._children = children
 
     def __str__(self) -> markupsafe.Markup:
-        return _chunks_as_markup(self)
+        return chunks_as_markup(self)
 
     __html__ = __str__
 
@@ -101,7 +98,7 @@ class BaseElement:
 
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         yield f"<{self._name}{self._attrs}>"
-        yield from _iter_chunks_node(self._children, context)
+        yield from iter_chunks_node(self._children, context)
         yield f"</{self._name}>"
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
