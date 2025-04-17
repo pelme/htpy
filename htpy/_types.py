@@ -12,7 +12,7 @@ if t.TYPE_CHECKING:
 
 
 @t.runtime_checkable
-class _HasHtml(t.Protocol):
+class HasHtml(t.Protocol):
     def __html__(self) -> str: ...
 
 
@@ -31,10 +31,10 @@ class Renderable(t.Protocol):
 
 _ClassNamesDict: t.TypeAlias = dict[str, bool]
 _ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _ClassNamesDict
-Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
+Attribute: t.TypeAlias = None | bool | str | int | HasHtml | _ClassNames
 
 Node: t.TypeAlias = (
-    Renderable | None | bool | str | int | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
+    Renderable | None | bool | str | int | HasHtml | Iterable["Node"] | Callable[[], "Node"]
 )
 
-_KnownInvalidChildren: t.TypeAlias = bytes | bytearray | memoryview
+KnownInvalidChildren: t.TypeAlias = bytes | bytearray | memoryview

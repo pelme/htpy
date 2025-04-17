@@ -5,7 +5,7 @@ from collections.abc import Iterable
 
 import markupsafe
 
-from htpy._types import _HasHtml  # pyright: ignore[reportPrivateUsage]
+from htpy._types import HasHtml
 
 if t.TYPE_CHECKING:
     from collections.abc import Mapping
@@ -85,7 +85,7 @@ def _generate_attrs(raw_attrs: Mapping[str, Attribute]) -> Iterable[tuple[str, A
             yield _force_escape(key), True
 
         else:
-            if not isinstance(value, str | int | _HasHtml):
+            if not isinstance(value, str | int | HasHtml):
                 raise TypeError(f"Attribute value must be a string or an integer , got {value!r}")
 
             yield _force_escape(key), _force_escape(value)
