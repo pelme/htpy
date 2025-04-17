@@ -1,13 +1,7 @@
 from __future__ import annotations
 
 from htpy._contexts import Context, ContextConsumer, ContextProvider
-from htpy._elements import (
-    BaseElement,
-    Element,
-    HTMLElement,
-    VoidElement,
-    _get_element,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._elements import BaseElement, Element, HTMLElement, VoidElement
 from htpy._fragments import Fragment, comment, fragment
 from htpy._legacy_rendering import iter_node, render_node  # pyright: ignore[reportDeprecated]
 from htpy._types import Attribute, Node, Renderable
@@ -33,7 +27,9 @@ __all__: list[str] = [
 
 
 def __getattr__(name: str) -> Element:
-    return _get_element(name)
+    from htpy._elements import get_element
+
+    return get_element(name)
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
