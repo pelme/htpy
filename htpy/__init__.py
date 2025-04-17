@@ -129,7 +129,7 @@ T = t.TypeVar("T")
 P = t.ParamSpec("P")
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, slots=True)
 class ContextProvider(t.Generic[T]):
     context: Context[T]
     value: T
@@ -154,7 +154,7 @@ class ContextProvider(t.Generic[T]):
         return str(self).encode(encoding, errors)
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, slots=True)
 class ContextConsumer(t.Generic[T]):
     context: Context[T]
     debug_name: str
@@ -183,7 +183,7 @@ class _NO_DEFAULT:
     pass
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, slots=True)
 class Context(t.Generic[T]):
     name: str
     _: dataclasses.KW_ONLY
