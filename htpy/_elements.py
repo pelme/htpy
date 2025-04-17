@@ -176,7 +176,7 @@ def _python_to_html_name(name: str) -> str:
 
 
 @functools.lru_cache(maxsize=300)
-def _get_element(name: str) -> Element:  # pyright: ignore[reportUnusedFunction]
+def get_element(name: str) -> Element:
     if not name.islower():
         raise AttributeError(
             f"{name} is not a valid element name. html elements must have all lowercase names"
