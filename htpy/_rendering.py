@@ -5,10 +5,7 @@ from collections.abc import Iterable
 
 import markupsafe
 
-from htpy._types import (
-    _HasHtml,  # pyright: ignore[reportPrivateUsage]
-    _KnownInvalidChildren,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._types import HasHtml, KnownInvalidChildren
 
 if t.TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -38,11 +35,11 @@ def _iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) -
 
     if hasattr(x, "iter_chunks"):
         yield from x.iter_chunks(context)  # pyright: ignore
-    elif isinstance(x, str | _HasHtml):
+    elif isinstance(x, str | HasHtml):
         yield str(markupsafe.escape(x))
     elif isinstance(x, int):
         yield str(x)
-    elif isinstance(x, Iterable) and not isinstance(x, _KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
+    elif isinstance(x, Iterable) and not isinstance(x, KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from _iter_chunks_node(child, context)
     else:

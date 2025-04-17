@@ -15,10 +15,7 @@ from htpy._rendering import (
     _chunks_as_markup,  # pyright: ignore[reportPrivateUsage]
     _iter_chunks_node,  # pyright: ignore[reportPrivateUsage]
 )
-from htpy._types import (
-    _HasHtml,  # pyright: ignore[reportPrivateUsage]
-    _KnownInvalidChildren,  # pyright: ignore[reportPrivateUsage]
-)
+from htpy._types import HasHtml, KnownInvalidChildren
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
@@ -127,7 +124,7 @@ def _validate_children(children: t.Any) -> None:
     # bytes, bytearray etc:
     # These are Iterable (part of _KnownValidChildren) but still not
     # useful as a child node.
-    if isinstance(children, _KnownInvalidChildren):
+    if isinstance(children, KnownInvalidChildren):
         raise TypeError(f"{children!r} is not a valid child element")
 
     # Element, str, int and all other regular/valid types.
@@ -192,7 +189,7 @@ _KnownValidChildren: UnionType = (
     | str
     | int
     | Fragment
-    | _HasHtml
+    | HasHtml
     | Callable
     | Iterable
 )
