@@ -10,6 +10,11 @@ from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
 try:
+    from typing_extensions import TypedDict, Unpack
+except ImportError:
+    from typing import TypedDict, Unpack
+
+try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
 except ImportError:
     from typing_extensions import deprecated
@@ -265,19 +270,19 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: Mapping[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, id_class: str, attrs: HTMLAttrDict, /, **kwargs: Unpack[HTMLAttrDict]
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str = "", **kwargs: Attribute
+        self: BaseElementSelf, id_class: str = "", /, **kwargs: Unpack[HTMLAttrDict]
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: Mapping[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, attrs: HTMLAttrDict, /, **kwargs: Unpack[HTMLAttrDict]
     ) -> BaseElementSelf: ...
-    @t.overload
-    def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
-    def __call__(self: BaseElementSelf, *args: t.Any, **kwargs: t.Unpack[HTMLAttrDict]) -> BaseElementSelf:
+    def __call__(
+        self: BaseElementSelf, *args: t.Any, **kwargs: Unpack[HTMLAttrDict]
+    ) -> BaseElementSelf:
         id_class = ""
         attrs: Mapping[str, Attribute] = {}
 
@@ -456,181 +461,183 @@ Node: t.TypeAlias = (
     Renderable | None | bool | str | int | _HasHtml | Iterable["Node"] | Callable[[], "Node"]
 )
 
-Attribute: t.TypeAlias = None | bool | str | int | _HasHtml | _ClassNames
+_NonClassAttribute: t.TypeAlias = None | bool | str | int | _HasHtml
+Attribute: t.TypeAlias = _NonClassAttribute | _ClassNames
 
-class HTMLAttrDict(t.TypedDict):
-    accept: Attribute
-    accept_charset: Attribute
-    accesskey: Attribute
-    action: Attribute
-    align: Attribute
-    alt: Attribute
-    async_: Attribute
-    autocomplete: Attribute
-    autofocus: Attribute
-    autoplay: Attribute
-    bgcolor: Attribute
-    border: Attribute
-    charset: Attribute
-    checked: Attribute
-    cite: Attribute
+
+class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
+    accept: _NonClassAttribute
+    accept_charset: _NonClassAttribute
+    accesskey: _NonClassAttribute
+    action: _NonClassAttribute
+    align: _NonClassAttribute
+    alt: _NonClassAttribute
+    async_: _NonClassAttribute
+    autocomplete: _NonClassAttribute
+    autofocus: _NonClassAttribute
+    autoplay: _NonClassAttribute
+    bgcolor: _NonClassAttribute
+    border: _NonClassAttribute
+    charset: _NonClassAttribute
+    checked: _NonClassAttribute
+    cite: _NonClassAttribute
     class_: Attribute
-    color: Attribute
-    cols: Attribute
-    colspan: Attribute
-    content: Attribute
-    contenteditable: Attribute
-    controls: Attribute
-    coords: Attribute
-    data: Attribute
-    datetime: Attribute
-    default: Attribute
-    defer: Attribute
-    dir: Attribute
-    dirname: Attribute
-    disabled: Attribute
-    download: Attribute
-    draggable: Attribute
-    enctype: Attribute
-    enterkeyhint: Attribute
-    for_: Attribute
-    form: Attribute
-    formaction: Attribute
-    headers: Attribute
-    height: Attribute
-    hidden: Attribute
-    high: Attribute
-    href: Attribute
-    hreflang: Attribute
-    http_equiv: Attribute
-    id: Attribute
-    inert: Attribute
-    inputmode: Attribute
-    ismap: Attribute
-    kind: Attribute
-    label: Attribute
-    lang: Attribute
-    list: Attribute
-    loop: Attribute
-    low: Attribute
-    max: Attribute
-    maxlength: Attribute
-    media: Attribute
-    method: Attribute
-    min: Attribute
-    multiple: Attribute
-    muted: Attribute
-    name: Attribute
-    novalidate: Attribute
-    onabort: Attribute
-    onafterprint: Attribute
-    onbeforeprint: Attribute
-    onbeforeunload: Attribute
-    onblur: Attribute
-    oncanplay: Attribute
-    oncanplaythrough: Attribute
-    onchange: Attribute
-    onclick: Attribute
-    oncontextmenu: Attribute
-    oncopy: Attribute
-    oncuechange: Attribute
-    oncut: Attribute
-    ondblclick: Attribute
-    ondrag: Attribute
-    ondragend: Attribute
-    ondragenter: Attribute
-    ondragleave: Attribute
-    ondragover: Attribute
-    ondragstart: Attribute
-    ondrop: Attribute
-    ondurationchange: Attribute
-    onemptied: Attribute
-    onended: Attribute
-    onerror: Attribute
-    onfocus: Attribute
-    onhashchange: Attribute
-    oninput: Attribute
-    oninvalid: Attribute
-    onkeydown: Attribute
-    onkeypress: Attribute
-    onkeyup: Attribute
-    onload: Attribute
-    onloadeddata: Attribute
-    onloadedmetadata: Attribute
-    onloadstart: Attribute
-    onmousedown: Attribute
-    onmousemove: Attribute
-    onmouseout: Attribute
-    onmouseover: Attribute
-    onmouseup: Attribute
-    onmousewheel: Attribute
-    onoffline: Attribute
-    ononline: Attribute
-    onpagehide: Attribute
-    onpageshow: Attribute
-    onpaste: Attribute
-    onpause: Attribute
-    onplay: Attribute
-    onplaying: Attribute
-    onpopstate: Attribute
-    onprogress: Attribute
-    onratechange: Attribute
-    onreset: Attribute
-    onresize: Attribute
-    onscroll: Attribute
-    onsearch: Attribute
-    onseeked: Attribute
-    onseeking: Attribute
-    onselect: Attribute
-    onstalled: Attribute
-    onstorage: Attribute
-    onsubmit: Attribute
-    onsuspend: Attribute
-    ontimeupdate: Attribute
-    ontoggle: Attribute
-    onunload: Attribute
-    onvolumechange: Attribute
-    onwaiting: Attribute
-    onwheel: Attribute
-    open: Attribute
-    optimum: Attribute
-    pattern: Attribute
-    placeholder: Attribute
-    popover: Attribute
-    popovertarget: Attribute
-    popovertargetaction: Attribute
-    poster: Attribute
-    preload: Attribute
-    readonly: Attribute
-    rel: Attribute
-    required: Attribute
-    reversed: Attribute
-    rows: Attribute
-    rowspan: Attribute
-    sandbox: Attribute
-    scope: Attribute
-    selected: Attribute
-    shape: Attribute
-    size: Attribute
-    sizes: Attribute
-    span: Attribute
-    spellcheck: Attribute
-    src: Attribute
-    srcdoc: Attribute
-    srclang: Attribute
-    srcset: Attribute
-    start: Attribute
-    step: Attribute
-    style: Attribute
-    tabindex: Attribute
-    target: Attribute
-    title: Attribute
-    translate: Attribute
-    type: Attribute
-    usemap: Attribute
-    value: Attribute
-    width: Attribute
-    wrap: Attribute
+    color: _NonClassAttribute
+    cols: _NonClassAttribute
+    colspan: _NonClassAttribute
+    content: _NonClassAttribute
+    contenteditable: _NonClassAttribute
+    controls: _NonClassAttribute
+    coords: _NonClassAttribute
+    data: _NonClassAttribute
+    datetime: _NonClassAttribute
+    default: _NonClassAttribute
+    defer: _NonClassAttribute
+    dir: _NonClassAttribute
+    dirname: _NonClassAttribute
+    disabled: _NonClassAttribute
+    download: _NonClassAttribute
+    draggable: _NonClassAttribute
+    enctype: _NonClassAttribute
+    enterkeyhint: _NonClassAttribute
+    for_: _NonClassAttribute
+    form: _NonClassAttribute
+    formaction: _NonClassAttribute
+    headers: _NonClassAttribute
+    height: _NonClassAttribute
+    hidden: _NonClassAttribute
+    high: _NonClassAttribute
+    href: _NonClassAttribute
+    hreflang: _NonClassAttribute
+    http_equiv: _NonClassAttribute
+    id: _NonClassAttribute
+    inert: _NonClassAttribute
+    inputmode: _NonClassAttribute
+    ismap: _NonClassAttribute
+    kind: _NonClassAttribute
+    label: _NonClassAttribute
+    lang: _NonClassAttribute
+    list: _NonClassAttribute
+    loop: _NonClassAttribute
+    low: _NonClassAttribute
+    max: _NonClassAttribute
+    maxlength: _NonClassAttribute
+    media: _NonClassAttribute
+    method: _NonClassAttribute
+    min: _NonClassAttribute
+    multiple: _NonClassAttribute
+    muted: _NonClassAttribute
+    name: _NonClassAttribute
+    novalidate: _NonClassAttribute
+    onabort: _NonClassAttribute
+    onafterprint: _NonClassAttribute
+    onbeforeprint: _NonClassAttribute
+    onbeforeunload: _NonClassAttribute
+    onblur: _NonClassAttribute
+    oncanplay: _NonClassAttribute
+    oncanplaythrough: _NonClassAttribute
+    onchange: _NonClassAttribute
+    onclick: _NonClassAttribute
+    oncontextmenu: _NonClassAttribute
+    oncopy: _NonClassAttribute
+    oncuechange: _NonClassAttribute
+    oncut: _NonClassAttribute
+    ondblclick: _NonClassAttribute
+    ondrag: _NonClassAttribute
+    ondragend: _NonClassAttribute
+    ondragenter: _NonClassAttribute
+    ondragleave: _NonClassAttribute
+    ondragover: _NonClassAttribute
+    ondragstart: _NonClassAttribute
+    ondrop: _NonClassAttribute
+    ondurationchange: _NonClassAttribute
+    onemptied: _NonClassAttribute
+    onended: _NonClassAttribute
+    onerror: _NonClassAttribute
+    onfocus: _NonClassAttribute
+    onhashchange: _NonClassAttribute
+    oninput: _NonClassAttribute
+    oninvalid: _NonClassAttribute
+    onkeydown: _NonClassAttribute
+    onkeypress: _NonClassAttribute
+    onkeyup: _NonClassAttribute
+    onload: _NonClassAttribute
+    onloadeddata: _NonClassAttribute
+    onloadedmetadata: _NonClassAttribute
+    onloadstart: _NonClassAttribute
+    onmousedown: _NonClassAttribute
+    onmousemove: _NonClassAttribute
+    onmouseout: _NonClassAttribute
+    onmouseover: _NonClassAttribute
+    onmouseup: _NonClassAttribute
+    onmousewheel: _NonClassAttribute
+    onoffline: _NonClassAttribute
+    ononline: _NonClassAttribute
+    onpagehide: _NonClassAttribute
+    onpageshow: _NonClassAttribute
+    onpaste: _NonClassAttribute
+    onpause: _NonClassAttribute
+    onplay: _NonClassAttribute
+    onplaying: _NonClassAttribute
+    onpopstate: _NonClassAttribute
+    onprogress: _NonClassAttribute
+    onratechange: _NonClassAttribute
+    onreset: _NonClassAttribute
+    onresize: _NonClassAttribute
+    onscroll: _NonClassAttribute
+    onsearch: _NonClassAttribute
+    onseeked: _NonClassAttribute
+    onseeking: _NonClassAttribute
+    onselect: _NonClassAttribute
+    onstalled: _NonClassAttribute
+    onstorage: _NonClassAttribute
+    onsubmit: _NonClassAttribute
+    onsuspend: _NonClassAttribute
+    ontimeupdate: _NonClassAttribute
+    ontoggle: _NonClassAttribute
+    onunload: _NonClassAttribute
+    onvolumechange: _NonClassAttribute
+    onwaiting: _NonClassAttribute
+    onwheel: _NonClassAttribute
+    open: _NonClassAttribute
+    optimum: _NonClassAttribute
+    pattern: _NonClassAttribute
+    placeholder: _NonClassAttribute
+    popover: _NonClassAttribute
+    popovertarget: _NonClassAttribute
+    popovertargetaction: _NonClassAttribute
+    poster: _NonClassAttribute
+    preload: _NonClassAttribute
+    readonly: _NonClassAttribute
+    rel: _NonClassAttribute
+    required: _NonClassAttribute
+    reversed: _NonClassAttribute
+    rows: _NonClassAttribute
+    rowspan: _NonClassAttribute
+    sandbox: _NonClassAttribute
+    scope: _NonClassAttribute
+    selected: _NonClassAttribute
+    shape: _NonClassAttribute
+    size: _NonClassAttribute
+    sizes: _NonClassAttribute
+    span: _NonClassAttribute
+    spellcheck: _NonClassAttribute
+    src: _NonClassAttribute
+    srcdoc: _NonClassAttribute
+    srclang: _NonClassAttribute
+    srcset: _NonClassAttribute
+    start: _NonClassAttribute
+    step: _NonClassAttribute
+    style: _NonClassAttribute
+    tabindex: _NonClassAttribute
+    target: _NonClassAttribute
+    title: _NonClassAttribute
+    translate: _NonClassAttribute
+    type: _NonClassAttribute
+    usemap: _NonClassAttribute
+    value: _NonClassAttribute
+    width: _NonClassAttribute
+    wrap: _NonClassAttribute
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
@@ -768,5 +775,5 @@ _KnownValidChildren: UnionType = (
     | Fragment
     | _HasHtml
     | Callable
-    | Iterable
+    | Iterable[t.Any]
 )
