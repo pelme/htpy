@@ -10,7 +10,7 @@ if t.TYPE_CHECKING:
     from .conftest import RenderFixture
 
 letter_ctx: Context[t.Literal["a", "b", "c"]] = Context("letter", default="a")
-no_default_ctx = Context[str]("no_default")
+no_default_ctx: Context[str] = Context("no_default")
 
 
 @letter_ctx.consumer
