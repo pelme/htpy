@@ -160,3 +160,66 @@ print(
     )
 )
 ```
+
+### Components with children
+
+When building their own set of components, some prefer to make their
+components accept children nodes in the same way as the HTML elements provided
+by htpy.
+
+Making this work correctly in all cases can be tricky, so htpy provides a
+decorator called `@with_children`.
+
+With the `@with_children` decorator you can convert a component like this:
+
+```py
+from htpy import Node, Renderable
+
+def my_component(*, title: str, children: Node) -> Renderable:
+    ...
+```
+
+That is used like this:
+
+```py
+my_component(title="My title", children=h.div["My content"])
+```
+
+Into a component that is defined like this:
+
+```py
+from htpy import Node, Renderable, with_children
+
+@with_children
+def my_component(children: Node, *, title: str) -> Renderable:
+    ...
+```
+
+And that is used like this, just like any HTML element:
+
+```py
+my_component(title="My title")[h.div["My content"]]
+```
+
+You can combine `@with_children` with other decorators, like context
+consumers, that also pass extra arguments to the function, but you must make
+sure that decorators and arguments are in the right order.
+
+As the innermost decorator is the first to wrap the function, it maps to the
+first argument. With multiple decorators, the source code order of the
+decorators and arguments are the opposite of each other.
+
+```py
+from typing import Literal
+
+from htpy import Context, Node, Renderable, div, h1, with_children
+
+Theme = Literal["light", "dark"]
+
+theme_context: Context[Theme] = Context("theme", default="light")
+
+@with_children
+@theme_context.consumer
+def my_component(theme: Theme, children: Node, *, extra: str) -> Renderable:
+    ...
+```
