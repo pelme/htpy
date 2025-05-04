@@ -1,5 +1,8 @@
 # Changelog
 
+## 25.5.0 - 2025-05-xx
+- Add `@with_children` decorator to help creating custom components that get passed children in the same way as regular HTML elements. [PR #113]
+
 ## 25.4.2 - 2025-04-16
 - Fix import of `@deprecated()` annotation on Python >= 3.13. It is part of the `warnings` module, not the `typing` module. Fixes [issue #106]. [PR #107]
 

@@ -9,6 +9,8 @@ from collections.abc import Callable, Iterable, Iterator, Mapping
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
 
+from htpy._with_children import with_children as with_children
+
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
 except ImportError:
