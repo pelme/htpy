@@ -82,7 +82,7 @@ Output:
 Welcome to my page
 </h1>
 The magic number is
-42    # <-- Appears after 3 seconds
+42    # <-- Appears after 1 seconds
 </div>
 ```
 
@@ -108,6 +108,6 @@ print(
         lambda: str(fib(20)),
     ]
 )
-# output: <div><h1>Fibonacci!</h1>fib(12)=6765</div>
+# output: <div><h1>Fibonacci!</h1>fib(20)=6765</div>
 
 ```
