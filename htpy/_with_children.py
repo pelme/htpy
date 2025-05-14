@@ -71,14 +71,14 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
         #
         #     my_component["My content"]
         #
-        return self.wrapped(children)  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
+        return self.wrapped(children)  # type: ignore[call-arg]
 
     def __str__(self) -> _Markup:
         # This is the unbound component being rendered to a string:
         #
         #     str(my_component)
         #
-        return _Markup(self.wrapped(None))  # type: ignore[call-arg]  # pyright: ignore[reportCallIssue]
+        return _Markup(self.wrapped(None))  # type: ignore[call-arg]
 
     __html__ = __str__
 
@@ -89,7 +89,7 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
         self,
         context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
     ) -> Iterator[str]:
-        return self.wrapped(None).iter_chunks(context)  # type: ignore[call-arg]  # pyright: ignore
+        return self.wrapped(None).iter_chunks(context)  # type: ignore[call-arg]
 
 
 class _WithChildrenBound(t.Generic[C, P, R]):
@@ -136,7 +136,7 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         self,
         context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
     ) -> Iterator[str]:
-        return self._func(None, *self._args, **self._kwargs).iter_chunks(context)  # pyright: ignore
+        return self._func(None, *self._args, **self._kwargs).iter_chunks(context)
 
 
 with_children = _WithChildrenUnbound
