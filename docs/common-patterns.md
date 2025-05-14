@@ -160,3 +160,43 @@ print(
     )
 )
 ```
+
+### Components with children
+
+When building their own set of components, some prefer to make their own
+components accept children nodes in the same way as the HTML elements provided
+by htpy.
+
+Making this work correctly in all cases can be tricky, so htpy provides a
+decorator called `@with_children`.
+
+With the `@with_children` decorator you can to convert a component like this:
+
+```py
+from htpy import Element, Node
+
+def my_component(*, title: str, children: Node) -> Element:
+    ...
+```
+
+That is used like this:
+
+```py
+my_component(title="My title", children=h.div["My content"])
+```
+
+Into a component that is defined like this:
+
+```py
+from htpy import Element, Node, with_children
+
+@with_children
+def my_component(children: Node, *, title: str) -> Element:
+    ...
+```
+
+And that is used like this, just like any HTML element:
+
+```py
+my_component(title="My title")[h.div["My content"]]
+```
