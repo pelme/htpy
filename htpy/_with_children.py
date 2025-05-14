@@ -85,8 +85,11 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
-    def iter_chunks(self) -> Iterator[str]:
-        return self.wrapped(None).iter_chunks()  # type: ignore[call-arg]  # pyright: ignore
+    def iter_chunks(
+        self,
+        context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
+    ) -> Iterator[str]:
+        return self.wrapped(None).iter_chunks(context)  # type: ignore[call-arg]  # pyright: ignore
 
 
 class _WithChildrenBound(t.Generic[C, P, R]):
@@ -129,8 +132,11 @@ class _WithChildrenBound(t.Generic[C, P, R]):
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
-    def iter_chunks(self) -> Iterator[str]:
-        return self._func(None, *self._args, **self._kwargs).iter_chunks()  # pyright: ignore
+    def iter_chunks(
+        self,
+        context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
+    ) -> Iterator[str]:
+        return self._func(None, *self._args, **self._kwargs).iter_chunks(context)  # pyright: ignore
 
 
 with_children = _WithChildrenUnbound
