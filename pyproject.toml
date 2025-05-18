@@ -27,7 +27,7 @@ optional-dependencies.dev = [
     "pre-commit",
     "flit",
     "mypy",
-    "pyright",
+    "pyright>=1.1.400",
     "pytest",
     "black",
     "ruff",
