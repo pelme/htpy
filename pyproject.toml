@@ -6,7 +6,8 @@ dynamic = ["version"]
 dependencies = [
     "markupsafe>=2.0.0",
     # typing_extensions is used for @warnings.deprecated introduced in Python 3.13
-    "typing_extensions>=4.13.2 ; python_version<'3.13'",
+    # it is also used for the extra_items feature of TypedDict coming in python 3.14 (PEP 728)
+    "typing_extensions>=4.13.2 ; python_version<'3.14'",
 ]
 readme = "docs/README.md"
 authors = [
@@ -26,7 +27,7 @@ optional-dependencies.dev = [
     "pre-commit",
     "flit",
     "mypy",
-    "pyright",
+    "pyright>=1.1.400",
     "pytest",
     "black",
     "ruff",
@@ -84,6 +85,8 @@ exclude = ["examples", "scripts"]
 [tool.pyright]
 include = ["htpy", "tests"]
 strict = ["htpy", "tests"]
+# This is for PEP 728 support (TypedDict with extra keys)
+enableExperimentalFeatures = true
 
 [tool.pytest.ini_options]
 addopts = "--doctest-glob='docs/*.md'"
