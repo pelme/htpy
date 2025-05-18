@@ -270,7 +270,7 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: AttrDict, /, **kwargs: Unpack[AttrKwargs]
+        self: BaseElementSelf, id_class: str, attrs: Mapping[str, Attribute], /, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
@@ -278,7 +278,7 @@ class BaseElement:
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: AttrDict, /, **kwargs: Unpack[AttrKwargs]
+        self: BaseElementSelf, attrs: Mapping[str, Attribute], /, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf: ...
     def __call__(
         self: BaseElementSelf, *args: t.Any, **kwargs: Unpack[AttrKwargs]
@@ -464,7 +464,15 @@ Node: t.TypeAlias = (
 _NonClassAttribute: t.TypeAlias = None | bool | str | int | _HasHtml
 Attribute: t.TypeAlias = _NonClassAttribute | _ClassNames
 
-class _BaseAttrs(TypedDict, total=False):
+
+class AttrKwargs(TypedDict, total=False, extra_items=_NonClassAttribute):
+    # These are the modified attributes to make them valid identifiers
+    accept_charset: _NonClassAttribute
+    async_: _NonClassAttribute
+    class_: Attribute
+    for_: _NonClassAttribute
+    http_equiv: _NonClassAttribute
+    # The rest of the html attributes
     accept: _NonClassAttribute
     accesskey: _NonClassAttribute
     action: _NonClassAttribute
@@ -632,29 +640,6 @@ class _BaseAttrs(TypedDict, total=False):
     value: _NonClassAttribute
     width: _NonClassAttribute
     wrap: _NonClassAttribute
-
-
-_AttrDict = TypedDict("_AttrDict", {
-    "accept-charset": _NonClassAttribute,
-    "async": _NonClassAttribute,
-    "class": Attribute,
-    "for": _NonClassAttribute,
-    "http-equiv": _NonClassAttribute,
-}, total=False)
-
-class AttrDict(_BaseAttrs, _AttrDict, total=False, extra_items=_NonClassAttribute):
-    pass
-
-class AttrKwargs(_BaseAttrs, total=False, extra_items=_NonClassAttribute):
-    accept_charset: _NonClassAttribute
-    async_: _NonClassAttribute
-    class_: Attribute
-    for_: _NonClassAttribute
-    http_equiv: _NonClassAttribute
-
-def f(**kwargs: Unpack[AttrKwargs]) -> None:
-    # This is just a placeholder to make sure the AttrKwargs are valid
-    pass
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
