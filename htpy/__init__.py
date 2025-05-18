@@ -270,18 +270,18 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: HTMLAttrDict, /, **kwargs: Unpack[HTMLAttrDict]
+        self: BaseElementSelf, id_class: str, attrs: AttrDict, /, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str = "", /, **kwargs: Unpack[HTMLAttrDict]
+        self: BaseElementSelf, id_class: str = "", /, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: HTMLAttrDict, /, **kwargs: Unpack[HTMLAttrDict]
+        self: BaseElementSelf, attrs: AttrDict, /, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf: ...
     def __call__(
-        self: BaseElementSelf, *args: t.Any, **kwargs: Unpack[HTMLAttrDict]
+        self: BaseElementSelf, *args: t.Any, **kwargs: Unpack[AttrKwargs]
     ) -> BaseElementSelf:
         id_class = ""
         attrs: Mapping[str, Attribute] = {}
@@ -464,15 +464,12 @@ Node: t.TypeAlias = (
 _NonClassAttribute: t.TypeAlias = None | bool | str | int | _HasHtml
 Attribute: t.TypeAlias = _NonClassAttribute | _ClassNames
 
-
-class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
+class _BaseAttrs(TypedDict, total=False):
     accept: _NonClassAttribute
-    accept_charset: _NonClassAttribute
     accesskey: _NonClassAttribute
     action: _NonClassAttribute
     align: _NonClassAttribute
     alt: _NonClassAttribute
-    async_: _NonClassAttribute
     autocomplete: _NonClassAttribute
     autofocus: _NonClassAttribute
     autoplay: _NonClassAttribute
@@ -481,7 +478,6 @@ class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
     charset: _NonClassAttribute
     checked: _NonClassAttribute
     cite: _NonClassAttribute
-    class_: Attribute
     color: _NonClassAttribute
     cols: _NonClassAttribute
     colspan: _NonClassAttribute
@@ -500,7 +496,6 @@ class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
     draggable: _NonClassAttribute
     enctype: _NonClassAttribute
     enterkeyhint: _NonClassAttribute
-    for_: _NonClassAttribute
     form: _NonClassAttribute
     formaction: _NonClassAttribute
     headers: _NonClassAttribute
@@ -509,7 +504,6 @@ class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
     high: _NonClassAttribute
     href: _NonClassAttribute
     hreflang: _NonClassAttribute
-    http_equiv: _NonClassAttribute
     id: _NonClassAttribute
     inert: _NonClassAttribute
     inputmode: _NonClassAttribute
@@ -638,6 +632,29 @@ class HTMLAttrDict(TypedDict, total=False, extra_items=_NonClassAttribute):
     value: _NonClassAttribute
     width: _NonClassAttribute
     wrap: _NonClassAttribute
+
+
+_AttrDict = TypedDict("_AttrDict", {
+    "accept-charset": _NonClassAttribute,
+    "async": _NonClassAttribute,
+    "class": Attribute,
+    "for": _NonClassAttribute,
+    "http-equiv": _NonClassAttribute,
+}, total=False)
+
+class AttrDict(_BaseAttrs, _AttrDict, total=False, extra_items=_NonClassAttribute):
+    pass
+
+class AttrKwargs(_BaseAttrs, total=False, extra_items=_NonClassAttribute):
+    accept_charset: _NonClassAttribute
+    async_: _NonClassAttribute
+    class_: Attribute
+    for_: _NonClassAttribute
+    http_equiv: _NonClassAttribute
+
+def f(**kwargs: Unpack[AttrKwargs]) -> None:
+    # This is just a placeholder to make sure the AttrKwargs are valid
+    pass
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/Doctype
