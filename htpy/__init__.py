@@ -270,7 +270,11 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: Mapping[str, Attribute], /, **kwargs: Unpack[AttrKwargs]
+        self: BaseElementSelf,
+        id_class: str,
+        attrs: Mapping[str, Attribute],
+        /,
+        **kwargs: Unpack[AttrKwargs],
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
