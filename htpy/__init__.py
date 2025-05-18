@@ -781,5 +781,5 @@ _KnownValidChildren: UnionType = (
     | Fragment
     | _HasHtml
     | Callable
-    | Iterable[t.Any]
+    | Iterable
 )
