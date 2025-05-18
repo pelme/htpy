@@ -8,11 +8,7 @@ from collections.abc import Callable, Iterable, Iterator, Mapping
 
 from markupsafe import Markup as _Markup
 from markupsafe import escape as _escape
-
-try:
-    from typing_extensions import TypedDict, Unpack
-except ImportError:
-    from typing import TypedDict, Unpack
+from typing_extensions import TypedDict, Unpack
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
