@@ -265,7 +265,7 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, attrs: Mapping[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, id_class: str, *attrs: Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
@@ -273,26 +273,26 @@ class BaseElement:
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, attrs: Mapping[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf, *attrs: Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
     def __call__(self: BaseElementSelf, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
         id_class = ""
+        attrs_dicts: list[Mapping[str, Attribute]] = []
         attrs: Mapping[str, Attribute] = {}
 
-        if len(args) == 1:
-            if isinstance(args[0], str):
+        if args:
+            if not isinstance(args[0], Mapping):
                 # element(".foo")
-                id_class = args[0]
-                attrs = {}
+                id_class, *attrs_dicts = args
             else:
                 # element({"foo": "bar"})
                 id_class = ""
-                attrs = args[0]
-        elif len(args) == 2:
-            # element(".foo", {"bar": "baz"})
-            id_class, attrs = args
+                attrs_dicts = args
+
+        for attr_dict in attrs_dicts:
+            attrs.update(attr_dict)
 
         return self.__class__(
             self._name,
