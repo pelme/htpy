@@ -265,33 +265,27 @@ class BaseElement:
 
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str, *attrs: Mapping[str, Attribute], **kwargs: Attribute
+        self: BaseElementSelf,
+        id_class: str,
+        /,
+        *attrs: Mapping[str, Attribute],
+        **kwargs: Attribute,
     ) -> BaseElementSelf: ...
     @t.overload
     def __call__(
-        self: BaseElementSelf, id_class: str = "", **kwargs: Attribute
+        self: BaseElementSelf, /, *attrs: Mapping[str, Attribute], **kwargs: Attribute
     ) -> BaseElementSelf: ...
-    @t.overload
-    def __call__(
-        self: BaseElementSelf, *attrs: Mapping[str, Attribute], **kwargs: Attribute
-    ) -> BaseElementSelf: ...
-    @t.overload
-    def __call__(self: BaseElementSelf, **kwargs: Attribute) -> BaseElementSelf: ...
-    def __call__(self: BaseElementSelf, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
-        id_class = ""
-        attrs_dicts: list[Mapping[str, Attribute]] = []
-        attrs: Mapping[str, Attribute] = {}
+    def __call__(self: BaseElementSelf, /, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
+        id_class: str = ""
+        attr_dicts: list[Mapping[str, Attribute]]
+        attrs: dict[str, Attribute] = {}
 
-        if args:
-            if not isinstance(args[0], Mapping):
-                # element(".foo")
-                id_class, *attrs_dicts = args
-            else:
-                # element({"foo": "bar"})
-                id_class = ""
-                attrs_dicts = args
+        if args and not isinstance(args[0], Mapping):
+            id_class, *attr_dicts = args
+        else:
+            attr_dicts = list(args)
 
-        for attr_dict in attrs_dicts:
+        for attr_dict in attr_dicts:
             attrs.update(attr_dict)
 
         return self.__class__(
