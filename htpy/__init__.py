@@ -81,6 +81,9 @@ def _id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
 
 
 def _python_to_html_name(name: str) -> str:
+    # If the name already has a dash in it, we presume that it's already user formatted.
+    if "-" in name:
+        return name
     # Make _hyperscript (https://hyperscript.org/) work smoothly
     if name == "_":
         return "_"

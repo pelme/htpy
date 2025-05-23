@@ -103,6 +103,11 @@ def test_underscore_replacement(render: RenderFixture) -> None:
     assert render(result) == ['<button hx-post="/foo">', "click me!", "</button>"]
 
 
+def test_already_formatted_attributes(render: RenderFixture) -> None:
+    result = button(**{"data-foo__bar": "value"})
+    assert render(result) == ['<button data-foo__bar="value">', "</button>"]
+
+
 class Test_attribute_escape:
     pytestmark = pytest.mark.parametrize(
         "x",
