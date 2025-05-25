@@ -21,8 +21,9 @@ classifiers = [
     "Operating System :: OS Independent",
     "Typing :: Typed",
 ]
-# Install with pip install .[dev]
-optional-dependencies.dev = [
+
+[dependency-groups]
+dev = [
     "pre-commit",
     "flit",
     "mypy",
@@ -38,7 +39,7 @@ optional-dependencies.dev = [
     "markdown",
     "pytest-doctestplus"
 ]
-optional-dependencies.docs = [
+docs = [
     "mkdocs-material==9.5.12",
 ]
 
