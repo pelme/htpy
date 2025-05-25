@@ -277,13 +277,13 @@ class BaseElement:
     ) -> BaseElementSelf: ...
     def __call__(self: BaseElementSelf, /, *args: t.Any, **kwargs: t.Any) -> BaseElementSelf:
         id_class: str = ""
-        attr_dicts: list[Mapping[str, Attribute]]
+        attr_dicts: t.Sequence[Mapping[str, Attribute]]
         attrs: dict[str, Attribute] = {}
 
         if args and not isinstance(args[0], Mapping):
             id_class, *attr_dicts = args
         else:
-            attr_dicts = list(args)
+            attr_dicts = args
 
         for attr_dict in attr_dicts:
             attrs.update(attr_dict)
