@@ -298,6 +298,17 @@ dynamically.
 
 ```
 
+You can also specify multiple dictionaries  containing attributes. This is
+especially useful if you have variables with a common preset group of 
+attributes, or are using helper functions to create a dictionary of attributes.
+
+```pycon title="Using multiple dictionaries with attributes"
+>>> from htpy import button
+>>> print(button({"disabled": True}, {"hx-post": "/foo"}))
+<button disabled hx-post="/foo"></button>
+
+```
+
 ### Boolean/Empty Attributes
 
 In HTML, boolean attributes such as `disabled` are considered "true" when they
