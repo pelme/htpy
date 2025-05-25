@@ -187,13 +187,18 @@ def test_id_class_bad_format() -> None:
 
 
 def test_id_class_bad_type() -> None:
-    with pytest.raises(TypeError, match="id/class strings must be str. got {'oops': 'yes'}"):
-        div({"oops": "yes"}, {})  # type: ignore
+    with pytest.raises(TypeError, match="id/class strings must be str. got 3"):
+        div(3, {})  # type: ignore
 
 
 def test_id_class_and_kwargs(render: RenderFixture) -> None:
     result = div("#theid", for_="hello", data_foo="<bar")
     assert render(result) == ['<div id="theid" for="hello" data-foo="&lt;bar">', "</div>"]
+
+
+def test_multiple_attrs(render: RenderFixture) -> None:
+    result = div({"a": "1"}, {"a": "2", "b": "2"}, {"c": "3"})
+    assert render(result) == ['<div a="2" b="2" c="3">', "</div>"]
 
 
 def test_attrs_and_kwargs(render: RenderFixture) -> None:
