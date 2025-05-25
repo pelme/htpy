@@ -1,7 +1,7 @@
 # Changelog
 
-## NEXT
-- Allow multiple attribute dictionaries when defining `Elements`.
+## 25.5.0 - 2025-05-25
+- Allow multiple attribute dictionaries when defining `Elements`. [PR #117](https://github.com/pelme/htpy/pull/117). Thanks to [Chase Sterling @gazpachoking](https://github.com/gazpachoking).
 
 ## 25.4.2 - 2025-04-16
 - Fix import of `@deprecated()` annotation on Python >= 3.13. It is part of the `warnings` module, not the `typing` module. Fixes [issue #106]. [PR #107]
