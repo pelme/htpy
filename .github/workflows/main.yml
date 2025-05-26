@@ -10,12 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.13"
-          cache: pip
-      - run: pip install .[dev]
-      - run: pre-commit run --all-files
+      - run: uv run pre-commit run --all-files
 
   pytest:
     runs-on: ubuntu-latest
@@ -27,15 +25,13 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
-          - "3.14-dev"
+          - "3.14"
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: pytest
+      - run: uv run pytest
 
   mypy:
     runs-on: ubuntu-latest
@@ -45,12 +41,10 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: mypy
+      - run: uv run mypy
 
   pyright:
     runs-on: ubuntu-latest
@@ -60,9 +54,7 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: pyright
+      - run: uv run pyright
