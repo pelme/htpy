@@ -25,7 +25,6 @@ classifiers = [
 [dependency-groups]
 dev = [
     "pre-commit",
-    "flit",
     "mypy",
     "pyright",
     "pytest",
