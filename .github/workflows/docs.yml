@@ -13,9 +13,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: 3.x
-          cache: pip
-      - run: pip install .[docs]
-      - run: mkdocs gh-deploy --force
+          python-version: "3.13"
+      - run: uv run --group docs mkdocs gh-deploy --force
