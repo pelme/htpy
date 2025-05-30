@@ -18,7 +18,7 @@ def example_with_children(
     content: h.Node,
     *,
     title: str = "default!",
-) -> h.Element:
+) -> h.Renderable:
     return h.div[
         h.h1[title],
         h.p[content],

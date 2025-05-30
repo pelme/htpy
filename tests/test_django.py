@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 from django.utils.html import conditional_escape, escape
 from django.utils.safestring import SafeString
 
-from htpy import Element, Node, div, li, ul
+from htpy import Node, Renderable, div, li, ul
 
 if t.TYPE_CHECKING:
     from django.http import HttpRequest
@@ -43,7 +43,7 @@ def test_errorlist(render: RenderFixture) -> None:
     assert render(result) == ["<div>", '<ul class="errorlist"><li>my error</li></ul>', "</div>"]
 
 
-def my_template(context: dict[str, t.Any], request: HttpRequest | None) -> Element:
+def my_template(context: dict[str, t.Any], request: HttpRequest | None) -> Renderable:
     return div[f"hey {context['name']}"]
 
 
