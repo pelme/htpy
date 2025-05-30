@@ -1,11 +1,11 @@
 from collections.abc import Iterable
 
-from htpy import Element, body, h1, head, html, link, table, td, th, title, tr
+from htpy import Renderable, body, h1, head, html, link, table, td, th, title, tr
 
 from .items import Item
 
 
-def streaming_table_page(items: Iterable[Item]) -> Element:
+def streaming_table_page(items: Iterable[Item]) -> Renderable:
     return html[
         head[
             title["Stream example"],

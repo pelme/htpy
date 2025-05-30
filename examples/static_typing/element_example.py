@@ -1,10 +1,10 @@
 from typing import Literal
 
-from htpy import Element, span
+from htpy import Renderable, span
 
 
 def bootstrap_badge(
     text: str,
     style: Literal["success", "danger"],
-) -> Element:
+) -> Renderable:
     return span(f".badge.text-bg-{style}")[text]
