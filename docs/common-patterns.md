@@ -35,9 +35,9 @@ def greeting(request: HttpRequest) -> HttpResponse:
 ```
 
 ```py title="components.py"
-from htpy import html, body, h1
+from htpy import Renderable, body, html, h1
 
-def greeting_page(*, name: str) -> Element:
+def greeting_page(*, name: str) -> Renderable:
     return html[body[h1[f"hi {name}!"]]]
 ```
 
@@ -70,7 +70,7 @@ A common feature of template languages is to "extend" a base/parent template and
 ```py title="components.py"
 import datetime
 
-from htpy import body, div, h1, head, html, p, title, Node, Element
+from htpy import Node, Renderable, body, div, h1, head, html, p, title
 
 
 def base_layout(*,
@@ -78,7 +78,7 @@ def base_layout(*,
     extra_head: Node = None,
     content: Node = None,
     body_class: str | None = None,
-) -> Element:
+) -> Renderable:
     return html[
         head[title[page_title], extra_head],
         body(class_=body_class)[
@@ -88,7 +88,7 @@ def base_layout(*,
     ]
 
 
-def index_page() -> Element:
+def index_page() -> Renderable:
     return base_layout(
         page_title="Welcome!",
         body_class="green",
@@ -99,7 +99,7 @@ def index_page() -> Element:
     )
 
 
-def about_page() -> Element:
+def about_page() -> Renderable:
     return base_layout(
         page_title="About us",
         content=[
@@ -119,10 +119,10 @@ Wrapping [Bootstrap Modal](https://getbootstrap.com/docs/4.0/components/modal/) 
 ```py title="Creating wrapper for Bootstrap Modal"
 from markupsafe import Markup
 
-from htpy import Element, Node, button, div, h5, span
+from htpy import Node, Renderable, button, div, h5, span
 
 
-def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Element:
+def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Renderable:
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[
