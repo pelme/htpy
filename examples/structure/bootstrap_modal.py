@@ -1,9 +1,9 @@
 from markupsafe import Markup
 
-from htpy import Element, Node, button, div, h5, span
+from htpy import Node, Renderable, button, div, h5, span
 
 
-def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Element:
+def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Renderable:
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[

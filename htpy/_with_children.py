@@ -25,7 +25,7 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
     It lets you convert this:
 
     ```python
-    def my_component(*, title: str, children: h.Node) -> h.Element:
+    def my_component(*, title: str, children: h.Node) -> h.Renderable:
         ...
 
     my_component(title="My title", children=h.div["My content"])
@@ -35,7 +35,7 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
 
     ```python
     @h.with_children
-    def my_component(children: h.Node, *, title: str) -> h.Element:
+    def my_component(children: h.Node, *, title: str) -> h.Renderable:
         ...
 
     my_component(title="My title")[h.div["My content"]]

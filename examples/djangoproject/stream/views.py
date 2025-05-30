@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from django.http import HttpRequest, StreamingHttpResponse
 
-from htpy import Element, body, h1, head, html, link, table, td, th, title, tr
+from htpy import Renderable, body, h1, head, html, link, table, td, th, title, tr
 
 
 @dataclass
@@ -20,7 +20,7 @@ def generate_items() -> Iterable[Item]:
         time.sleep(1)
 
 
-def streaming_table_page(items: Iterable[Item]) -> Element:
+def streaming_table_page(items: Iterable[Item]) -> Renderable:
     return html[
         head[
             title["Stream example"],

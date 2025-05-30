@@ -1,7 +1,7 @@
-from htpy import Element, Node, div
+from htpy import Node, Renderable, div
 
 
-def bootstrap_alert(contents: Node) -> Element:
+def bootstrap_alert(contents: Node) -> Renderable:
     return div(".alert", role="alert")[contents]
 
 
