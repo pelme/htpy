@@ -1,11 +1,10 @@
 # Changelog
 
-## NEXT
-- Split source code into multiple private modules.
-  See [PR #119](https://github.com/pelme/htpy/pull/119).
+## 25.5.1 - 2025-05-30
+- Split source code into multiple private modules. See PR #119.
   Thanks to [Stein Magnus Jodal (@jodal)](https://github.com/jodal).
 - Add `@with_children` decorator to help creating custom components that get passed children in the same way as regular HTML elements.
-  See [PR #113](https://github.com/pelme/htpy/pull/113).
+  See PR #113.
   [Read the docs for more details](common-patterns.md#components-with-children).
   Thanks to [Stein Magnus Jodal (@jodal)](https://github.com/jodal).
 
