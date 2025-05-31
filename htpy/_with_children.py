@@ -3,7 +3,7 @@ from __future__ import annotations
 import functools
 import typing as t
 
-from markupsafe import Markup as _Markup
+import markupsafe
 
 if t.TYPE_CHECKING:
     from collections.abc import Callable, Iterator, Mapping
@@ -73,12 +73,12 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
         #
         return self.wrapped(children)  # type: ignore[call-arg]
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         # This is the unbound component being rendered to a string:
         #
         #     str(my_component)
         #
-        return _Markup(self.wrapped(None))  # type: ignore[call-arg]
+        return markupsafe.Markup(self.wrapped(None))  # type: ignore[call-arg]
 
     __html__ = __str__
 
@@ -120,12 +120,12 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         #
         return self._func(children, *self._args, **self._kwargs)
 
-    def __str__(self) -> _Markup:
+    def __str__(self) -> markupsafe.Markup:
         # This is a bound component being rendered to a string:
         #
         #     str(my_component(title="My title"))
         #
-        return _Markup(self._func(None, *self._args, **self._kwargs))
+        return markupsafe.Markup(self._func(None, *self._args, **self._kwargs))
 
     __html__ = __str__
 
