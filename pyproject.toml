@@ -22,21 +22,29 @@ classifiers = [
 
 [dependency-groups]
 dev = [
+    "pre-commit",
+    { include-group = "docs" },
+    { include-group = "mypy" },
+    { include-group = "pyright" },
+    { include-group = "ruff" },
+    { include-group = "tests" },
+]
+docs = ["mkdocs-material==9.5.12"]
+mypy = ["mypy"]
+pyright = ["pyright"]
+ruff = ["ruff"]
+tests = [
     "black",
     "django",
     "django-stubs",
     "httpx",
     "jinja2",
     "markdown",
-    "mypy",
-    "pre-commit",
-    "pyright",
     "pytest",
     "pytest-doctestplus",
     "ruff",
     "starlette",
 ]
-docs = ["mkdocs-material==9.5.12"]
 
 [project.urls]
 Homepage = "https://htpy.dev"
