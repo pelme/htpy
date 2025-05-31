@@ -23,6 +23,8 @@ classifiers = [
 [dependency-groups]
 dev = [
     "pre-commit",
+    "tox>=4.21.2",
+    "tox-uv>=1.23.2",
     { include-group = "docs" },
     { include-group = "mypy" },
     { include-group = "pyright" },
@@ -95,3 +97,70 @@ select = [
     "TID",    # flake8-tidy-imports
 ]
 ignore = ["B904"]
+
+
+[tool.tox]
+env_list = [
+    "3.10",
+    "3.11",
+    "3.12",
+    "3.13",
+    "3.14",
+    "docs",
+    "mypy",
+    "pyright",
+    "ruff-format",
+    "ruff-check",
+]
+
+[tool.tox.env_run_base]
+package = "wheel"
+wheel_build_env = ".pkg"
+dependency_groups = ["tests"]
+commands = [
+    [
+        "pytest",
+        "--basetemp={envtmpdir}",
+        "tests",                                # unit tests
+        "{envsitepackagesdir}/htpy",            # doctests
+        { replace = "posargs", extend = true },
+    ],
+]
+
+[tool.tox.env.docs]
+dependency_groups = ["docs"]
+commands = [["mkdocs", "build", "--site-dir={envtmpdir}"]]
+
+[tool.tox.env.mypy]
+dependency_groups = ["tests", "mypy"]
+commands = [
+    [
+        "mypy",
+        { replace = "posargs", default = [
+            "htpy",
+            "tests",
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.pyright]
+dependency_groups = ["tests", "pyright"]
+commands = [
+    [
+        "pyright",
+        { replace = "posargs", default = [
+            "htpy",
+            "tests",
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.ruff-format]
+skip_install = true
+dependency_groups = ["ruff"]
+commands = [["ruff", "format", "--check", "{posargs:.}"]]
+
+[tool.tox.env.ruff-check]
+skip_install = true
+dependency_groups = ["ruff"]
+commands = [["ruff", "check", "{posargs:.}"]]
