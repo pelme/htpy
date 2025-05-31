@@ -17,7 +17,6 @@ from htpy._types import Node as Node
 from htpy._types import Renderable as Renderable
 from htpy._with_children import with_children as with_children
 
-__version__ = "25.5.1"
 __all__: list[str] = []
 
 
