@@ -9,9 +9,7 @@ dependencies = [
     "typing_extensions>=4.13.2 ; python_version<'3.13'",
 ]
 readme = "docs/README.md"
-authors = [
-  { name="Andreas Pelme", email="andreas@pelme.se" },
-]
+authors = [{ name = "Andreas Pelme", email = "andreas@pelme.se" }]
 license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -24,23 +22,21 @@ classifiers = [
 
 [dependency-groups]
 dev = [
-    "pre-commit",
-    "mypy",
-    "pyright",
-    "pytest",
     "black",
-    "ruff",
     "django",
     "django-stubs",
-    "jinja2",
-    "starlette",
     "httpx",
+    "jinja2",
     "markdown",
-    "pytest-doctestplus"
+    "mypy",
+    "pre-commit",
+    "pyright",
+    "pytest",
+    "pytest-doctestplus",
+    "ruff",
+    "starlette",
 ]
-docs = [
-    "mkdocs-material==9.5.12",
-]
+docs = ["mkdocs-material==9.5.12"]
 
 [project.urls]
 Homepage = "https://htpy.dev"
@@ -51,38 +47,43 @@ Issues = "https://github.com/pelme/htpy/issues"
 [project.scripts]
 html2htpy = "htpy.html2htpy:main"
 
+
 [build-system]
 requires = ["setuptools>=64", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 
-[tool.ruff]
-line-length = 100
-lint.select = [
-    "F",        # Pyflakes
-    "E",        # pycodestyle error
-    "W",        # pycodestyle warning
-    "I",        # isort
-    "B",        # flake8-bugbear
-    "C4",       # flake8-comprehensions
-    "TCH",      # flake8-type-checking
-    "RUF100",   # yesqa equivalence
-    "UP",       # pyupgrade
-    "TID",      # flake8-tidy-imports
-]
-lint.ignore = [
-    "B904",
-]
 
 [tool.mypy]
 strict = true
 packages = ["htpy", "tests"]
 exclude = ["examples", "scripts"]
 
+
 [tool.pyright]
 include = ["htpy", "tests"]
 strict = ["htpy", "tests"]
 
+
 [tool.pytest.ini_options]
 addopts = "--doctest-glob='docs/*.md'"
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "F",      # Pyflakes
+    "E",      # pycodestyle error
+    "W",      # pycodestyle warning
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "TCH",    # flake8-type-checking
+    "RUF100", # yesqa equivalence
+    "UP",     # pyupgrade
+    "TID",    # flake8-tidy-imports
+]
+ignore = ["B904"]
