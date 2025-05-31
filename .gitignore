@@ -1,7 +1,9 @@
 *.sqlite3
+/*.egg-info/
 /*.lock
 /.*_cache/
 /.env
+/.jj/
 /.venv/
 /dist/
 /site/
