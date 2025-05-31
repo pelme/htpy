@@ -52,11 +52,10 @@ Issues = "https://github.com/pelme/htpy/issues"
 html2htpy = "htpy.html2htpy:main"
 
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
 
-[tool.flit.module]
-name = "htpy"
+[tool.setuptools_scm]
 
 [tool.ruff]
 line-length = 100
