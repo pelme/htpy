@@ -21,6 +21,6 @@ jobs:
         id: build
       - uses: actions/download-artifact@v4
         with:
-          name: Packages
+          name: ${{ steps.build.outputs.artifact-name }}
           path: dist
       - uses: https://github.com/pypa/gh-action-pypi-publish@release/v1
