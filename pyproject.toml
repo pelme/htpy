@@ -137,7 +137,7 @@ commands = [
     [
         "mypy",
         { replace = "posargs", default = [
-            "htpy",
+            "src",
             "tests",
         ], extend = true },
     ],
@@ -149,7 +149,7 @@ commands = [
     [
         "pyright",
         { replace = "posargs", default = [
-            "htpy",
+            "src",
             "tests",
         ], extend = true },
     ],
