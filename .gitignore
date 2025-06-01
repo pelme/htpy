@@ -1,11 +1,12 @@
-*.sqlite3
 *.egg-info
+*.sqlite3
+.DS_Store
 /*.lock
 /.*_cache/
 /.env
 /.jj/
+/.tox/
 /.venv/
 /dist/
 /site/
 __pycache__/
-.DS_Store
