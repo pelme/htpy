@@ -23,4 +23,4 @@ jobs:
         with:
           name: ${{ steps.build.outputs.artifact-name }}
           path: dist
-      - uses: https://github.com/pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@release/v1
