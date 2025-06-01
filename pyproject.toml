@@ -62,11 +62,13 @@ html2htpy = "htpy.html2htpy:main"
 
 
 [build-system]
-requires = ["setuptools>=64", "setuptools-scm>=8"]
+requires = ["setuptools>=64", "setuptools-scm>=8", "setuptools-rust>=1.11.1"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 
+[[tool.setuptools-rust.ext-modules]]
+target = "htpy._rust_impl"
 
 [tool.mypy]
 strict = true
