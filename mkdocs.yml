@@ -20,7 +20,6 @@ nav:
   - html2htpy.md
   - faq.md
   - references.md
-  - changelog.md
 markdown_extensions:
   - admonition
   - pymdownx.highlight:
@@ -38,3 +37,8 @@ markdown_extensions:
   - md_in_html
   - toc:
       permalink: true
+
+plugins:
+  - redirects:
+      redirect_maps:
+        'changelog.md': 'https://github.com/pelme/htpy/releases'

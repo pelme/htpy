@@ -31,7 +31,10 @@ dev = [
     { include-group = "ruff" },
     { include-group = "tests" },
 ]
-docs = ["mkdocs-material==9.5.12"]
+docs = [
+    "mkdocs-material==9.5.12",
+    "mkdocs-redirects==1.2.2",
+]
 mypy = ["mypy"]
 pyright = ["pyright"]
 ruff = ["ruff"]
