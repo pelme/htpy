@@ -70,6 +70,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.mypy]
 strict = true
+strict_equality = true
 packages = ["htpy", "tests"]
 exclude = ["examples", "scripts"]
 
