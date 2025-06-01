@@ -12,9 +12,9 @@ readme = "docs/README.md"
 authors = [
   { name="Andreas Pelme", email="andreas@pelme.se" },
 ]
+license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta",
     "Topic :: Text Processing :: Markup :: HTML",
