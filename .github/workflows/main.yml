@@ -15,6 +15,15 @@ jobs:
           python-version: "3.13"
       - run: uv run pre-commit run --all-files
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Fetch history and tags to enable correct versioning
+          fetch-depth: 0
+      - uses: hynek/build-and-inspect-python-package@v2
+
   pytest:
     runs-on: ubuntu-latest
     strategy:
