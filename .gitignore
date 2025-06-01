@@ -1,5 +1,5 @@
 *.sqlite3
-/*.egg-info/
+*.egg-info
 /*.lock
 /.*_cache/
 /.env
