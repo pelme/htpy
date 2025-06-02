@@ -49,6 +49,7 @@ class BaseElement:
         id_class: str,
         /,
         *attrs: Mapping[str, Attribute],
+        attr: Attribute = None,
         **kwargs: Attribute,
     ) -> BaseElementSelf: ...
     @t.overload
