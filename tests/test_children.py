@@ -12,7 +12,21 @@ import pytest
 from markupsafe import Markup
 from typing_extensions import assert_type
 
-from htpy import Element, VoidElement, dd, div, dl, dt, html, img, input, li, my_custom_element, ul
+from htpy import (
+    Element,
+    VoidElement,
+    dd,
+    div,
+    dl,
+    dt,
+    fragment,
+    html,
+    img,
+    input,
+    li,
+    my_custom_element,
+    ul,
+)
 
 from .conftest import Trace
 
@@ -131,6 +145,17 @@ def test_generator_children(render: RenderFixture) -> None:
     gen: Iterator[Element] = (li[x] for x in ["a", "b"])
     result = ul[gen]
     assert render(result) == ["<ul>", "<li>", "a", "</li>", "<li>", "b", "</li>", "</ul>"]
+
+
+def test_raise_error_consume_generator_twice() -> None:
+    def gen() -> Iterator[str]:
+        yield "hi"
+
+    fragment_ = fragment[gen()]
+    assert list(fragment_.iter_chunks()) == ["hi"]
+
+    with pytest.raises(RuntimeError, match="Generator has already been consumed"):
+        list(fragment_.iter_chunks())
 
 
 def test_non_generator_iterator(render: RenderFixture, trace: TraceFixture) -> None:

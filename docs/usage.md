@@ -125,6 +125,20 @@ You can pass a list, tuple or generator to generate multiple children:
     directly when the element is constructed. See [Streaming](streaming.md) for
     more information.
 
+!!! warning "Generator Consumption"
+
+    Generators can only be consumed once. If you try to render an element containing a generator multiple times, you will get a `RuntimeError` on the second attempt:
+
+    ```python
+    >>> element = div[(x for x in "abc")]
+    >>> str(element)  # First render - works
+    '<div>abc</div>'
+    >>> str(element)  # Second render - fails
+    RuntimeError: Generator has already been consumed
+    ```
+
+    If you need to render the same content multiple times, use a `list` instead of a generator.
+
 A `list` can be used similar to a [JSX fragment](https://react.dev/reference/react/Fragment):
 
 ```pycon title="Render a list of child elements"
