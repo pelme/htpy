@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import typing as t
-from collections.abc import Iterable
+import weakref
+from collections.abc import Generator, Iterable
 
 import markupsafe
 
@@ -12,6 +13,9 @@ if t.TYPE_CHECKING:
 
     from htpy._contexts import Context
     from htpy._types import Node, Renderable
+
+# Track consumed generators to prevent double consumption
+_consumed_generators: weakref.WeakSet[Generator[t.Any, t.Any, t.Any]] = weakref.WeakSet()
 
 
 def chunks_as_markup(renderable: Renderable) -> markupsafe.Markup:
@@ -39,6 +43,12 @@ def iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) ->
         yield str(markupsafe.escape(x))
     elif isinstance(x, int):
         yield str(x)
+    elif isinstance(x, Generator):
+        if x in _consumed_generators:
+            raise RuntimeError("Generator has already been consumed")
+        _consumed_generators.add(x)
+        for child in x:
+            yield from iter_chunks_node(child, context)
     elif isinstance(x, Iterable) and not isinstance(x, KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from iter_chunks_node(child, context)
