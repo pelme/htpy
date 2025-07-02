@@ -129,11 +129,13 @@ You can pass a list, tuple or generator to generate multiple children:
 
     Generators can only be consumed once. If you try to render an element containing a generator multiple times, you will get a `RuntimeError` on the second attempt:
 
-    ```python
+    ```pycon
     >>> element = div[(x for x in "abc")]
-    >>> str(element)  # First render - works
-    '<div>abc</div>'
-    >>> str(element)  # Second render - fails
+    >>> print(element)  # First render - works
+    <div>abc</div>
+    >>> print(element)  # Second render - fails  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    ...
     RuntimeError: Generator has already been consumed
     ```
 
