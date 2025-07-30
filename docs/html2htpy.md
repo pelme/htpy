@@ -200,6 +200,32 @@ body[
 ]
 ```
 
-## VSCode Extension
+## Editor Integration
+
+### VSCode Extension
 
 If you are using VSCode, you can install the [html2htpy](https://marketplace.visualstudio.com/items?itemName=dunderrrrrr.html2htpy) extension to quickly convert HTML to htpy code.
+
+### Tailwind IntelliSense
+
+When using Tailwind CSS with htpy, you can enable IntelliSense for utility classes by adding the following configuration to your VS Code `settings.json`:
+
+```json
+{
+    "tailwindCSS.includeLanguages": {
+        "python": "html"
+    },
+    "tailwindCSS.experimental.classRegex": [
+        // keyword‑args and helper args: class_, base_classes, error_classes, etc.
+        "\\b\\w*class\\w*\\b\\s*=\\s*['\"]([^'\"]*)['\"]",
+        // dict‑style class entries: "class": "..."
+        "['\"]class['\"]\\s*:\\s*['\"]([^'\"]*)['\"]"
+    ]
+}
+```
+
+This configuration enables Tailwind IntelliSense for:
+
+- Keyword arguments: `class_="text-sm text-zinc-50"`
+- Custom helper arguments: `base_classes="flex gap-2"`, `error_classes="text-red-500"`
+- Dictionary-style class entries: `{"class": "flex gap-2"}`
