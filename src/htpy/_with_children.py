@@ -139,7 +139,9 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         return self._func(None, *self._args, **self._kwargs).iter_chunks(context)
 
 
-def with_children(func: Callable[t.Concatenate[C | None, P], R]) -> _WithChildrenUnbound[C, P, R]:
+def with_children(
+    func: Callable[t.Concatenate[C | None, P], R],
+) -> _WithChildrenUnbound[C | None, P, R]:
     """Decorator to make a component support children nodes.
 
     This decorator allows you to create components that can accept children nodes
