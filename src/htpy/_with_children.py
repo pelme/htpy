@@ -139,4 +139,22 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         return self._func(None, *self._args, **self._kwargs).iter_chunks(context)
 
 
-with_children = _WithChildrenUnbound
+def with_children(func: Callable[t.Concatenate[C | None, P], R]) -> _WithChildrenUnbound[C, P, R]:
+    """Decorator to make a component support children nodes.
+
+    This decorator allows you to create components that can accept children nodes
+    using the bracket notation, similar to native htpy components.
+
+    Example:
+        @with_children
+        def my_component(children: Node, *, title: str) -> Renderable:
+            return div(class_="container")[h1[title], children]
+
+        # Usage:
+        my_component(title="Hello")[span["World"]]
+    """
+    wrapper = _WithChildrenUnbound(func)
+    # Ensure the wrapper has the same signature as the original function
+    # This is crucial for LSP to recognize the function arguments
+    functools.update_wrapper(wrapper, func)
+    return wrapper
