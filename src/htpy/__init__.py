@@ -26,10 +26,10 @@ def __getattr__(name: str) -> Element:
     return get_element(name)
 
 
-# https://developer.mozilla.org/en-US/docs/Glossary/Doctype
+# The list of HTML elements is mostly collected from
+# https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements
 html = HTMLElement("html")
 
-# https://developer.mozilla.org/en-US/docs/Glossary/Void_element
 area = VoidElement("area")
 base = VoidElement("base")
 br = VoidElement("br")
@@ -40,18 +40,12 @@ img = VoidElement("img")
 input = VoidElement("input")
 link = VoidElement("link")
 meta = VoidElement("meta")
-param = VoidElement("param")
 source = VoidElement("source")
 track = VoidElement("track")
 wbr = VoidElement("wbr")
 
-# Non-deprecated HTML elements, extracted from
-# https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-# Located via the inspector with:
-# Array.from($0.querySelectorAll('li')).filter(x=>!x.querySelector('.icon-deprecated')).map(x => x.querySelector('code').textContent) # noqa: E501
 a = Element("a")
 abbr = Element("abbr")
-abc = Element("abc")
 address = Element("address")
 article = Element("article")
 aside = Element("aside")
@@ -102,6 +96,7 @@ li = Element("li")
 main = Element("main")
 map = Element("map")
 mark = Element("mark")
+math = Element("math")
 menu = Element("menu")
 meter = Element("meter")
 nav = Element("nav")
@@ -113,7 +108,6 @@ option = Element("option")
 output = Element("output")
 p = Element("p")
 picture = Element("picture")
-portal = Element("portal")
 pre = Element("pre")
 progress = Element("progress")
 q = Element("q")
@@ -134,6 +128,7 @@ style = Element("style")
 sub = Element("sub")
 summary = Element("summary")
 sup = Element("sup")
+svg = Element("svg")
 table = Element("table")
 tbody = Element("tbody")
 td = Element("td")
@@ -148,3 +143,4 @@ tr = Element("tr")
 u = Element("u")
 ul = Element("ul")
 var = Element("var")
+video = Element("video")
