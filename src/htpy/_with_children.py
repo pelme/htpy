@@ -17,31 +17,6 @@ R = t.TypeVar("R", bound="htpy.Renderable")
 
 
 class _WithChildrenUnbound(t.Generic[C, P, R]):
-    """Decorator to make a component support children nodes.
-
-    This decorator is used to create a component that can accept children nodes,
-    just like native htpy components.
-
-    It lets you convert this:
-
-    ```python
-    def my_component(*, title: str, children: h.Node) -> h.Renderable:
-        ...
-
-    my_component(title="My title", children=h.div["My content"])
-    ```
-
-    To this:
-
-    ```python
-    @h.with_children
-    def my_component(children: h.Node, *, title: str) -> h.Renderable:
-        ...
-
-    my_component(title="My title")[h.div["My content"]]
-    ```
-    """
-
     wrapped: Callable[t.Concatenate[C | None, P], R]
 
     def __init__(self, func: Callable[t.Concatenate[C | None, P], R]) -> None:
@@ -49,7 +24,6 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
         # It means that this object is global, and shared between all renderings
         # of the same component.
         self.wrapped = func
-        functools.update_wrapper(self, func)
 
     def __repr__(self) -> str:
         return f"with_children({self.wrapped.__name__}, <unbound>)"
@@ -139,4 +113,24 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         return self._func(None, *self._args, **self._kwargs).iter_chunks(context)
 
 
-with_children = _WithChildrenUnbound
+def with_children(
+    func: Callable[t.Concatenate[C | None, P], R],
+) -> _WithChildrenUnbound[C | None, P, R]:
+    """Decorator to make a component support children nodes.
+
+    This decorator allows you to create components that can accept children nodes
+    using the bracket notation, similar to native htpy components.
+
+    Example:
+        @with_children
+        def my_component(children: Node, *, title: str) -> Renderable:
+            return div(class_="container")[h1[title], children]
+
+        # Usage:
+        my_component(title="Hello")[span["World"]]
+    """
+    wrapper = _WithChildrenUnbound(func)
+    # Ensure the wrapper has the same signature as the original function
+    # This is crucial for LSP to recognize the function arguments
+    functools.update_wrapper(wrapper, func)
+    return wrapper
