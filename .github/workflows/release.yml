@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/htpy/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Fetch history and tags to enable correct versioning
+          fetch-depth: 0
+      - uses: hynek/build-and-inspect-python-package@v2
+        id: build
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.artifact-name }}
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1

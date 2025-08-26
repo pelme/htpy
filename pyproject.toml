@@ -9,37 +9,46 @@ dependencies = [
     "typing_extensions>=4.13.2 ; python_version<'3.13'",
 ]
 readme = "docs/README.md"
-authors = [
-  { name="Andreas Pelme", email="andreas@pelme.se" },
-]
+authors = [{ name = "Andreas Pelme", email = "andreas@pelme.se" }]
+license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
     "Development Status :: 4 - Beta",
     "Topic :: Text Processing :: Markup :: HTML",
     "Operating System :: OS Independent",
     "Typing :: Typed",
 ]
-# Install with pip install .[dev]
-optional-dependencies.dev = [
+
+[dependency-groups]
+dev = [
     "pre-commit",
-    "flit",
-    "mypy",
-    "pyright",
-    "pytest",
+    "tox>=4.21.2",
+    "tox-uv>=1.23.2",
+    { include-group = "docs" },
+    { include-group = "mypy" },
+    { include-group = "pyright" },
+    { include-group = "ruff" },
+    { include-group = "tests" },
+]
+docs = [
+    "mkdocs-material==9.5.12",
+    "mkdocs-redirects==1.2.2",
+]
+mypy = ["mypy"]
+pyright = ["pyright"]
+ruff = ["ruff"]
+tests = [
     "black",
-    "ruff",
     "django",
     "django-stubs",
-    "jinja2",
-    "starlette",
     "httpx",
+    "jinja2",
     "markdown",
-    "pytest-doctestplus"
-]
-optional-dependencies.docs = [
-    "mkdocs-material==9.5.12",
+    "pytest",
+    "pytest-doctestplus",
+    "ruff",
+    "starlette",
 ]
 
 [project.urls]
@@ -51,39 +60,111 @@ Issues = "https://github.com/pelme/htpy/issues"
 [project.scripts]
 html2htpy = "htpy.html2htpy:main"
 
+
 [build-system]
-requires = ["flit_core >=3.2,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
 
-[tool.flit.module]
-name = "htpy"
+[tool.setuptools_scm]
 
-[tool.ruff]
-line-length = 100
-lint.select = [
-    "F",        # Pyflakes
-    "E",        # pycodestyle error
-    "W",        # pycodestyle warning
-    "I",        # isort
-    "B",        # flake8-bugbear
-    "C4",       # flake8-comprehensions
-    "TCH",      # flake8-type-checking
-    "RUF100",   # yesqa equivalence
-    "UP",       # pyupgrade
-    "TID",      # flake8-tidy-imports
-]
-lint.ignore = [
-    "B904",
-]
 
 [tool.mypy]
 strict = true
+strict_equality = true
 packages = ["htpy", "tests"]
 exclude = ["examples", "scripts"]
+
 
 [tool.pyright]
 include = ["htpy", "tests"]
 strict = ["htpy", "tests"]
 
+
 [tool.pytest.ini_options]
 addopts = "--doctest-glob='docs/*.md'"
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "F",      # Pyflakes
+    "E",      # pycodestyle error
+    "W",      # pycodestyle warning
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "TCH",    # flake8-type-checking
+    "RUF100", # yesqa equivalence
+    "UP",     # pyupgrade
+    "TID",    # flake8-tidy-imports
+]
+ignore = ["B904"]
+
+
+[tool.tox]
+env_list = [
+    "3.10",
+    "3.11",
+    "3.12",
+    "3.13",
+    "3.14",
+    "docs",
+    "mypy",
+    "pyright",
+    "ruff-format",
+    "ruff-check",
+]
+
+[tool.tox.env_run_base]
+package = "wheel"
+wheel_build_env = ".pkg"
+dependency_groups = ["tests"]
+commands = [
+    [
+        "pytest",
+        "--basetemp={envtmpdir}",
+        "tests",                                # unit tests
+        "{envsitepackagesdir}/htpy",            # doctests
+        { replace = "posargs", extend = true },
+    ],
+]
+
+[tool.tox.env.docs]
+dependency_groups = ["docs"]
+commands = [["mkdocs", "build", "--site-dir={envtmpdir}"]]
+
+[tool.tox.env.mypy]
+dependency_groups = ["tests", "mypy"]
+commands = [
+    [
+        "mypy",
+        { replace = "posargs", default = [
+            "src",
+            "tests",
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.pyright]
+dependency_groups = ["tests", "pyright"]
+commands = [
+    [
+        "pyright",
+        { replace = "posargs", default = [
+            "src",
+            "tests",
+        ], extend = true },
+    ],
+]
+
+[tool.tox.env.ruff-format]
+skip_install = true
+dependency_groups = ["ruff"]
+commands = [["ruff", "format", "--check", "{posargs:.}"]]
+
+[tool.tox.env.ruff-check]
+skip_install = true
+dependency_groups = ["ruff"]
+commands = [["ruff", "check", "{posargs:.}"]]

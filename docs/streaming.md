@@ -47,9 +47,9 @@ def article_list(request):
     ])
 ```
 
-## Using Callables to Delay Evalutation
+## Using Callables to Delay Evaluation
 
-Pass a callable that does not accept any arguements as child to delay the
+Pass a callable that does not accept any arguments as child to delay the
 evaluation.
 
 This example shows how the page starts rendering and outputs the `<h1>` tag and

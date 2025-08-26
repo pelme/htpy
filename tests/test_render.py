@@ -13,6 +13,18 @@ def example_consumer(value: str) -> str:
     return value
 
 
+@h.with_children
+def example_with_children(
+    content: h.Node,
+    *,
+    title: str = "default!",
+) -> h.Renderable:
+    return h.div[
+        h.h1[title],
+        h.p[content],
+    ]
+
+
 @dataclass(frozen=True)
 class RenderableTestCase:
     renderable: h.Renderable
@@ -33,6 +45,22 @@ cases = [
     RenderableTestCase(h.fragment["fragment!"], ["fragment!"]),
     # comment() is a Fragment but test it anyways for completeness
     RenderableTestCase(h.comment("comment!"), ["<!-- comment! -->"]),
+    RenderableTestCase(
+        example_with_children,
+        ["<div>", "<h1>", "default!", "</h1>", "<p>", "</p>", "</div>"],
+    ),
+    RenderableTestCase(
+        example_with_children["children!"],
+        ["<div>", "<h1>", "default!", "</h1>", "<p>", "children!", "</p>", "</div>"],
+    ),
+    RenderableTestCase(
+        example_with_children(title="title!"),
+        ["<div>", "<h1>", "title!", "</h1>", "<p>", "</p>", "</div>"],
+    ),
+    RenderableTestCase(
+        example_with_children(title="title!")["children!"],
+        ["<div>", "<h1>", "title!", "</h1>", "<p>", "children!", "</p>", "</div>"],
+    ),
 ]
 
 

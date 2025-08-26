@@ -35,9 +35,9 @@ def greeting(request: HttpRequest) -> HttpResponse:
 ```
 
 ```py title="components.py"
-from htpy import html, body, h1
+from htpy import Renderable, body, html, h1
 
-def greeting_page(*, name: str) -> Element:
+def greeting_page(*, name: str) -> Renderable:
     return html[body[h1[f"hi {name}!"]]]
 ```
 
@@ -70,7 +70,7 @@ A common feature of template languages is to "extend" a base/parent template and
 ```py title="components.py"
 import datetime
 
-from htpy import body, div, h1, head, html, p, title, Node, Element
+from htpy import Node, Renderable, body, div, h1, head, html, p, title
 
 
 def base_layout(*,
@@ -78,7 +78,7 @@ def base_layout(*,
     extra_head: Node = None,
     content: Node = None,
     body_class: str | None = None,
-) -> Element:
+) -> Renderable:
     return html[
         head[title[page_title], extra_head],
         body(class_=body_class)[
@@ -88,7 +88,7 @@ def base_layout(*,
     ]
 
 
-def index_page() -> Element:
+def index_page() -> Renderable:
     return base_layout(
         page_title="Welcome!",
         body_class="green",
@@ -99,7 +99,7 @@ def index_page() -> Element:
     )
 
 
-def about_page() -> Element:
+def about_page() -> Renderable:
     return base_layout(
         page_title="About us",
         content=[
@@ -119,10 +119,10 @@ Wrapping [Bootstrap Modal](https://getbootstrap.com/docs/4.0/components/modal/) 
 ```py title="Creating wrapper for Bootstrap Modal"
 from markupsafe import Markup
 
-from htpy import Element, Node, button, div, h5, span
+from htpy import Node, Renderable, button, div, h5, span
 
 
-def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Element:
+def bootstrap_modal(*, title: str, body: Node = None, footer: Node = None) -> Renderable:
     return div(".modal", tabindex="-1", role="dialog")[
         div(".modal-dialog", role="document")[
             div(".modal-content")[
@@ -159,4 +159,67 @@ print(
         ],
     )
 )
+```
+
+### Components with children
+
+When building their own set of components, some prefer to make their
+components accept children nodes in the same way as the HTML elements provided
+by htpy.
+
+Making this work correctly in all cases can be tricky, so htpy provides a
+decorator called `@with_children`.
+
+With the `@with_children` decorator you can convert a component like this:
+
+```py
+from htpy import Node, Renderable
+
+def my_component(*, title: str, children: Node) -> Renderable:
+    ...
+```
+
+That is used like this:
+
+```py
+my_component(title="My title", children=h.div["My content"])
+```
+
+Into a component that is defined like this:
+
+```py
+from htpy import Node, Renderable, with_children
+
+@with_children
+def my_component(children: Node, *, title: str) -> Renderable:
+    ...
+```
+
+And that is used like this, just like any HTML element:
+
+```py
+my_component(title="My title")[h.div["My content"]]
+```
+
+You can combine `@with_children` with other decorators, like context
+consumers, that also pass extra arguments to the function, but you must make
+sure that decorators and arguments are in the right order.
+
+As the innermost decorator is the first to wrap the function, it maps to the
+first argument. With multiple decorators, the source code order of the
+decorators and arguments are the opposite of each other.
+
+```py
+from typing import Literal
+
+from htpy import Context, Node, Renderable, div, h1, with_children
+
+Theme = Literal["light", "dark"]
+
+theme_context: Context[Theme] = Context("theme", default="light")
+
+@with_children
+@theme_context.consumer
+def my_component(theme: Theme, children: Node, *, extra: str) -> Renderable:
+    ...
 ```

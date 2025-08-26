@@ -6,63 +6,58 @@ on:
     branches: [main]
 
 jobs:
-  pre-commit:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
-          cache: pip
-      - run: pip install .[dev]
-      - run: pre-commit run --all-files
+          # Fetch history and tags to enable correct versioning
+          fetch-depth: 0
+      - uses: hynek/build-and-inspect-python-package@v2
 
-  pytest:
-    runs-on: ubuntu-latest
+  tests:
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-          - "3.10"
-          - "3.11"
-          - "3.12"
-          - "3.13"
-          - "3.14-dev"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: pytest
-
-  mypy:
+        include:
+          - name: pytest (3.10)
+            python: "3.10"
+            tox: "3.10"
+          - name: pytest (3.11)
+            python: "3.11"
+            tox: "3.11"
+          - name: pytest (3.12)
+            python: "3.12"
+            tox: "3.12"
+          - name: pytest (3.13)
+            python: "3.13"
+            tox: "3.13"
+            coverage: true
+          - name: pytest (3.14)
+            python: "3.14"
+            tox: "3.14"
+          - name: mypy
+            python: "3.13"
+            tox: mypy
+          - name: pyright
+            python: "3.13"
+            tox: pyright
+          - name: ruff format
+            python: "3.13"
+            tox: ruff-format
+          - name: ruff check
+            python: "3.13"
+            tox: ruff-check
+          - name: docs
+            python: "3.13"
+            tox: docs
+    name: ${{ matrix.name }}
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v6
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: mypy
-
-  pyright:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-      - run: pip install .[dev]
-      - run: pyright
+          python-version: ${{ matrix.python }}
+          activate-environment: true
+      - run: uv pip install tox tox-uv
+      - run: tox -e ${{ matrix.tox }}

@@ -125,6 +125,22 @@ You can pass a list, tuple or generator to generate multiple children:
     directly when the element is constructed. See [Streaming](streaming.md) for
     more information.
 
+!!! warning "Generator Consumption"
+
+    Generators can only be consumed once. If you try to render an element containing a generator multiple times, you will get a `RuntimeError` on the second attempt:
+
+    ```pycon
+    >>> element = div[(x for x in "abc")]
+    >>> print(element)  # First render - works
+    <div>abc</div>
+    >>> print(element)  # Second render - fails  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Generator has already been consumed
+    ```
+
+    If you need to render the same content multiple times, use a `list` instead of a generator.
+
 A `list` can be used similar to a [JSX fragment](https://react.dev/reference/react/Fragment):
 
 ```pycon title="Render a list of child elements"
@@ -295,6 +311,17 @@ dynamically.
 >>> from htpy import label
 >>> print(label({"for": "myfield"}))
 <label for="myfield"></label>
+
+```
+
+You can also specify multiple dictionaries  containing attributes. This is
+especially useful if you have variables with a common preset group of 
+attributes, or are using helper functions to create a dictionary of attributes.
+
+```pycon title="Using multiple dictionaries with attributes"
+>>> from htpy import button
+>>> print(button({"disabled": True}, {"hx-post": "/foo"}))
+<button disabled hx-post="/foo"></button>
 
 ```
 

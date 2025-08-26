@@ -11,7 +11,7 @@ class User:
         self.name = name
 
 
-def greeting(user: User) -> Element:
+def greeting(user: User) -> Renderable:
     return h1[f"Hi {user.first_name.capitalize()}!]
 #                        ^^^^^^^^^^
 # mypy: error: "User" has no attribute "first_name"  [attr-defined]
@@ -80,8 +80,8 @@ or callables.
 Use `Node` when you want to create a wrapper function to be flexible with what you accept. This function will accept both a str or some other element to be passed as `contents`:
 
 ```python
-from htpy import Element, Node, div
+from htpy import Node, Renderable, div
 
-def bootstrap_alert(contents: Node) -> Element:
+def bootstrap_alert(contents: Node) -> Renderable:
     return div(".alert", role="alert")[contents]
 ```
