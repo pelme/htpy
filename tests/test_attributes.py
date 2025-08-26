@@ -181,6 +181,11 @@ def test_id_class_wrong_order() -> None:
         div(".myclass#myid")
 
 
+def test_classes_delimited_with_space(render: RenderFixture) -> None:
+    result = div(".a b")
+    assert render(result) == ['<div class="a b">', "</div>"]
+
+
 def test_id_class_bad_format() -> None:
     with pytest.raises(ValueError, match="id/class strings must start with # or ."):
         div("foo")
