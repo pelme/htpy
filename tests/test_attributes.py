@@ -181,6 +181,14 @@ def test_id_class_wrong_order() -> None:
         div(".myclass#myid")
 
 
+def test_bad_classes_delimited_with_space() -> None:
+    with pytest.raises(
+        ValueError,
+        match=r"Whitespace is not allowed in class shorthand \(use '.a.b' instead of '.a b'\).",
+    ):
+        div(".a b")
+
+
 def test_id_class_bad_format() -> None:
     with pytest.raises(ValueError, match="id/class strings must start with # or ."):
         div("foo")

@@ -57,6 +57,12 @@ def id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
     ids = [part.removeprefix("#").strip() for part in parts if part.startswith("#")]
     classes = [part.strip() for part in parts if not part.startswith("#") if part]
 
+    for class_ in classes:
+        if any(ch.isspace() for ch in class_):
+            raise ValueError(
+                "Whitespace is not allowed in class shorthand (use '.a.b' instead of '.a b')."
+            )
+
     assert len(ids) in (0, 1)
 
     result: dict[str, Attribute] = {}
