@@ -223,3 +223,32 @@ theme_context: Context[Theme] = Context("theme", default="light")
 def my_component(theme: Theme, children: Node, *, extra: str) -> Renderable:
     ...
 ```
+
+## Short-circuit truthiness
+
+Short-circuit truthiness (a.k.a. old-school ternary) is common in React but it doesn't work as expected with mypy. Consider example below
+
+```python
+class C:
+    pass
+
+c: C | None = C()
+n: h.Node | None = c and h.div["foo"]
+```
+
+mypy (1.17.1) would produce an error `Incompatible types in assignment (expression has type "C | Element | None", variable has type "Node | None") ​mypy(assignment)`.
+The reason is that mypy doesn't know what `C`'s `__bool__` returns in runtime.
+
+Suggested pattern: `n: h.Node | None = h.div["hi"] if c else None`.
+
+!!! note "Typing `__bool__`"
+
+    If `__bool__` always returned `True` then mypy wouldn't give an error.
+
+    ```
+    class C:
+        def __bool__(self) -> Literal[True]:
+            return True
+    ```
+
+    If a class doesn’t implement `__bool__`, its instances are truthy by default. So `bool(object())` is `True`. However, mypy can’t assume a user-defined class is always truthy: the class might override `__bool__`. So mypy won’t narrow c unless it knows more (e.g., `__bool__ -> Literal[True]`).
