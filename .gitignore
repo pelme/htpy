@@ -1,4 +1,5 @@
 *.egg-info
+*.so
 *.sqlite3
 .DS_Store
 /*.lock
@@ -7,6 +8,8 @@
 /.jj/
 /.tox/
 /.venv/
+/build/
 /dist/
 /site/
+/target/
 __pycache__/
