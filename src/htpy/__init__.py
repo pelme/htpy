@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from htpy._compiler import compile as compile
 from htpy._contexts import Context as Context
 from htpy._contexts import ContextConsumer as ContextConsumer
 from htpy._contexts import ContextProvider as ContextProvider

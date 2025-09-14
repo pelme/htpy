@@ -4,6 +4,7 @@ import markupsafe
 import pytest
 
 import htpy as h
+from htpy._compiler import CompiledElement
 
 example_ctx: h.Context[str] = h.Context("example_ctx", default="default!")
 
@@ -60,6 +61,10 @@ cases = [
     RenderableTestCase(
         example_with_children(title="title!")["children!"],
         ["<div>", "<h1>", "title!", "</h1>", "<p>", "children!", "</p>", "</div>"],
+    ),
+    RenderableTestCase(
+        CompiledElement('<div id="foo">', "hi!", "</foo>"),
+        ['<div id="foo">', "hi!", "</foo>"],
     ),
 ]
 
