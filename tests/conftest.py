@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import typing as t
 
@@ -49,7 +50,24 @@ def trace(render_result: RenderResult) -> Callable[[str], None]:
 
 
 @pytest.fixture
-def render(render_result: RenderResult) -> Generator[RenderFixture, None, None]:
+def render_async(render_result: RenderResult) -> Callable[[h.Renderable], RenderResult]:
+    def func(renderable: h.Renderable) -> RenderResult:
+        async def run() -> RenderResult:
+            async for chunk in renderable.aiter_chunks():
+                render_result.append(chunk)
+            return render_result
+
+        return asyncio.run(run(), debug=True)
+
+    return func
+
+
+@pytest.fixture(params=["sync", "async"])
+def render(
+    request: pytest.FixtureRequest,
+    render_result: RenderResult,
+    render_async: RenderFixture,
+) -> Generator[RenderFixture, None, None]:
     called = False
 
     def func(renderable: h.Renderable) -> RenderResult:
@@ -59,10 +77,16 @@ def render(render_result: RenderResult) -> Generator[RenderFixture, None, None]:
             raise AssertionError("render() must only be called once per test")
 
         called = True
-        for chunk in renderable.iter_chunks():
-            render_result.append(chunk)
 
-        return render_result
+        if request.param == "sync":
+            for chunk in renderable.iter_chunks():
+                render_result.append(chunk)
+
+            return render_result
+        elif request.param == "async":
+            return render_async(renderable)
+        else:
+            raise AssertionError(request.param)
 
     yield func
 

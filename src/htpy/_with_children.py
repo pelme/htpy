@@ -6,7 +6,7 @@ import typing as t
 import markupsafe
 
 if t.TYPE_CHECKING:
-    from collections.abc import Callable, Iterator, Mapping
+    from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 
     import htpy
 
@@ -65,6 +65,12 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
     ) -> Iterator[str]:
         return self.wrapped(None).iter_chunks(context)  # type: ignore[call-arg]
 
+    def aiter_chunks(
+        self,
+        context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
+    ) -> AsyncIterator[str]:
+        return self.wrapped(None).aiter_chunks(context)  # type: ignore[call-arg]
+
 
 class _WithChildrenBound(t.Generic[C, P, R]):
     _func: Callable[t.Concatenate[C | None, P], R]
@@ -111,6 +117,12 @@ class _WithChildrenBound(t.Generic[C, P, R]):
         context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
     ) -> Iterator[str]:
         return self._func(None, *self._args, **self._kwargs).iter_chunks(context)
+
+    def aiter_chunks(
+        self,
+        context: Mapping[htpy.Context[t.Any], t.Any] | None = None,
+    ) -> AsyncIterator[str]:
+        return self._func(None, *self._args, **self._kwargs).aiter_chunks(context)
 
 
 def with_children(

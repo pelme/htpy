@@ -5,6 +5,8 @@ import pytest
 
 import htpy as h
 
+from .conftest import RenderFixture
+
 example_ctx: h.Context[str] = h.Context("example_ctx", default="default!")
 
 
@@ -94,4 +96,10 @@ def test_iter_chunks(case: RenderableTestCase) -> None:
     # Ensure we get str back, not markup.
     assert type(result[0]) is str
 
+    assert result == case.expected_chunks
+
+
+@pytest.mark.parametrize("case", cases)
+def test_aiter_chunks(case: RenderableTestCase, render_async: RenderFixture) -> None:
+    result = render_async(case.renderable)
     assert result == case.expected_chunks

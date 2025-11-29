@@ -3,12 +3,21 @@ from __future__ import annotations
 import functools
 import keyword
 import typing as t
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import (
+    AsyncIterable,
+    AsyncIterator,
+    Awaitable,
+    Callable,
+    Iterable,
+    Iterator,
+    Mapping,
+)
 
 from htpy._attributes import attrs_string, id_class_names_from_css_str
 from htpy._contexts import ContextConsumer, ContextProvider
 from htpy._fragments import Fragment
-from htpy._rendering import chunks_as_markup, iter_chunks_node
+from htpy._render_async import aiter_chunks_node
+from htpy._render_sync import chunks_as_markup, iter_chunks_node
 from htpy._types import HasHtml, KnownInvalidChildren
 
 try:
@@ -94,6 +103,14 @@ class BaseElement:
         yield from iter_chunks_node(self._children, context)
         yield f"</{self._name}>"
 
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+        async for x in aiter_chunks_node(self._children, context):
+            yield x
+        yield f"</{self._name}>"
+
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -142,9 +159,21 @@ class HTMLElement(Element):
         yield "<!doctype html>"
         yield from super().iter_chunks(context)
 
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        yield "<!doctype html>"
+        async for chunk in super().aiter_chunks(context):
+            yield chunk
+
 
 class VoidElement(BaseElement):
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        yield f"<{self._name}{self._attrs}>"
+
+    async def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
         yield f"<{self._name}{self._attrs}>"
 
     def __repr__(self) -> str:
@@ -176,6 +205,8 @@ def get_element(name: str) -> Element:
 
 _KnownValidChildren = (
     None
+    | AsyncIterable  # type: ignore[type-arg]  # pyright: ignore [reportMissingTypeArgument]
+    | Awaitable  # type: ignore[type-arg]  # pyright: ignore [reportMissingTypeArgument]
     | BaseElement
     | ContextProvider  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]
     | ContextConsumer  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]

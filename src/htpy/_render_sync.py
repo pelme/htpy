@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing as t
 import weakref
-from collections.abc import Generator, Iterable
+from collections.abc import AsyncIterable, Awaitable, Generator, Iterable
 
 import markupsafe
 
@@ -52,5 +52,10 @@ def iter_chunks_node(x: Node, context: Mapping[Context[t.Any], t.Any] | None) ->
     elif isinstance(x, Iterable) and not isinstance(x, KnownInvalidChildren):  # pyright: ignore [reportUnnecessaryIsInstance]
         for child in x:
             yield from iter_chunks_node(child, context)
+    elif isinstance(x, Awaitable | AsyncIterable):  # pyright: ignore[reportUnnecessaryIsInstance]
+        raise ValueError(
+            f"{x!r} can not be used in sync context. "
+            "Use .aiter_chunks() to retrieve the content: https://htpy.dev/async/"
+        )
     else:
         raise TypeError(f"{x!r} is not a valid child element")

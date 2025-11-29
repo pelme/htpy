@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import typing as t
-from collections.abc import Callable, Iterable
+from collections.abc import AsyncIterable, AsyncIterator, Awaitable, Callable, Iterable
 
 if t.TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -22,6 +22,9 @@ class Renderable(t.Protocol):
     def iter_chunks(
         self, context: Mapping[Context[t.Any], t.Any] | None = None
     ) -> Iterator[str]: ...
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]: ...
 
     # Allow starlette Response.render to directly render this element without
     # explicitly casting to str:
@@ -34,7 +37,16 @@ _ClassNames: t.TypeAlias = Iterable[str | None | bool | _ClassNamesDict] | _Clas
 Attribute: t.TypeAlias = None | bool | str | int | HasHtml | _ClassNames
 
 Node: t.TypeAlias = (
-    Renderable | None | bool | str | int | HasHtml | Iterable["Node"] | Callable[[], "Node"]
+    Renderable
+    | None
+    | bool
+    | str
+    | int
+    | HasHtml
+    | Iterable["Node"]
+    | Callable[[], "Node"]
+    | AsyncIterable["Node"]
+    | Awaitable["Node"]
 )
 
 KnownInvalidChildren: t.TypeAlias = bytes | bytearray | memoryview

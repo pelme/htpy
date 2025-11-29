@@ -4,7 +4,8 @@ import dataclasses
 import functools
 import typing as t
 
-from htpy._rendering import chunks_as_markup, iter_chunks_node
+from htpy._render_async import aiter_chunks_node
+from htpy._render_sync import chunks_as_markup, iter_chunks_node
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
@@ -12,7 +13,7 @@ except ImportError:
     from typing_extensions import deprecated
 
 if t.TYPE_CHECKING:
-    from collections.abc import Callable, Iterator, Mapping
+    from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 
     import markupsafe
 
@@ -44,6 +45,11 @@ class ContextProvider(t.Generic[T]):
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         return iter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
 
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return aiter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
+
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -59,7 +65,7 @@ class ContextConsumer(t.Generic[T]):
 
     __html__ = __str__
 
-    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+    def _get_value(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> T:
         context_value = (context or {}).get(self.context, self.context.default)
 
         if context_value is _NO_DEFAULT:
@@ -67,7 +73,16 @@ class ContextConsumer(t.Generic[T]):
                 f'Context value for "{self.context.name}" does not exist, '  # pyright: ignore
                 f"requested by {self.debug_name}()."
             )
-        return iter_chunks_node(self.func(context_value), context)  # pyright: ignore
+
+        return context_value  # type: ignore[no-any-return]
+
+    def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
+        return iter_chunks_node(self.func(self._get_value(context)), context)  # pyright: ignore
+
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return aiter_chunks_node(self.func(self._get_value(context)), context)  # pyright: ignore
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)

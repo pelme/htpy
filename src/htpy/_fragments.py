@@ -4,7 +4,8 @@ import typing as t
 
 import markupsafe
 
-from htpy._rendering import chunks_as_markup, iter_chunks_node
+from htpy._render_async import aiter_chunks_node
+from htpy._render_sync import chunks_as_markup, iter_chunks_node
 
 try:
     from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
@@ -12,7 +13,7 @@ except ImportError:
     from typing_extensions import deprecated
 
 if t.TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import AsyncIterator, Iterator, Mapping
 
     from htpy._contexts import Context
     from htpy._types import Node
@@ -43,6 +44,11 @@ class Fragment:
 
     def iter_chunks(self, context: Mapping[Context[t.Any], t.Any] | None = None) -> Iterator[str]:
         return iter_chunks_node(self._node, context)
+
+    def aiter_chunks(
+        self, context: Mapping[Context[t.Any], t.Any] | None = None
+    ) -> AsyncIterator[str]:
+        return aiter_chunks_node(self._node, context)
 
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
