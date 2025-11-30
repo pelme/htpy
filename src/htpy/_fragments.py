@@ -50,6 +50,11 @@ class Fragment:
     ) -> AsyncIterator[str]:
         return aiter_chunks_node(self._node, context)
 
+    @deprecated(
+        "Calling .encode() on fragments is deprecated and will be removed in a future release. "
+        "Using Starlette? Use htpy.starlette.HtpyResponse for improved performance and convenience. "  # noqa: E501
+        "More info: https://htpy.dev/starlette/"
+    )
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 

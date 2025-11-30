@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import typing as t
 
+import pytest
 from starlette.applications import Starlette
 from starlette.responses import HTMLResponse
 from starlette.routing import Route
@@ -41,7 +42,8 @@ client = TestClient(app)
 
 
 def test_html_response() -> None:
-    response = client.get("/html-response")
+    with pytest.warns(DeprecationWarning, match=r"Calling .encode\(\) .*is deprecated"):
+        response = client.get("/html-response")
     assert response.content == b"<h1>Hello, HTMLResponse!</h1>"
 
 

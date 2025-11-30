@@ -5,6 +5,11 @@ import typing as t
 
 import markupsafe
 
+try:
+    from warnings import deprecated  # type: ignore[attr-defined,unused-ignore]
+except ImportError:
+    from typing_extensions import deprecated
+
 if t.TYPE_CHECKING:
     from collections.abc import AsyncIterator, Callable, Iterator, Mapping
 
@@ -56,6 +61,11 @@ class _WithChildrenUnbound(t.Generic[C, P, R]):
 
     __html__ = __str__
 
+    @deprecated(
+        "Calling .encode() is deprecated and will be removed in a future release. "
+        "Using Starlette? Use htpy.starlette.HtpyResponse for improved performance and convenience. "  # noqa: E501
+        "More info: https://htpy.dev/starlette/"
+    )
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -109,6 +119,11 @@ class _WithChildrenBound(t.Generic[C, P, R]):
 
     __html__ = __str__
 
+    @deprecated(
+        "Calling .encode() is deprecated and will be removed in a future release. "
+        "Using Starlette? Use htpy.starlette.HtpyResponse for improved performance and convenience. "  # noqa: E501
+        "More info: https://htpy.dev/starlette/"
+    )
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 

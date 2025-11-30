@@ -83,8 +83,9 @@ def test_html(case: RenderableTestCase) -> None:
 
 
 @pytest.mark.parametrize("case", cases)
-def test_encode(case: RenderableTestCase) -> None:
-    result = case.renderable.encode()
+def test_encode_deprecation_warning(case: RenderableTestCase) -> None:
+    with pytest.warns(DeprecationWarning, match=r"Calling .encode\(\) .*is deprecated"):
+        result = case.renderable.encode()  # type: ignore[attr-defined]
     assert isinstance(result, bytes)
     assert result == case.expected_bytes()
 

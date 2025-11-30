@@ -50,6 +50,11 @@ class ContextProvider(t.Generic[T]):
     ) -> AsyncIterator[str]:
         return aiter_chunks_node(self.node, {**(context or {}), self.context: self.value})  # pyright: ignore [reportUnknownMemberType]
 
+    @deprecated(
+        "Calling .encode() on ContextProvider is deprecated and will be removed in a future release. "  # noqa: E501
+        "Using Starlette? Use htpy.starlette.HtpyResponse for improved performance and convenience. "  # noqa: E501
+        "More info: https://htpy.dev/starlette/"
+    )
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
@@ -84,6 +89,11 @@ class ContextConsumer(t.Generic[T]):
     ) -> AsyncIterator[str]:
         return aiter_chunks_node(self.func(self._get_value(context)), context)  # pyright: ignore
 
+    @deprecated(
+        "Calling .encode() on ContectConsumer is deprecated and will be removed in a future release. "  # noqa: E501
+        "Using Starlette? Use htpy.starlette.HtpyResponse for improved performance and convenience. "  # noqa: E501
+        "More info: https://htpy.dev/starlette/"
+    )
     def encode(self, encoding: str = "utf-8", errors: str = "strict") -> bytes:
         return str(self).encode(encoding, errors)
 
