@@ -18,7 +18,6 @@ except ImportError:
 
 if t.TYPE_CHECKING:
     from collections.abc import Iterator
-    from types import UnionType
 
     import markupsafe
 
@@ -175,15 +174,15 @@ def get_element(name: str) -> Element:
     return Element(_python_to_html_name(name))
 
 
-_KnownValidChildren: UnionType = (
+_KnownValidChildren = (
     None
     | BaseElement
-    | ContextProvider  # pyright: ignore[reportMissingTypeArgument]
-    | ContextConsumer  # pyright: ignore[reportMissingTypeArgument]
+    | ContextProvider  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]
+    | ContextConsumer  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]
     | str
     | int
     | Fragment
     | HasHtml
-    | Callable
-    | Iterable
+    | Callable  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]
+    | Iterable  # type: ignore[type-arg] # pyright: ignore[reportMissingTypeArgument]
 )
