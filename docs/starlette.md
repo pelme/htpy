@@ -1,21 +1,31 @@
-# Usage with Starlette
+# Usage with Starlette/FastAPI
 
 htpy can be used with Starlette to generate HTML. Since FastAPI is built upon Starlette, htpy can also be used with FastAPI.
 
-To return HTML contents, pass a htpy element to Starlette's `HTMLResponse`:
+htpy supports full async rendering of all components. See [async rendering](async.md) for more information.
+
+To return HTML contents, use the `HtpyResponse` class:
 
 ```py
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import HTMLResponse
 from starlette.routing import Route
 
-from htpy import h1
+from htpy import Element, h1
+from htpy.starlette import HtpyResponse
 
 
-async def index(request: Request) -> HTMLResponse:
-    return HTMLResponse(h1["Hi Starlette!"])
+async def index_component() -> Element:
+    return h1["Hi Starlette!"]
 
 
-app = Starlette(routes=[Route("/", index)])
+async def index(request: Request) -> HtpyResponse:
+    return HtpyResponse(index_component())
+
+
+app = Starlette(
+    routes=[
+        Route("/", index),
+    ]
+)
 ```
