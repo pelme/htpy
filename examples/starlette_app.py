@@ -3,14 +3,14 @@ from collections.abc import AsyncIterator
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import StreamingResponse
 from starlette.routing import Route
 
 from htpy import Element, div, h1, li, p, ul
+from htpy.starlette import HtpyResponse
 
 
-async def index(request: Request) -> StreamingResponse:
-    return StreamingResponse(await index_page(), media_type="text/html")
+async def index(request: Request) -> HtpyResponse:
+    return HtpyResponse(await index_page())
 
 
 async def index_page() -> Element:
