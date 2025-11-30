@@ -15,6 +15,7 @@ nav:
   - common-patterns.md
   - static-typing.md
   - django.md
+  - async.md
   - starlette.md
   - streaming.md
   - html2htpy.md

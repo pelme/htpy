@@ -61,6 +61,8 @@ from a Python backend.
 
 - **Works with existing Python web framework:** Works great with Django, Flask or any other Python web framework!
 
+- **Full async support**: Render HTML fully async with ASGI frameworks such as Starlette and FastAPI.
+
 - **Works great with htmx:** htpy makes for a great experience when writing server rendered partials/components.
 
 - **Create reusable components:** Define components, snippets, complex layouts/pages as regular Python variables or functions.
