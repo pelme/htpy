@@ -28,12 +28,15 @@ nav:
       - how-to/django.md
       - how-to/async.md
       - how-to/starlette.md
+      - how-to/convert-html.md
   - common-patterns.md
   - static-typing.md
   - streaming.md
-  - html2htpy.md
   - faq.md
   - references.md
+  - Reference:
+      - reference/html2htpy.md
+
 markdown_extensions:
   - admonition
   - pymdownx.highlight:
@@ -59,3 +62,4 @@ plugins:
         async.md: how-to/async.md
         django.md: how-to/django.md
         starlette.md: how-to/starlette.md
+        html2htpy.md: reference/html2htpy.md
