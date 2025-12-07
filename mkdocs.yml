@@ -4,7 +4,6 @@ theme:
   name: material
   features:
     - content.code.copy
-    - toc.integrate
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
@@ -25,11 +24,12 @@ theme:
 nav:
   - README.md
   - usage.md
+  - How-to guides:
+      - how-to/django.md
+      - how-to/async.md
+      - how-to/starlette.md
   - common-patterns.md
   - static-typing.md
-  - django.md
-  - async.md
-  - starlette.md
   - streaming.md
   - html2htpy.md
   - faq.md
@@ -55,4 +55,7 @@ markdown_extensions:
 plugins:
   - redirects:
       redirect_maps:
-        'changelog.md': 'https://github.com/pelme/htpy/releases'
+        "changelog.md": "https://github.com/pelme/htpy/releases"
+        async.md: how-to/async.md
+        django.md: how-to/django.md
+        starlette.md: how-to/starlette.md
