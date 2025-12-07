@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+import textwrap
 import typing as t
 from abc import ABC, abstractmethod
 from html.parser import HTMLParser
@@ -432,25 +433,56 @@ def _is_command_available(command: str) -> bool:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="html2htpy")
+    parser = argparse.ArgumentParser(
+        prog="html2htpy",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
 
     parser.add_argument(
         "-f",
         "--format",
         choices=["auto", "ruff", "black", "none"],
         default="auto",
-        help="Select one of the following formatting options: auto, ruff, black or none",
+        help=textwrap.dedent(
+            """
+            Format the output code with a code formatter.
+
+            auto (default):
+              - If black is installed (exists on PATH), use `black` for formatting.
+              - If ruff is installed (exists on PATH): Use `ruff format` for formatting.
+              - If neither black or ruff is installed, do not perform any formatting.
+
+            black:
+              Use the black formatter (https://black.readthedocs.io/en/stable/).
+
+            ruff:
+              Use the ruff formatter (https://docs.astral.sh/ruff/formatter/).
+
+            none:
+              Do not format the output code at all.
+        """,
+        ),
     )
     parser.add_argument(
         "-i",
         "--imports",
         choices=["yes", "h", "no"],
-        help="Output mode for imports of found htpy elements",
+        help=textwrap.dedent("""
+            Specify formatting for imports.
+
+            yes (default):
+                Add `from htpy import div, span` for all found elements.
+            h:
+                Add a single `import htpy as h`.
+                Reference elements with `h.div`, `h.span`.
+            no:
+                Do not add imports.
+        """),
         default="yes",
     )
     parser.add_argument(
         "--no-shorthand",
-        help="Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax",
+        help="Use explicit `id` and `class_` kwargs instead of the shorthand #id.class syntax.",
         action="store_true",
     )
     parser.add_argument(
@@ -458,7 +490,10 @@ def main() -> None:
         type=argparse.FileType("r"),
         nargs="?",
         default=sys.stdin,
-        help="input HTML from file or stdin",
+        help=(
+            "Input HTML file, e.g. home.html. "
+            "Optional. If not specified, html2htpy will read from stdin."
+        ),
     )
 
     args = parser.parse_args()
