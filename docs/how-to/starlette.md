@@ -1,9 +1,8 @@
-# Usage with Starlette/FastAPI
+# Starlette/FastAPI
 
-htpy can be used with Starlette to generate HTML. Since FastAPI is built upon Starlette, htpy can also be used with FastAPI.
+htpy works great in combination with Starlette and FastAPI. htpy supports full async rendering of all components. See [async rendering](async.md) for more information.
 
-htpy supports full async rendering of all components. See [async rendering](async.md) for more information.
-
+## Returning htpy content from a handler
 To return HTML contents, use the `HtpyResponse` class:
 
 ```py

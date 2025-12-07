@@ -1,10 +1,8 @@
-# Usage With Django
+# Django
 
-htpy is not tied to any specific web framework. Nonetheless, htpy works great
-when combined with Django. This page contains information and useful techniques
-on how to combine htpy and Django.
+htpy works great with Django. This page contains information how you integrate htpy with Django.
 
-## Returning a htpy Response
+## Returning a htpy response from a Django view
 
 htpy elements can be passed directly to `HttpResponse`:
 
@@ -16,7 +14,7 @@ def my_view(request):
     return HttpResponse(html[body[div["Hi Django!"]]])
 ```
 
-## Using htpy as Part of an Existing Django Template
+## Using htpy as part of an existing Django template
 
 htpy elements are marked as "safe" and can be injected directly into Django
 templates. This can be useful if you want to start using htpy gradually in an
@@ -45,7 +43,7 @@ def index(request):
     })
 ```
 
-## Render a Django Form
+## Render a form
 
 CSRF token, form widgets and errors can be directly used within htpy elements:
 
@@ -108,9 +106,9 @@ def my_form_success_page() -> Renderable:
     )
 ```
 
-## Implement Custom Form Widgets With htpy
+## Implement custom form widgets
 
-You can implement a custom form widget directly with htpy like this:
+You can implement a custom form widget directly with htpy.
 
 ```py title="widgets.py"
 from django.forms import widgets
@@ -128,10 +126,10 @@ class ShoelaceInput(widgets.Widget):
         return str(sl_input(attrs, name=name, value=value))
 ```
 
-## The htpy Template Backend
+## Using htpy components directly from a template
 
-htpy includes a custom template backend. It makes it possible to use htpy
-instead of Django templates in places where a template name is required.  This
+htpy includes a custom template backend that makes it possible to use htpy
+instead of Django templates in places where a template name is required. This
 can be used with generic views or third party applications built to be used with
 Django templates.
 

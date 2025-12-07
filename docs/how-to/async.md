@@ -2,9 +2,9 @@
 
 htpy fully supports rendering HTML asynchronously. Combined with a async framework such as [Starlette/FastAPI](starlette.md), the entire web request can be processed async and the HTML page can be sent to the client incrementally as soon as it is ready.
 
-# Async components
+# Writing async components
 
-In addition to regular, [synchronous components](common-patterns.md), components can be defined as an `async def` coroutine. When rendering, htpy will `await` all async components:
+Components can be defined as an `async def` function. When rendering, htpy will `await` all async components:
 
 ```py
 from htpy import li
