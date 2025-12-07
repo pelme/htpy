@@ -4,6 +4,8 @@ theme:
   name: material
   features:
     - content.code.copy
+    - toc.integrate
+    - navigation.expand
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
