@@ -1,0 +1,985 @@
+{
+  "global_attributes": [
+    "accesskey",
+    "anchor",
+    "autocapitalize",
+    "autocorrect",
+    "autofocus",
+    "class",
+    "contenteditable",
+    "dir",
+    "draggable",
+    "enterkeyhint",
+    "exportparts",
+    "hidden",
+    "id",
+    "inert",
+    "inputmode",
+    "is",
+    "itemid",
+    "itemprop",
+    "itemref",
+    "itemscope",
+    "itemtype",
+    "lang",
+    "nonce",
+    "part",
+    "popover",
+    "role",
+    "slot",
+    "spellcheck",
+    "style",
+    "tabindex",
+    "title",
+    "translate",
+    "virtualkeyboardpolicy",
+    "writingsuggestions"
+  ],
+  "elements": {
+    "html": {
+      "attributes": [
+        "xmlns"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "base": {
+      "attributes": [
+        "href",
+        "target"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "head": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "link": {
+      "attributes": [
+        "as",
+        "blocking",
+        "crossorigin",
+        "disabled",
+        "fetchpriority",
+        "href",
+        "hreflang",
+        "imagesizes",
+        "imagesrcset",
+        "integrity",
+        "media",
+        "referrerpolicy",
+        "rel",
+        "sizes",
+        "title",
+        "type"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "meta": {
+      "attributes": [
+        "charset",
+        "content",
+        "http-equiv",
+        "media",
+        "name"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "style": {
+      "attributes": [
+        "blocking",
+        "media",
+        "nonce",
+        "title"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "title": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "body": {
+      "attributes": [
+        "onafterprint",
+        "onbeforeprint",
+        "onbeforeunload",
+        "onblur",
+        "onerror",
+        "onfocus",
+        "onhashchange",
+        "onlanguagechange",
+        "onload",
+        "onmessage",
+        "onmessageerror",
+        "onoffline",
+        "ononline",
+        "onpageswap",
+        "onpagehide",
+        "onpagereveal",
+        "onpageshow",
+        "onpopstate",
+        "onresize",
+        "onrejectionhandled",
+        "onstorage",
+        "onunhandledrejection",
+        "onunload"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "address": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "article": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "aside": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "footer": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "header": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h1": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h2": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h3": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h4": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h5": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "h6": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "hgroup": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "main": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "nav": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "section": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "search": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "blockquote": {
+      "attributes": [
+        "cite"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "dd": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "div": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "dl": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "dt": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "figcaption": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "figure": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "hr": {
+      "attributes": [],
+      "deprecated": false,
+      "void": true
+    },
+    "li": {
+      "attributes": [
+        "value"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "menu": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "ol": {
+      "attributes": [
+        "reversed",
+        "start",
+        "type"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "p": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "pre": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "ul": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "a": {
+      "attributes": [
+        "attributionsrc",
+        "download",
+        "href",
+        "hreflang",
+        "ping",
+        "referrerpolicy",
+        "rel",
+        "target",
+        "type"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "abbr": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "b": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "bdi": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "bdo": {
+      "attributes": [
+        "dir"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "br": {
+      "attributes": [],
+      "deprecated": false,
+      "void": true
+    },
+    "cite": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "code": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "data": {
+      "attributes": [
+        "value"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "dfn": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "em": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "i": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "kbd": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "mark": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "q": {
+      "attributes": [
+        "cite"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "rp": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "rt": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "ruby": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "s": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "samp": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "small": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "span": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "strong": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "sub": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "sup": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "time": {
+      "attributes": [
+        "datetime"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "u": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "var": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "wbr": {
+      "attributes": [],
+      "deprecated": false,
+      "void": true
+    },
+    "area": {
+      "attributes": [
+        "alt",
+        "coords",
+        "download",
+        "href",
+        "ping",
+        "referrerpolicy",
+        "rel",
+        "shape",
+        "target"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "audio": {
+      "attributes": [
+        "autoplay",
+        "controls",
+        "controlslist",
+        "crossorigin",
+        "disableremoteplayback",
+        "loop",
+        "muted",
+        "preload",
+        "src"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "img": {
+      "attributes": [
+        "alt",
+        "attributionsrc",
+        "crossorigin",
+        "decoding",
+        "elementtiming",
+        "fetchpriority",
+        "height",
+        "ismap",
+        "loading",
+        "referrerpolicy",
+        "sizes",
+        "src",
+        "srcset",
+        "width",
+        "usemap"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "map": {
+      "attributes": [
+        "name"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "track": {
+      "attributes": [
+        "default",
+        "kind",
+        "label",
+        "src",
+        "srclang"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "video": {
+      "attributes": [
+        "autoplay",
+        "controls",
+        "controlslist",
+        "crossorigin",
+        "disablepictureinpicture",
+        "disableremoteplayback",
+        "height",
+        "loop",
+        "muted",
+        "playsinline",
+        "poster",
+        "preload",
+        "src",
+        "width"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "embed": {
+      "attributes": [
+        "height",
+        "src",
+        "type",
+        "width"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "fencedframe": {
+      "attributes": [
+        "allow",
+        "height",
+        "width"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "iframe": {
+      "attributes": [
+        "allow",
+        "allowfullscreen",
+        "browsingtopics",
+        "credentialless",
+        "csp",
+        "height",
+        "loading",
+        "name",
+        "referrerpolicy",
+        "sandbox",
+        "src",
+        "srcdoc",
+        "width"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "object": {
+      "attributes": [
+        "data",
+        "form",
+        "height",
+        "name",
+        "type",
+        "width"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "picture": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "source": {
+      "attributes": [
+        "type",
+        "src",
+        "srcset",
+        "sizes",
+        "media",
+        "height",
+        "width"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "svg": {
+      "attributes": [
+        "height",
+        "preserveAspectRatio",
+        "viewBox",
+        "width",
+        "x",
+        "y"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "math": {
+      "attributes": [
+        "display"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "canvas": {
+      "attributes": [
+        "height",
+        "width"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "noscript": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "script": {
+      "attributes": [
+        "async",
+        "attributionsrc",
+        "blocking",
+        "crossorigin",
+        "defer",
+        "fetchpriority",
+        "integrity",
+        "nomodule",
+        "nonce",
+        "referrerpolicy",
+        "src",
+        "type"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "del": {
+      "attributes": [
+        "cite",
+        "datetime"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "ins": {
+      "attributes": [
+        "cite",
+        "datetime"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "caption": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "col": {
+      "attributes": [
+        "span"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "colgroup": {
+      "attributes": [
+        "span"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "table": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "tbody": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "td": {
+      "attributes": [
+        "colspan",
+        "headers",
+        "rowspan"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "tfoot": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "th": {
+      "attributes": [
+        "abbr",
+        "colspan",
+        "headers",
+        "rowspan",
+        "scope"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "thead": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "tr": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "button": {
+      "attributes": [
+        "autofocus",
+        "command",
+        "commandfor",
+        "disabled",
+        "form",
+        "formaction",
+        "formenctype",
+        "formmethod",
+        "formnovalidate",
+        "formtarget",
+        "name",
+        "popovertarget",
+        "popovertargetaction",
+        "type",
+        "value"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "datalist": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "fieldset": {
+      "attributes": [
+        "disabled",
+        "form",
+        "name"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "form": {
+      "attributes": [
+        "accept-charset",
+        "autocapitalize",
+        "autocomplete",
+        "name",
+        "rel",
+        "action",
+        "enctype",
+        "method",
+        "novalidate",
+        "target"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "input": {
+      "attributes": [
+        "accept",
+        "alt",
+        "autocapitalize",
+        "autocomplete",
+        "autofocus",
+        "capture",
+        "checked",
+        "dirname",
+        "disabled",
+        "form",
+        "formaction",
+        "formenctype",
+        "formmethod",
+        "formnovalidate",
+        "formtarget",
+        "height",
+        "id",
+        "inputmode",
+        "list",
+        "max",
+        "maxlength",
+        "min",
+        "minlength",
+        "multiple",
+        "name",
+        "pattern",
+        "placeholder",
+        "popovertarget",
+        "popovertargetaction",
+        "readonly",
+        "required",
+        "size",
+        "src",
+        "step",
+        "tabindex",
+        "title",
+        "type",
+        "value",
+        "width",
+        "incremental",
+        "orient",
+        "results",
+        "webkitdirectory"
+      ],
+      "deprecated": false,
+      "void": true
+    },
+    "label": {
+      "attributes": [
+        "for"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "legend": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "meter": {
+      "attributes": [
+        "value",
+        "min",
+        "max",
+        "low",
+        "high",
+        "optimum",
+        "form"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "optgroup": {
+      "attributes": [
+        "disabled",
+        "label"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "option": {
+      "attributes": [
+        "disabled",
+        "label",
+        "selected",
+        "value"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "output": {
+      "attributes": [
+        "for",
+        "form",
+        "name"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "progress": {
+      "attributes": [
+        "max",
+        "value"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "select": {
+      "attributes": [
+        "autocomplete",
+        "autofocus",
+        "disabled",
+        "form",
+        "multiple",
+        "name",
+        "required",
+        "size"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "selectedcontent": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "textarea": {
+      "attributes": [
+        "autocapitalize",
+        "autocomplete",
+        "autocorrect",
+        "autofocus",
+        "cols",
+        "dirname",
+        "disabled",
+        "form",
+        "maxlength",
+        "minlength",
+        "name",
+        "placeholder",
+        "readonly",
+        "required",
+        "rows",
+        "spellcheck",
+        "wrap"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "details": {
+      "attributes": [
+        "open",
+        "name"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "dialog": {
+      "attributes": [
+        "closedby",
+        "open"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "summary": {
+      "attributes": [],
+      "deprecated": false,
+      "void": false
+    },
+    "slot": {
+      "attributes": [
+        "name"
+      ],
+      "deprecated": false,
+      "void": false
+    },
+    "template": {
+      "attributes": [
+        "shadowrootmode",
+        "shadowrootclonable",
+        "shadowrootdelegatesfocus",
+        "shadowrootserializable"
+      ],
+      "deprecated": false,
+      "void": false
+    }
+  }
+}
