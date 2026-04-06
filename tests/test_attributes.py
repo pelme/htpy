@@ -103,6 +103,14 @@ def test_underscore_replacement(render: RenderFixture) -> None:
     assert render(result) == ['<button hx-post="/foo">', "click me!", "</button>"]
 
 
+def test_double_underscore_preserved(render: RenderFixture) -> None:
+    # Double underscores should be preserved in attribute names. This is needed
+    # for frameworks like Datastar that use __ as a modifier delimiter
+    # (e.g. data-on-click__window).
+    result = div(data_on_click__window="alert()")
+    assert render(result) == ['<div data-on-click__window="alert()">', "</div>"]
+
+
 class Test_attribute_escape:
     pytestmark = pytest.mark.parametrize(
         "x",

@@ -194,7 +194,11 @@ def _python_to_html_name(name: str) -> str:
     name_without_underscore_suffix = name.removesuffix("_")
     if keyword.iskeyword(name_without_underscore_suffix):
         html_name = name_without_underscore_suffix
-    html_name = html_name.replace("_", "-")
+
+    # Preserve double underscores while converting single underscores to
+    # hyphens. This is needed for frameworks like Datastar that use __ as a
+    # modifier delimiter in attribute names (e.g. data-on-click__window).
+    html_name = html_name.replace("__", "\x00").replace("_", "-").replace("\x00", "__")
 
     return html_name
 
