@@ -53,15 +53,12 @@ def id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
     if x[0] not in ".#":
         raise ValueError("id/class strings must start with # or .")
 
-    parts = x.split(".")
-    ids = [part.removeprefix("#").strip() for part in parts if part.startswith("#")]
-    classes = [part.strip() for part in parts if not part.startswith("#") if part]
+    if any(ch.isspace() for ch in x):
+        raise ValueError("Whitespace is not allowed in class shorthand.")
 
-    for class_ in classes:
-        if any(ch.isspace() for ch in class_):
-            raise ValueError(
-                "Whitespace is not allowed in class shorthand (use '.a.b' instead of '.a b')."
-            )
+    parts = x.split(".")
+    ids = [part.removeprefix("#") for part in parts if part.startswith("#")]
+    classes = [part for part in parts if not part.startswith("#") if part]
 
     assert len(ids) in (0, 1)
 

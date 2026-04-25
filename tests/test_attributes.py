@@ -161,32 +161,18 @@ def test_id_class_only_classes(render: RenderFixture) -> None:
     assert render(result) == ['<div class="foo bar">', "</div>"]
 
 
-def test_id_class_spaces_only_id(render: RenderFixture) -> None:
-    result = div("#a ")
-    assert render(result) == ['<div id="a">', "</div>"]
-
-
-def test_id_class_spaces_only_classes(render: RenderFixture) -> None:
-    result = div(".a ")
-    assert render(result) == ['<div class="a">', "</div>"]
-
-
-def test_id_class_spaces(render: RenderFixture) -> None:
-    result = div("#a .a ")
-    assert render(result) == ['<div id="a" class="a">', "</div>"]
-
-
 def test_id_class_wrong_order() -> None:
     with pytest.raises(ValueError, match="id \\(#\\) must be specified before classes \\(\\.\\)"):
         div(".myclass#myid")
 
 
-def test_bad_classes_delimited_with_space() -> None:
+@pytest.mark.parametrize("css_str", [".a b", ".a .b", "#a .a ", ".a ", "#a "])
+def test_whitespace_in_class_shorthand(css_str: str) -> None:
     with pytest.raises(
         ValueError,
-        match=r"Whitespace is not allowed in class shorthand \(use '.a.b' instead of '.a b'\).",
+        match="Whitespace is not allowed in class shorthand.",
     ):
-        div(".a b")
+        div(css_str)
 
 
 def test_id_class_bad_format() -> None:
