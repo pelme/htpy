@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import typing as t
+import warnings
 from collections.abc import Iterable
 
 import markupsafe
@@ -54,8 +55,14 @@ def id_class_names_from_css_str(x: t.Any) -> Mapping[str, Attribute]:
         raise ValueError("id/class strings must start with # or .")
 
     if any(ch.isspace() for ch in x):
-        raise ValueError(
-            f'Whitespace is not allowed in class shorthand. String with whitespaces: "{x}"'
+        warnings.warn(
+            (
+                "Whitespace in CSS shorthand strings is deprecated and will raise a ValueError "
+                f"in a future release. Please remove the space in '{x}' "
+                "(e.g., use '.a.b' instead of '.a .b')."
+            ),
+            FutureWarning,
+            stacklevel=3,
         )
 
     parts = x.split(".")
