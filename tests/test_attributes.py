@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import typing as t
-import warnings
 
 import pytest
 from markupsafe import Markup
@@ -169,14 +168,11 @@ def test_id_class_wrong_order() -> None:
 
 @pytest.mark.parametrize("css_str", [".a b", ".a .b", "#a .a ", ".a ", "#a "])
 def test_whitespace_in_class_shorthand(css_str: str) -> None:
-    with pytest.warns(FutureWarning):
+    with pytest.raises(
+        ValueError,
+        match="Whitespace is not allowed in class shorthand.",
+    ):
         div(css_str)
-
-
-def test_no_whitespace_in_class_shorthand() -> None:
-    with warnings.catch_warnings(record=True) as caught:
-        div(".a.b")
-    assert len(caught) == 0
 
 
 def test_id_class_bad_format() -> None:
