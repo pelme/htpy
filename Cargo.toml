@@ -1,0 +1,12 @@
+[package]
+edition = "2021"
+name = "htpy"
+version = "0.0.0"
+
+[dependencies]
+pyo3 = "0.25"
+
+[lib]
+crate-type = ["cdylib"]
+name = "_rust_impl"
+path = "src/lib.rs"
