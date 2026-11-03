@@ -243,8 +243,16 @@ class HTPYParser(HTMLParser):
 
         self._current = self._current.parent
 
+    def _is_inside_pre(self) -> bool:
+        tag = self._current
+        while tag is not None:
+            if tag.html_tag == "pre":
+                return True
+            tag = tag.parent
+        return False
+
     def handle_data(self, data: str) -> None:
-        if not data.isspace():
+        if not data.isspace() or self._is_inside_pre():
             stringified_data = _convert_data_to_string(data)
 
             if self._current:
