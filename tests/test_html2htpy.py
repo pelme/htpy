@@ -355,3 +355,26 @@ def test_convert_pre_element_retains_all_whitespace() -> None:
 
         This   element   retains   newlines   and   whitespace."""]'''
     )
+
+
+def test_convert_pre_element_retains_whitespace_only_text() -> None:
+    actual = html2htpy(
+        '<pre><code><span class="k">FROM</span><span class="w"> </span>'
+        '<span class="s">fedora:42</span></code></pre>',
+        shorthand_id_class=True,
+        import_mode="no",
+    )
+
+    assert actual == 'pre[code[span(".k")["FROM"], span(".w")[" "], span(".s")["fedora:42"]]]'
+
+
+def test_convert_pre_element_retains_newline_between_elements() -> None:
+    actual = html2htpy("<pre><span>a</span>\n<span>b</span></pre>", import_mode="no")
+
+    assert actual == 'pre[span["a"], """\n""", span["b"]]'
+
+
+def test_convert_whitespace_only_text_outside_pre_is_dropped() -> None:
+    actual = html2htpy("<div>\n  <span> </span>\n  <p>a</p>\n</div>", import_mode="no")
+
+    assert actual == 'div[span, p["a"]]'
